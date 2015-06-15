@@ -1,50 +1,43 @@
 Legends of Dota
 =====
-
 **Support the innovators not the imitators.**
 
 ###About###
  - Pick your skills to build an overpowered masterpiece!
  - Test out different combinations!
- - Create unique and creative heros to dominate your opponent.
+ - Create unique and creative heroes to dominate your opponent.
+ - For current features, [click here!](https://github.com/ash47/LegendsOfDota#current-features)
 
-###Current Features###
- - Picking Interface
- - Basic Option Selection Interfacemet
- - Option to have between 0 and 6 ultimate abilities
- - Option to change starting level
- - Option to enable easy mode
- - Option to hide enemy team's draft from the picking screen (This is hard to implement)
- - Option to select number of skills to ban and allow only host to ban skills
- - Limited Wraith Night Skills
- - Limited Neutral Skills
- - Game Variants
-  - All Pick, provides the full hero pool
-  - Single Draft, everyone gets a random choice of 10 heroes (You can only use the skills from these heroes)
-  - Mirror Draft, both teams get the same hero pool
-  - All Random, everyone gets a random hero and random spells
+###Dota 2 Workshop Version###
+ - There is a less stable workshop version available [here](http://steamcommunity.com/sharedfiles/filedetails/?id=296590332) but it has a very active community
+ - It is running an older version of dota 2 (old spells, old map, no bounty rune, etc)
+ - We recommend using [Lobby Browser](http://getdotastats.com/#d2mods__lobby_guide) to easily find other custom mod gamers.
 
-###Workshop Version###
- - There is a less good workshop version available [here](http://steamcommunity.com/sharedfiles/filedetails/?id=296590332)
- - It is running the older version of dota 2, which means old spells, old map, no bounty rune, etc
+##Guide for playing Legends of Dota (*Source 1*)##
+###Quick Start Guide (Auto-Installer)###
+1. [Download the installer](https://github.com/Veroalla/LOD-Auto-Installer/blob/master/LOD%20Auto.zip?raw=true)
+2. Extract and run the LOD-Installer.vbs (Windows Only)
+3. Restart Dota 2 and skip to [Connecting to Server](https://github.com/ash47/LegendsOfDota#connecting-to-a-source1-server)
+- **Note**: Always launch Dota 2 **BEFORE** attempting to connect to a server.
 
-###How do I toggle between skill sets?###
- - This can be done only when the slot count is more than 6
- - The following console commands exist
-  - `lod_toggle_set` Which simply toggles between the sets
-  - `lod_show_set` Which takes either 0 or 1 as an argument, and will show that set
- - There is also a button located on the GUI to toggle the slots
+###Manual Installation###
+######Repeat 1-3 if your LOD is outdated######
+  1. Close dota 2 (Game won't load new LOD files until you restart!)
+  2. [Download](https://github.com/ash47/LegendsOfDota/releases) the latest LOD release (lod_s1_bin.zip)
+  3. Create a folder called addons in `dota 2 beta/dota/` & extract **ONLY** the `lod` folder inside it.
+  4. If there are any other folders inside your `dota 2 beta/dota/addons` folder, please delete them  or move them into another folder (such as `addons_disabled`)
 
-###Setting up your local client to connect to a source1 server###
- - **DO THIS ONCE, REPEAT WHEN YOU NEED TO UPDATE**
-  - Close dota 2 (it won't load most updates / mods that are installed with this method unless you restart dota 2)
-  - Download [The latest release from here](https://github.com/ash47/LegendsOfDota/releases)
-  - Extract ONLY the `lod` folder into your `dota 2 beta/dota/addons` folder (creating addons if it doesn't exist)
-  - If there are any other folders inside your `addons` folder, please either delete them, or move them into another folder (such as `addons_disabled`)
- - **DO THIS ONCE**
-  - Open `dota 2 beta/dota/gameinfo.txt`
-  - Add `Game       |gameinfo_path|addons/lod` without quotes on a new line BELOW the final "Game" entry (inside of SearchPaths) [Click here if you don't know how to follow instructions](http://pastebin.com/MbSEpeLG)
-
+**DO THIS ONCE**
+  1. Open `dota 2 beta/dota/gameinfo.txt`
+  2. Add `Game       |gameinfo_path|addons/lod` on a new line like this:
+```ruby
+SearchPaths
+                {
+                        Game                            |gameinfo_path|.
+                        Game                            platform
+                        Game                            |gameinfo_path|addons/lod
+                }
+```
 ###Connecting to a source1 server###
  - We will use my personal server as an example
  - Launch NORMAL dota 2 (no workshop tools!)
@@ -60,8 +53,10 @@ Legends of Dota
   - [Texas, USA] Ash47 3rd **lod.ash47.net:27017**
   - [Texas, USA] Ash47 4th **lod.ash47.net:27018**
  - Unofficial
+  - [EU] Veroalla **lod.noip.me:101**
+  - [EU] Veroalla **lod.noip.me:102**
+  - [EU] Veroalla **lod.noip.me:103** (Without Bots)
   - [Brazil] Pupin's Server **lodpupin.no-ip.org:27016**
-  - [EU] Veroalla **lod.noip.me:1337**
 
 ###Starting a source1 server###
  - There is debugging help below in the `More SRCDS Setup Help` section, there is also a FAQ below
@@ -97,38 +92,6 @@ Legends of Dota
  - Mounting Legends of Dota
   - You will need to add "Game  |gameinfo_path|addons/lod" without quotes to the end of your `dota/gameinfo.txt` file, the end result is something like this
 
-
-            "GameInfo"
-            {
-                game    "DOTA 2"
-                gamelogo 1
-                type multiplayer_only
-                nomodels 1
-                nohimodel 1
-                nocrosshair 0
-                GameData        "dota.fgd"
-                SupportsDX8 0
-                FileSystem
-                {
-                    SteamAppId              816     // This will mount all the GCFs we need (240=CS:S, 220=HL2).
-                    ToolsAppId              211     // Tools will load this (ie: source SDK caches) to get things like materials\debug, materials\editor, etc.
-                    //
-                    // The code that loads this file automatically does a few things here:
-                    //
-                    // 1. For each "Game" search path, it adds a "GameBin" path, in <dir>\bin
-                    // 2. For each "Game" search path, it adds another "Game" path in front of it with _<langage    at the end.
-                    //    For example: c:\hl2\cstrike on a french machine would get a c:\hl2\cstrike_french path added to it.
-                    // 3. For the first "Game" search path, it adds a search path called "MOD".
-                    // 4. For the first "Game" search path, it adds a search path called "DEFAULT_WRITE_PATH".
-                    //
-                    //
-                    // Search paths are relative to the base directory, which is where hl2.exe is found.
-                    //
-                    // |gameinfo_path| points at the directory where gameinfo.txt is.
-                    // We always want to mount that directory relative to gameinfo.txt, so
-                    // people can mount stuff in c:\mymod, and the main game resources are in
-                    // someplace like c:\program files\valve\steam\steamapps\<username>\half-life 2.
-                    //
                     SearchPaths
                     {
                         GameBin             |gameinfo_path|addons/metamod/bin // This tells it to load metamod
@@ -259,3 +222,26 @@ Legends of Dota
  - You might need to save it as unicode, if non standard characters are used
  - Any strings you don't fill in, will be auto copied in from the english file anyways when the gamemode is compiled
  - Note to Ash47: You need to add new languages to the `stage.bat` file!
+
+  ###How do I toggle between skill sets?###
+ - This can be done only when the slot count is more than 6
+ - The following console commands exist
+  - `lod_toggle_set` Which simply toggles between the sets
+  - `lod_show_set` Which takes either 0 or 1 as an argument, and will show that set
+ - There is also a button located on the GUI to toggle the slots
+
+###Current Features###
+ - Picking Interface
+ - Basic Option Selection Interfacemet
+ - Option to have between 0 and 6 ultimate abilities
+ - Option to change starting level
+ - Option to enable easy mode
+ - Option to hide enemy team's draft from the picking screen (This is hard to implement)
+ - Option to select number of skills to ban and allow only host to ban skills
+ - Limited Wraith Night Skills
+ - Limited Neutral Skills
+ - Game Variants
+  - All Pick, provides the full hero pool
+  - Single Draft, everyone gets a random choice of 10 heroes (You can only use the skills from these heroes)
+  - Mirror Draft, both teams get the same hero pool
+  - All Random, everyone gets a random hero and random spells
