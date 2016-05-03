@@ -117,7 +117,7 @@ function prepareLanguageFiles(next) {
 
         for(var key in toUse) {
             // If the dota language has the ability and our addon is a warning
-            if(checkForWarning(key, langIn[lang]){
+            if(checkForWarning(key, langIn[lang])){
                 // Then add the warning to the abilities description
                 addWarning(key, toUse[key], langIn[lang]);
             }else if(!langIn[lang][key]) {
@@ -132,7 +132,7 @@ function prepareLanguageFiles(next) {
     if(next) next();
 }
 
-function checkForWarning(key, lang[]) {
+function checkForWarning(key, lang) {
     //Check the addon key is a warning
     if(key.substring(0,8) == "warning_"){
         var ability = "DOTA_Tooltip_ability_" + key.substring(8);
@@ -144,9 +144,9 @@ function checkForWarning(key, lang[]) {
     return false;
 }
 
-function addWarning(key, value, lang[]) {
+function addWarning(key, value, lang) {
     var abilityDsecriptionKey = "DOTA_Tooltip_ability_" + key.substring(8) + "_Description";
-    lang[abilityDsecription] += "\n" + value;
+    lang[abilityDsecriptionKey] += "\n" + value;
 }
 
 /*
