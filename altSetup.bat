@@ -1,9 +1,4 @@
 :: -- Compile the scripts --
-::call compile.bat
-
-:: -- Stage source2 binaries --
-
-:: Cleanup the old copy of it
 
 :: Create directory structure
 mkdir "alt_dota"
@@ -13,7 +8,7 @@ mkdir "alt_dota\game\resource"
 mkdir "alt_dota\game\scripts\npc"
 mkdir "alt_dota\game\panorama"
 
-::mkdir "alt_dota\game\maps"
+mkdir "alt_dota\game\maps"
 
 ::mklink /D /J "alt_dota\game\maps" "maps"
 xcopy /s maps alt_dota\game\maps\ /Y
