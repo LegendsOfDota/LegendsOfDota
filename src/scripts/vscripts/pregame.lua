@@ -4371,7 +4371,7 @@ function Pregame:fixSpawningIssues()
 
                 -- Handle free scepter stuff
                 if OptionManager:GetOption('freeScepter') then
-                    spawnedUnit:AddNewModifier(spawnedUnit, nil, 'modifier_item_ultimate_scepter', {
+                    spawnedUnit:AddNewModifier(spawnedUnit, nil, 'modifier_item_ultimate_scepter_consumed', {
                         bonus_all_stats = 0,
                         bonus_health = 0,
                         bonus_mana = 0
