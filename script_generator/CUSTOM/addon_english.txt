@@ -382,6 +382,26 @@
 		"warning_abyssal_underlord_firestorm"			"<br><font color=\"#FF4949\">LoD Warning:</font> Pitlord's abilities have no in-game graphics.<br>"
 		
 		"warning_abyssal_underlord_pit_of_malice"			"<br><font color=\"#FF4949\">LoD Warning:</font> Pitlord's abilities have no in-game graphics.<br>"
+		
+		"warning_meepo_divided_we_stand"			"<br><font color=\"#FF4949\">LoD Warning:</font> If a clone is killed, death timer percentage reductions will not apply.<br>"
+	
+		"warning_invoker_alacrity_lod" "<br><font color=\"#FF4949\">LoD Warning:</font> Aghanim's Scepter will set this ability to its level 1 version.<br>"
+		
+		"warning_invoker_chaos_meteor_lod" "<br><font color=\"#FF4949\">LoD Warning:</font> Aghanim's Scepter will set this ability to its level 1 version.<br>"
+		
+		"warning_invoker_cold_snap_lod" "<br><font color=\"#FF4949\">LoD Warning:</font> Aghanim's Scepter will set this ability to its level 1 version.<br>"
+		
+		"warning_invoker_emp_lod" "<br><font color=\"#FF4949\">LoD Warning:</font> Aghanim's Scepter will set this ability to its level 1 version.<br>"
+		
+		"warning_invoker_forge_spirit_lod" "<br><font color=\"#FF4949\">LoD Warning:</font> Aghanim's Scepter will set this ability to its level 1 version.<br>"
+		
+		"warning_invoker_ghost_walk_lod" "<br><font color=\"#FF4949\">LoD Warning:</font> Aghanim's Scepter will set this ability to its level 1 version.<br>"
+		
+		"warning_invoker_ice_wall_lod" "<br><font color=\"#FF4949\">LoD Warning:</font> Aghanim's Scepter will set this ability to its level 1 version.<br>"
+		
+		"warning_invoker_sun_strike_lod" "<br><font color=\"#FF4949\">LoD Warning:</font> Aghanim's Scepter will set this ability to its level 1 version.<br>"
+		
+		"warning_invoker_tornado_lod" "<br><font color=\"#FF4949\">LoD Warning:</font> Aghanim's Scepter will set this ability to its level 1 version.<br>"
 
 		/////////////////
 		// Picking Messages
