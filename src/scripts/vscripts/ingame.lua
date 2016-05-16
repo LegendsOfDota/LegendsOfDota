@@ -184,67 +184,48 @@ end
 
 -- Respawn modifier
 function Ingame:handleRespawnModifier()
-    ListenToGameEvent('entity_killed', function(keys)
-        -- Ensure our respawn modifier is in effect
+        ListenToGameEvent('entity_killed', function(keys)
         local respawnModifierPercentage = OptionManager:GetOption('respawnModifierPercentage')
         local respawnModifierConstant = OptionManager:GetOption('respawnModifierConstant')
         if respawnModifierPercentage == 100 and respawnModifierConstant == 0 then return end
 
-        -- Grab the killed entitiy (it isn't nessessarily a hero!)
-        local hero = EntIndexToHScript(keys.entindex_killed)
-
-        -- Ensure it is a hero
-        if IsValidEntity(hero) then
-            if hero:IsHero() then
-                -- Ensure we are not using aegis!
-                if hero:WillReincarnate() then return end
-                if hero:IsReincarnating() then return end
-                if hero:HasItemInInventory('item_aegis') then return end
-
-                -- Only apply respawn modifiers to the main hero
-                local playerID = hero:GetPlayerID()
-                local mainHero = PlayerResource:GetSelectedHeroEntity(playerID)
-                if hero == mainHero then
-                    Timers:CreateTimer(function()
-                        if IsValidEntity(hero) and not hero:IsAlive() then
-                            -- Ensure we are not using aegis!
-                            if hero:WillReincarnate() then return end
-                            if hero:IsReincarnating() then return end
-                            if hero:HasItemInInventory('item_aegis') then return end
-
-                            local timeLeft = hero:GetRespawnTime()
-
-                            timeLeft = timeLeft * respawnModifierPercentage / 100 + respawnModifierConstant
-
-                            if timeLeft <= 0 then
-                                timeLeft = 1
-                            end
-
-                            --[[if respawnModifier < 0 then
-                                timeLeft = -respawnModifier
-                            else
-                                timeLeft = timeLeft / respawnModifier
-                            end]]
-
-                            -- Set the time left until we respawn
-                            hero:SetTimeUntilRespawn(timeLeft)
-
-                            -- Check if we have any meepo clones
-                            if hero:HasAbility('meepo_divided_we_stand') then
+        local hero = EntIndexToHScript(keys.entindex_killed)		
+		
+		--Check to see if killed entity has respawn time. 
+		if (type(hero.GetRespawnTime) == "function") then	
+			    Timers:CreateTimer(function()
+				local timeLeft = hero:GetRespawnTime()
+	            timeLeft = timeLeft * respawnModifierPercentage / 100 + respawnModifierConstant
+				if timeLeft <= 0 then
+					timeLeft = 1
+				end
+											
+				--Check if has meepo ultimate, if so, loop through all copies incl original and set respawn time
+				if hero:HasAbility('meepo_divided_we_stand') then
+								local playerID = hero:GetPlayerID()
                                 local clones = Entities:FindAllByName(hero:GetClassname())
-
                                 for k,meepoClone in pairs(clones) do
-                                    if meepoClone:IsClone() and playerID == meepoClone:GetPlayerID() then
-                                        meepoClone:SetTimeUntilRespawn(timeLeft)
+                                    if playerID == meepoClone:GetPlayerID() then
+										meepoClone:SetTimeUntilRespawn(timeLeft)
+										if meepoClone:IsReincarnating() then meepoClone:SetTimeUntilRespawn(3)  end
+										if meepoClone:WillReincarnate() then meepoClone:SetTimeUntilRespawn(3)  end
+
                                     end
                                 end
+							return
                             end
-                        end
-                    end, DoUniqueString('respawn'), 0.1)
-                end
-            end
-        end
-    end, nil)
+				
+				--Check for reincarnation	
+				if hero:IsReincarnating() then return end
+				if hero:WillReincarnate() then return end	
+				
+				hero:SetTimeUntilRespawn(timeLeft)
+								
+	        end, DoUniqueString('respawn'), .1)
+		else
+			--No Respawn time, not a hero. 
+		end
+		end, nil)
 end
 
 -- Init gold balancer
