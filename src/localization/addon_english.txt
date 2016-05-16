@@ -439,6 +439,7 @@
     "warning_invoker_tornado_lod" "<font color=\"#FF4949\">LoD Warning:</font> Aghanim's Scepter will lock this ability to its level 1 version."
     "warning_silencer_glaives_of_wisdom" "<font color=\"#FF4949\">LoD Warning:</font> Silencer's Intelligence Steal Ability is part of this ability."
     "warning_elder_titan_ancestral_spirit" "<font color=\"#FF4949\">LoD Warning:</font> The astral spirit wont have <font color=\"#70EA72\">Natural Order</font>" or <font color=\"#70EA72\">Echo Stomp</font>", unless you also have it."
+    "warning_tiny_grow_lod" "<font color=\"#FF4949\">LoD Warning:</font> You might need to buy an item, level up this skill, or respawn for the scepter upgrade to work.\nBuying an item and selling it will work.\nCheck the modifier to verify you have the upgrade."
 
 
     /////////////////
@@ -447,7 +448,7 @@
 
     // tiny
     "DOTA_Tooltip_ability_tiny_grow_lod"                                                "Grow"
-    "DOTA_Tooltip_ability_tiny_grow_lod_Description"                                    "Tiny gains craggy mass that increases his power at the cost of his attack speed. Improves movement speed.\n\nUpgradable by Aghanim's Scepter.\n\n<font color='#70EA72'>You might need to buy an item, level up this skill, or respawn for the scepter upgrade to work.\nBuying an item and selling it will work.\n\nCheck the modifier to verify you have the upgrade.</font>"
+    "DOTA_Tooltip_ability_tiny_grow_lod_Description"                                    "Tiny gains craggy mass that increases his power at the cost of his attack speed. Improves movement speed.\n\nUpgradable by Aghanim's Scepter."
     "DOTA_Tooltip_ability_tiny_grow_lod_Lore"                                           "Watching a hill become a mountain is awe-inspiring - especially if the mountain begins laying waste to adversaries."
     "DOTA_Tooltip_ability_tiny_grow_lod_Note0"                                          "Cleave damage is reduced by armor type but not by armor value."
     "DOTA_Tooltip_ability_tiny_grow_lod_Note1"                                          "Cleave damage goes through spell immunity."
