@@ -1138,6 +1138,26 @@ function hookTabChange(tabName, callback) {
     onLoadTabHook[tabName] = callback;
 }
 
+// Makes hero info appear when you hover the panel that is parsed in
+function hookHeroInfo(panel) {
+    // Show
+    panel.SetPanelEvent('onmouseover', function() {
+        var heroName = panel.GetAttributeString('heroName', '');
+        var info = heroData[heroName];
+
+        var displayNameTitle = $.Localize(heroName);
+        var heroStats = GenerateFormattedHeroStatsString(info);
+
+        $.DispatchEvent('DOTAShowTitleTextTooltipStyled', panel, displayNameTitle, heroStats, "testStyle");
+        //$.DispatchEvent('DOTAShowHeroStatsTooltip', string heroName, uint8 styleIndex, int32 heroID);
+    });
+
+    // Hide
+    panel.SetPanelEvent('onmouseout', function() {
+        $.DispatchEvent('DOTAHideTitleTextTooltip');
+    });
+}
+
 // Makes skill info appear when you hover the panel that is parsed in
 function hookSkillInfo(panel) {
     // Show
@@ -1751,6 +1771,7 @@ function buildHeroList() {
 
                 // Create the panel
                 var newPanel = $.CreatePanel('DOTAHeroImage', container, 'heroSelector_' + heroName);
+                hookHeroInfo(newPanel);
                 newPanel.SetAttributeString('heroName', heroName);
                 newPanel.heroname = heroName;
                 newPanel.heroimagestyle = 'portrait';
@@ -2127,6 +2148,7 @@ function toggleShowDraftSkills() {
 
 // Makes the given hero container selectable
 function makeHeroSelectable(heroCon) {
+
     heroCon.SetPanelEvent('onactivate', function() {
         var heroName = heroCon.GetAttributeString('heroName', '');
         if(heroName == null || heroName.length <= 0) return;
@@ -2150,7 +2172,7 @@ function makeHeroSelectable(heroCon) {
         displayPanel.SetAttributeString('heroName', heroName);
 
         // Hide skill info
-        $.DispatchEvent('DOTAHideAbilityTooltip');
+        $.DispatchEvent('DOTAHideTitleTextTooltip');
 
         // Highlight drop cell
         $('#pickingPhaseSelectedHeroImage').SetHasClass('lodSelectedDrop', true)
@@ -3627,6 +3649,40 @@ function OnTeamPlayerListChanged() {
             OnTeamPlayerListChanged();
         }
     });
+}
+
+//--------------------------------------------------------------------------------------------------
+//Generate formatted string of Hero stats from sent
+//--------------------------------------------------------------------------------------------------
+function GenerateFormattedHeroStatsString( info ) {
+
+    var heroStats = '';
+    heroStats += '<font color=\'#7C7C7C\'>_____________________________________</font><br>';
+    heroStats += '<font color=\'#FFFFFF\'>DAMAGE:</font> <font color=\'#7C7C7C\'>' + info.AttackDamageMin + '-' + info.AttackDamageMax + '</font><br>';
+    heroStats += '<font color=\'#FFFFFF\'>ARMOR:</font> <font color=\'#7C7C7C\'>' + '<br>';
+    heroStats += '<font color=\'#FFFFFF\'>ATTACK POINT:</font> <font color=\'#7C7C7C\'>' + '<br>';
+    heroStats += '<font color=\'#FFFFFF\'>BASE ATTACK TIME:</font> <font color=\'#7C7C7C\'>' + parseFloat(Math.round(info.AttackRate * 10) / 10).toFixed(1) + '<br>';
+    heroStats += '<font color=\'#00FF83\'>BASE HP REGEN: ' + '</font><br>';
+    heroStats += '<font color=\'#7C7C7C\'>_____________________________________</font><br>';
+
+    heroStats += ((info.AttributePrimary == 'DOTA_ATTRIBUTE_STRENGTH') ? '<font color=\'#FF0000\'>' : '<font color=\'#B6E002\'>') + 'STRENGTH:</font> <font color=\'#7C7C7C\'>' + info.AttributeBaseStrength + ' + ' + parseFloat(Math.round(info.AttributeStrengthGain * 10) / 10).toFixed(1) + '</font><br>';
+    heroStats += ((info.AttributePrimary == 'DOTA_ATTRIBUTE_AGILITY') ? '<font color=\'#FF0000\'>' : '<font color=\'#B6E002\'>') + 'AGILITY:</font> <font color=\'#7C7C7C\'>' + info.AttributeBaseAgility + ' + ' + parseFloat(Math.round(info.AttributeAgilityGain * 10) / 10).toFixed(1) + '</font><br>';
+    heroStats += ((info.AttributePrimary == 'DOTA_ATTRIBUTE_INTELLECT') ? '<font color=\'#FF0000\'>' : '<font color=\'#B6E002\'>') + 'INTELLIGENCE:</font> <font color=\'#7C7C7C\'>' + info.AttributeBaseIntelligence + ' + ' + parseFloat(Math.round(info.AttributeIntelligenceGain * 10) / 10).toFixed(1) + '</font><br>';
+    heroStats += '<br>';
+
+    var startingAttributes = info.AttributeBaseStrength + info.AttributeBaseAgility + info.AttributeBaseIntelligence;
+    var attributesPerLevel = info.AttributeStrengthGain + info.AttributeAgilityGain + info.AttributeIntelligenceGain;
+    attributesPerLevel = parseFloat(Math.round(attributesPerLevel * 10) / 10).toFixed(1);
+
+    heroStats += '<font color=\'#CF6700\'>TOTAL STARTING ATTRIBUTES:</font> <font color=\'#7C7C7C\'>' + startingAttributes + '</font><br>';
+    heroStats += '<font color=\'#CF6700\'>TOTAL ATTRIBUTES PER LEVEL:</font> <font color=\'#7C7C7C\'>' + attributesPerLevel + '</font><br>';
+    heroStats += '<font color=\'#7C7C7C\'>____________________________________</font><br>';
+    heroStats += '<font color=\'#FFFFFF\'>ATTACK RANGE:</font> <font color=\'#7C7C7C\'>' + info.AttackRange + '<br>';
+    heroStats += '<font color=\'#FFFFFF\'>MOVEMENT SPEED:</font> <font color=\'#7C7C7C\'>' + info.MovementSpeed + '<br>';
+
+    //MISSING / ?? heroStats += 'UNIQUE MECHANIC: ';
+
+    return heroStats;
 }
 
 //--------------------------------------------------------------------------------------------------
