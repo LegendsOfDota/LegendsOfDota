@@ -277,7 +277,10 @@
     "hintEmpoweringHaste"                           "Empowering Haste and Thirst make for a lethal combination!"
     "hintInfestHacks"                               "Many spells such as Pudge's Rot and Witch Doctor's Voodoo Restoration won't damage you, or cost mana when you infest another hero."
     "hintSuggestBuild"                              "Do you know a good build? Submit it and it may be added to the recommended builds sections."
-
+    "hintBreakPassives"                             "Silver Edge, Doom and Demonic Purge are the only ways to disable enemy passives - which can be very useful against passive-heavy heroes, such as Tanks."
+    "hintInnateAbilities"                           "Night Stalker, Gyrocopter, Elazor and Meepo will benefit from Aghanim's Scepter Upgrade, irrespective of their chosen abilities."
+    "hintReport"                                    "Please report Bugs and Troll Combos so that LoD can continue to improve! Use the Steam Workshop page or the GitHub page to make your reports."
+    
     // Hero builder
     "finishBanning"                                 "Finish Banning"
     "unlockBuild"                                   "Unlock Build"
@@ -406,7 +409,8 @@
     "warning_keeper_of_the_light_spirit_form"   "<font color=\"#FF4949\">LoD Warning:</font> Will not give additional abilities.<br><font color=\"#FF4949\">LoD Hero Requirement:</font> You have to play as <font color=\"#70EA72\">Elazor</font> to get Aghanim's Scepter bonuses."
     "warning_life_stealer_infest"               "<font color=\"#FF4949\">LoD Warning:</font> Requires <font color=\"#70EA72\">Consume</font>, if you want to uninfest."
     "warning_night_stalker_darkness"                "<font color=\"#FF4949\">LoD Hero Requirement:</font> You have to play as <font color=\"#70EA72\">Night Stalker</font> to get the unobstructed vision bonus from Aghanim's Scepter."
-    "warning_lone_druid_true_form"              "<font color=\"#FF4949\">LoD Warning:</font> Requires picking a ranged hero or else you will not be able to attack."
+    "warning_lone_druid_true_form"              "<font color=\"#FF4949\">LoD Hero Requirement:</font> Requires picking a hero with more than 400 range or else you will be unable to attack."
+    "troll_warlord_berserkers_rage"              "<font color=\"#FF4949\">LoD Hero Requirement:</font> Requires picking a hero with more than 350 range or else you will be unable to attack."
     "warning_puck_illusory_orb"                 "<font color=\"#FF4949\">LoD Warning:</font> Requires <font color=\"#70EA72\">Ethereal Jaunt</font>, if you want to teleport to your orb."
     "warning_luna_eclipse"                      "<font color=\"#FF4949\">LoD Warning:</font> This spell does no damage without <font color=\"#70EA72\">Lucent Beam.</font>"
     "warning_lone_druid_spirit_bear"            "<font color=\"#FF4949\">LoD Hero Requirement:</font> Bear Icon will not appear on the left side of the screen unless you play as <font color=\"#70EA72\">Lone Druid.</font>"
@@ -434,7 +438,14 @@
     "warning_invoker_ice_wall_lod" "<font color=\"#FF4949\">LoD Warning:</font> Aghanim's Scepter will lock this ability to its level 1 version."
     "warning_invoker_sun_strike_lod" "<font color=\"#FF4949\">LoD Warning:</font> Aghanim's Scepter will lock this ability to its level 1 version."
     "warning_invoker_tornado_lod" "<font color=\"#FF4949\">LoD Warning:</font> Aghanim's Scepter will lock this ability to its level 1 version."
-
+    "warning_silencer_glaives_of_wisdom" "<font color=\"#FF4949\">LoD Warning:</font> Silencer's Intelligence Steal Ability is part of this ability."
+    "warning_elder_titan_ancestral_spirit" "<font color=\"#FF4949\">LoD Warning:</font> The astral spirit wont have <font color=\"#70EA72\">Natural Order</font>" or <font color=\"#70EA72\">Echo Stomp</font>", unless you also have it."
+    "warning_skeleton_king_reincarnation" "<font color=\"#FF4949\">LoD Warning:</font> Sometimes the 3 second reincarnation time will be replaced with the default respawn time. This is a bug."
+	"warning_shredder_chakram_2" "<font color=\"#FF4949\">LoD Warning:</font> Requires original <font color=\"#70EA72\">Chakram.</font>"
+	"warning_shadow_demon_shadow_poison_release" "<font color=\"#FF4949\">LoD Warning:</font> Requires <font color=\"#70EA72\">Shadow Poison.</font>"
+	"warning_nevermore_requiem" "<font color=\"#FF4949\">LoD Warning:</font> Requires <font color=\"#70EA72\">Necromastery</font> and stored souls to do damage."	
+	"warning_templar_assassin_trap" "<font color=\"#FF4949\">LoD Warning:</font> Requires <font color=\"#70EA72\">Psionic Trap.</font>"	
+	"warning_templar_assassin_psionic_trap" "<font color=\"#FF4949\">LoD Warning:</font> If you don't have <font color=\"#70EA72\">Trap</font>, you will have to manually activate traps."	
 
     /////////////////
     // CUSTOM ABILITIES

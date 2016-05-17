@@ -66,14 +66,23 @@ function onGetPlayerStats(table_name, key, data) {
         img: 'file://{images}/spellicons/witch_doctor_voodoo_restoration.png',
         txt: '#hintInfestHacks'
     }, {
-        img: 'file://{images}/spellicons/invoker_empty1.png',
+        img: 'file://{images}/items/gem.png',
         txt: '#hintSuggestHint'
     }, {
         img: 'file://{images}/custom_game/hints/hint_empowering_haste.png',
         txt: '#hintEmpoweringHaste'
     }, {
-        img: 'file://{images}/spellicons/invoker_empty1.png',
+        img: 'file://{images}/items/recipe.png',
         txt: '#hintSuggestBuild'
+    }, {
+        img: 'file://{images}/items/silver_edge.png',
+        txt: '#hintBreakPassives'
+    }, {
+        img: 'file://{images}/spellicons/night_stalker_darkness.png',
+        txt: '#hintInnateAbilities'
+    }, {
+        img: 'file://{images}/spellicons/weaver_the_swarm.png',
+        txt: '#hintReport'
     }];
 
     // How long to wait before we show the next tip
