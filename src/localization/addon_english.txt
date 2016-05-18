@@ -280,7 +280,7 @@
     "hintBreakPassives"                             "Silver Edge, Doom and Demonic Purge are the only ways to disable enemy passives - which can be very useful against passive-heavy heroes, such as Tanks."
     "hintInnateAbilities"                           "Night Stalker, Gyrocopter, Elazor and Meepo will benefit from Aghanim's Scepter Upgrade, irrespective of their chosen abilities."
     "hintReport"                                    "Please report Bugs and Troll Combos so that LoD can continue to improve! Use the Steam Workshop page or the GitHub page to make your reports."
-    
+
     // Hero builder
     "finishBanning"                                 "Finish Banning"
     "unlockBuild"                                   "Unlock Build"
@@ -402,6 +402,37 @@
     "statAbandonLessThanDay"                        "About {0} hours ago"
     "statAbandonMoreThanOneDay"                     "About {0} days ago"
 
+    //Hero Stats
+
+    "heroStats_Damage"                              "DAMAGE"
+    "heroStats_Armor"                               "ARMOR"
+    "heroStats_attackPoints"                        "ATTACK POINT"
+    "heroStats_baseAttackTime"                      "BASE ATTACK TIME"
+    "heroStats_baseHPRegen"                         "BASE HP REGEN"
+
+    "heroStats_strength"                            "STRENGTH"
+    "heroStats_agility"                             "AGILITY"
+    "heroStats_intelligence"                        "INTELLIGENCE"
+
+    "heroStats_attributes_starting"                 "TOTAL STARTING ATTRIBUTES"
+    "heroStats_attributes_perLevel"                 "TOTAL ATTRIBUTES PER LEVEL"
+
+    "heroStats_attackRange"                         "ATTACK RANGE"
+    "heroStats_movementSpeed"                       "MOVEMENT SPEED"
+
+    "heroStats_uniqueMechanic"                      "UNIQUE MECHANIC"
+
+    /////////////////
+    // UNIQUE HERO MECHANICS
+    ////////////////
+
+    "unique_mechanic_meepo"                         "<font color=\"#70EA72\">Aghnamin's Scepter</font><br> will give you this hero a <font color=\"#70EA72\">free clone.</font>"
+    "unique_mechanic_night_stalker"                 "<font color=\"#70EA72\">Aghnamin's Scepter</font><br> will give you this hero <font color=\"#70EA72\">unobstructed night<br> vision.</font>"
+    "unique_mechanic_gyrocopter"                    "<font color=\"#70EA72\">Aghnamin's Scepter</font><br> will give you this hero a <font color=\"#70EA72\">side gunner.</font>"
+    "unique_mechanic_keeper_of_the_light"           "<font color=\"#70EA72\">Aghnamin's Scepter</font><br> will give you this hero <font color=\"#70EA72\">unobstructed day<br> vision.</font>"
+    "unique_mechanic_alchemist"                     "This hero can <font color=\"#70EA72\">gift<br> Aghnamin's Scepters</font>"
+    "unique_mechanic_faceless_void"                 "This hero can <font color=\"#70EA72\">move<br> freely in friendly and enemy chronospheres</font>"
+
     /////////////////
     // Skill Warnings
     ////////////////
@@ -439,13 +470,13 @@
     "warning_invoker_sun_strike_lod" "<font color=\"#FF4949\">LoD Warning:</font> Aghanim's Scepter will lock this ability to its level 1 version."
     "warning_invoker_tornado_lod" "<font color=\"#FF4949\">LoD Warning:</font> Aghanim's Scepter will lock this ability to its level 1 version."
     "warning_silencer_glaives_of_wisdom" "<font color=\"#FF4949\">LoD Warning:</font> Silencer's Intelligence Steal Ability is part of this ability."
-    "warning_elder_titan_ancestral_spirit" "<font color=\"#FF4949\">LoD Warning:</font> The astral spirit wont have <font color=\"#70EA72\">Natural Order</font>" or <font color=\"#70EA72\">Echo Stomp</font>", unless you also have it."
+    "warning_elder_titan_ancestral_spirit" "<font color=\"#FF4949\">LoD Warning:</font> The astral spirit wont have <font color=\"#70EA72\">Natural Order</font> or <font color=\"#70EA72\">Echo Stomp</font>, unless you also have it."
     "warning_skeleton_king_reincarnation" "<font color=\"#FF4949\">LoD Warning:</font> Sometimes the 3 second reincarnation time will be replaced with the default respawn time. This is a bug."
 	"warning_shredder_chakram_2" "<font color=\"#FF4949\">LoD Warning:</font> Requires original <font color=\"#70EA72\">Chakram.</font>"
 	"warning_shadow_demon_shadow_poison_release" "<font color=\"#FF4949\">LoD Warning:</font> Requires <font color=\"#70EA72\">Shadow Poison.</font>"
-	"warning_nevermore_requiem" "<font color=\"#FF4949\">LoD Warning:</font> Requires <font color=\"#70EA72\">Necromastery</font> and stored souls to do damage."	
-	"warning_templar_assassin_trap" "<font color=\"#FF4949\">LoD Warning:</font> Requires <font color=\"#70EA72\">Psionic Trap.</font>"	
-	"warning_templar_assassin_psionic_trap" "<font color=\"#FF4949\">LoD Warning:</font> If you don't have <font color=\"#70EA72\">Trap</font>, you will have to manually activate traps."	
+	"warning_nevermore_requiem" "<font color=\"#FF4949\">LoD Warning:</font> Requires <font color=\"#70EA72\">Necromastery</font> and stored souls to do damage."
+	"warning_templar_assassin_trap" "<font color=\"#FF4949\">LoD Warning:</font> Requires <font color=\"#70EA72\">Psionic Trap.</font>"
+	"warning_templar_assassin_psionic_trap" "<font color=\"#FF4949\">LoD Warning:</font> If you don't have <font color=\"#70EA72\">Trap</font>, you will have to manually activate traps."
 
     /////////////////
     // CUSTOM ABILITIES
