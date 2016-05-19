@@ -1,0 +1,23 @@
+<root>
+	<styles>
+		<include src="file://{resources}/styles/custom_game/team_switch.css" />
+	</styles>
+	<scripts>
+		<include src="file://{resources}/scripts/team_switch.js" />
+	</scripts>
+	<Panel hittest="false" class='TeamSwitchRoot'>
+		<Image id="TeamSwitch_CloseButton" onactivate="CloseTeamSwitch()" />
+		<Panel id='TeamSwitch_Panel' onactivate="ShowTeamSwitch()">
+			<Image id="Player1_Icon"  src="file://{images}/custom_game/heroes/test.png" onactivate="AttemptTeamSwitch()" />
+			<Label id="Player1_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
+            <Image id="Player2_Icon"  src="file://{images}/custom_game/heroes/test.png" onactivate="AttemptTeamSwitch()"/>
+			<Label id="Player2_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
+            <Image id="Player3_Icon"  src="file://{images}/custom_game/heroes/test.png" onactivate="AttemptTeamSwitch()"/>
+			<Label id="Player3_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
+            <Image id="Player4_Icon"  src="file://{images}/custom_game/heroes/test.png" onactivate="AttemptTeamSwitch()"/>
+			<Label id="Player4_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
+            <Image id="Player5_Icon"  src="file://{images}/custom_game/heroes/test.png" onactivate="AttemptTeamSwitch()"/>
+			<Label id="Player5_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
+		</Panel>
+	</Panel>
+</root>
