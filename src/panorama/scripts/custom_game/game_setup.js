@@ -3702,46 +3702,53 @@ function generateFormattedHeroStatsString(heroName, info) {
         var agiGain = stringToDecimalPlaces(info.AttributeAgilityGain);
         var intGain = stringToDecimalPlaces(info.AttributeIntelligenceGain);
 
-        // Attack Related Status
+        // Essentials
         heroStats += seperator;
-
-        heroStats += heroStatsLine('heroStats_damage', info.AttackDamageMin + '-' + info.AttackDamageMax);
-        heroStats += heroStatsLine('heroStats_attackRange', info.AttackRange);
-        
-        heroStats += heroStatsLine('heroStats_attackRate', stringToDecimalPlaces(info.AttackRate));
-        heroStats += heroStatsLine('heroStats_attackAnimationPoint', stringToDecimalPlaces(info.AttackAnimationPoint));
-        heroStats += heroStatsLine('heroStats_projectileSpeed', info.ProjectileSpeed);
-
-        // Health and Mana
-        heroStats += seperator;
-
-        heroStats += heroStatsLine('heroStats_baseHealth', info.StatusHealth);
-        heroStats += heroStatsLine('heroStats_baseHealthRegen', stringToDecimalPlaces(info.StatusHealthRegen));
-        heroStats += heroStatsLine('heroStats_baseMana', info.StatusMana);
-        heroStats += heroStatsLine('heroStats_baseManaRegen', stringToDecimalPlaces(info.StatusManaRegen));
-        heroStats += heroStatsLine('heroStats_armor', info.ArmorPhysical);
-        heroStats += heroStatsLine('heroStats_magicalResistance', info.MagicalResistance);
-
+    	heroStats += heroStatsLine('heroStats_movementSpeed', info.MovementSpeed);
+    	heroStats += heroStatsLine('heroStats_attackRange', info.AttackRange);
+    	heroStats += heroStatsLine('heroStats_armor', info.ArmorPhysical);
+        heroStats += heroStatsLine('heroStats_damage', info.AttackDamageMin + '-' + info.AttackDamageMax);     
+                 	        
         // Attribute Stats
         heroStats += seperator;
-
         heroStats += heroStatsLine('heroStats_strength', info.AttributeBaseStrength + ' + ' + strGain, strColor);
         heroStats += heroStatsLine('heroStats_agility', info.AttributeBaseAgility + ' + ' + agiGain, agiColor);
         heroStats += heroStatsLine('heroStats_intelligence', info.AttributeBaseIntelligence + ' + ' + intGain, intColor);
-
         heroStats += '<br>';
 
         heroStats += heroStatsLine('heroStats_attributes_starting', startingAttributes, 'F9891A');
         heroStats += heroStatsLine('heroStats_attributes_perLevel', attributesPerLevel, 'F9891A');
-        
-        // General Hero Stats
+	
+        // Advanced
         heroStats += seperator;
-
-        heroStats += heroStatsLine('heroStats_movementSpeed', info.MovementSpeed);
-        heroStats += heroStatsLine('heroStats_turnrate', stringToDecimalPlaces(info.MovementTurnRate));
-        heroStats += heroStatsLine('heroStats_visionDay', info.VisionDaytimeRange);
-        heroStats += heroStatsLine('heroStats_visionNight', info.VisionNighttimeRange);
-        heroStats += heroStatsLine('heroStats_ringRadius', info.RingRadius);
+    	heroStats += heroStatsLine('heroStats_attackRate', stringToDecimalPlaces(info.AttackRate));
+    	heroStats += heroStatsLine('heroStats_attackAnimationPoint', stringToDecimalPlaces(info.AttackAnimationPoint));
+    	heroStats += heroStatsLine('heroStats_turnrate', stringToDecimalPlaces(info.MovementTurnRate));
+	
+    	if(stringToDecimalPlaces(info.StatusHealthRegen) != 0.25) {
+            heroStats += heroStatsLine('heroStats_baseHealthRegen', stringToDecimalPlaces(info.StatusHealthRegen));
+        }
+        	
+    	if(stringToDecimalPlaces(info.StatusManaRegen) != 0.01) {
+            heroStats += heroStatsLine('heroStats_baseManaRegen', stringToDecimalPlaces(info.StatusManaRegen));  
+        }	
+        				
+    	if(info.ProjectileSpeed != 900 && info.ProjectileSpeed != 0) {
+            heroStats += heroStatsLine('heroStats_projectileSpeed', info.ProjectileSpeed);
+        }
+	          	
+    	if(info.VisionDaytimeRange != 1800) {
+            heroStats += heroStatsLine('heroStats_visionDay', info.VisionDaytimeRange);
+        }
+        	
+        if(info.VisionNighttimeRange != 800) {
+            heroStats += heroStatsLine('heroStats_visionNight', info.VisionNighttimeRange);
+        }
+	
+    	if(info.RingRadius != 70) {
+            heroStats += heroStatsLine('heroStats_ringRadius', info.RingRadius);
+        }
+        	
     }
 
     // Unique Mechanics
