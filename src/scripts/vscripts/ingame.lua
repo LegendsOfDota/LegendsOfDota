@@ -15,6 +15,7 @@ function Ingame:init()
 
     -- Setup standard rules
     GameRules:GetGameModeEntity():SetTowerBackdoorProtectionEnabled(true)
+    CustomGameEventManager:RegisterListener( "balancePlayer", Ingame:balancePlayer )
 
     -- Precache orgre magi stuff
     PrecacheUnitByNameAsync('npc_precache_npc_dota_hero_ogre_magi', function()

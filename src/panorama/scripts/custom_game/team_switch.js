@@ -47,7 +47,7 @@ function CheckConnectionStates() {
 
 function AttemptTeamSwitch(playerID) {
     if($("#Player"+num+"_Name").text == "DISCONNECTED"){
-        $.Ingame:balancePlayer(playerID, ((Players.GetTeam(playerID) == 0) ? 1 : 0));
-        $.Ingame:balancePlayer(Game.GetLocalPlayerInfo().player_id, ((Game.GetLocalPlayerInfo().player_team_id == 0) ? 1 : 0));
+        GameEvents.SendCustomGameEventToServer( "balancePlayer", playerID, ((Players.GetTeam(playerID) == 0) ? 1 : 0));
+        GameEvents.SendCustomGameEventToServer( "balancePlayer", Game.GetLocalPlayerInfo().player_id, ((Game.GetLocalPlayerInfo().player_team_id == 0) ? 1 : 0));
     }
 }
