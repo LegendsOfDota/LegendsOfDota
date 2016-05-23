@@ -12,6 +12,10 @@
 			<Label id="TeamSwitchDescription" text="Select a hero to switch teams with"/>
 
 			<Panel class= "ListDivider">
+				<DOTAHeroImage id="Player0_Icon" class="PlayerIcon" heroname="" heroimagestyle="landscape" />
+				<Label id="Player0_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
+			</Panel>
+			<Panel class= "ListDivider">
 				<DOTAHeroImage id="Player1_Icon" class="PlayerIcon" heroname="" heroimagestyle="landscape" />
 				<Label id="Player1_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
 			</Panel>
@@ -26,10 +30,6 @@
 			<Panel class= "ListDivider">
 				<DOTAHeroImage id="Player4_Icon" class="PlayerIcon" heroname="" heroimagestyle="landscape" />
 				<Label id="Player4_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
-			</Panel>
-			<Panel class= "ListDivider">
-				<DOTAHeroImage id="Player5_Icon" class="PlayerIcon" heroname="" heroimagestyle="landscape" />
-				<Label id="Player5_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
 			</Panel>
 		</Panel>
 	</Panel>
