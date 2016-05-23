@@ -15,7 +15,7 @@ function Ingame:init()
 
     -- Setup standard rules
     GameRules:GetGameModeEntity():SetTowerBackdoorProtectionEnabled(true)
-    CustomGameEventManager:RegisterListener( "balancePlayer", Ingame:balancePlayer )
+
 
     -- Precache orgre magi stuff
     PrecacheUnitByNameAsync('npc_precache_npc_dota_hero_ogre_magi', function()
@@ -95,6 +95,7 @@ function Ingame:balancePlayer(playerID, newTeam)
         end, DoUniqueString('respawn'), 0.11)
     end
 end
+CustomGameEventManager:RegisterListener( "balancePlayer", balancePlayer )
 
 -- Sets it to no team balancing is required
 function Ingame:setNoTeamBalanceNeeded()
