@@ -3,21 +3,34 @@
 		<include src="file://{resources}/styles/custom_game/team_switch.css" />
 	</styles>
 	<scripts>
-		<include src="file://{resources}/scripts/team_switch.js" />
+		<include src="file://{resources}/scripts/custom_game/team_switch.js" />
 	</scripts>
 	<Panel hittest="false" class='TeamSwitchRoot'>
-		<Image id="TeamSwitch_CloseButton" onactivate="CloseTeamSwitch()" />
-		<Panel id='TeamSwitch_Panel' onactivate="ShowTeamSwitch()">
-			<Image id="Player1_Icon"  src="file://{images}/custom_game/heroes/test.png" onactivate="AttemptTeamSwitch()" />
-			<Label id="Player1_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
-            <Image id="Player2_Icon"  src="file://{images}/custom_game/heroes/test.png" onactivate="AttemptTeamSwitch()"/>
-			<Label id="Player2_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
-            <Image id="Player3_Icon"  src="file://{images}/custom_game/heroes/test.png" onactivate="AttemptTeamSwitch()"/>
-			<Label id="Player3_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
-            <Image id="Player4_Icon"  src="file://{images}/custom_game/heroes/test.png" onactivate="AttemptTeamSwitch()"/>
-			<Label id="Player4_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
-            <Image id="Player5_Icon"  src="file://{images}/custom_game/heroes/test.png" onactivate="AttemptTeamSwitch()"/>
-			<Label id="Player5_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
+		<Button id="TeamSwitch_Button" onactivate="TeamSwitchButton()"/>
+		<Label id="TeamSwitch_ButtonTitle" text="Switch Teams" class="TeamSwitchButtonFont"/>
+		<Panel id='TeamSwitch_Panel' class="hidden">
+			<Label id="TeamSwitchDescription" text="Select a hero to switch teams with"/>
+
+			<Panel class= "ListDivider">
+				<DOTAHeroImage id="Player1_Icon" class="PlayerIcon" heroname="" heroimagestyle="landscape" />
+				<Label id="Player1_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
+			</Panel>
+			<Panel class= "ListDivider">
+				<DOTAHeroImage id="Player2_Icon" class="PlayerIcon" heroname="" heroimagestyle="landscape" />
+				<Label id="Player2_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
+			</Panel>
+			<Panel class= "ListDivider">
+				<DOTAHeroImage id="Player3_Icon" class="PlayerIcon" heroname="" heroimagestyle="landscape" />
+				<Label id="Player3_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
+			</Panel>
+			<Panel class= "ListDivider">
+				<DOTAHeroImage id="Player4_Icon" class="PlayerIcon" heroname="" heroimagestyle="landscape" />
+				<Label id="Player4_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
+			</Panel>
+			<Panel class= "ListDivider">
+				<DOTAHeroImage id="Player5_Icon" class="PlayerIcon" heroname="" heroimagestyle="landscape" />
+				<Label id="Player5_Name" text="PLAYER_NAME" class="PlayerNameFont" onactivate="AttemptTeamSwitch()"/>
+			</Panel>
 		</Panel>
 	</Panel>
 </root>
