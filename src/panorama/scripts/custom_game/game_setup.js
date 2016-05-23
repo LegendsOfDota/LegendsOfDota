@@ -3728,7 +3728,11 @@ function generateFormattedHeroStatsString(heroName, info) {
     	if(stringToDecimalPlaces(info.StatusHealthRegen) != 0.25) {
             heroStats += heroStatsLine('heroStats_baseHealthRegen', stringToDecimalPlaces(info.StatusHealthRegen));
         }
-        	
+        
+        if(info.MagicalResistance != 25) {
+            heroStats += heroStatsLine('heroStats_magicalResistance', info.MagicalResistance);  
+        }	
+        
     	if(stringToDecimalPlaces(info.StatusManaRegen) != 0.01) {
             heroStats += heroStatsLine('heroStats_baseManaRegen', stringToDecimalPlaces(info.StatusManaRegen));  
         }	
