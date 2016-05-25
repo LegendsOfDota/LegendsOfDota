@@ -7,6 +7,9 @@
 .hidden {
     visibility: collapse;
 }
+.disconnected {
+    color: #ff0000 !important;
+}
 
 #TeamSwitch_Button
 {
@@ -53,7 +56,7 @@
     opacity: 0.9;
     padding: 0px;
     width: 320px;
-    height: 320px;
+    //height: 380px;
     vertical-align: top;
     horizontal-align: left;
 
@@ -90,6 +93,14 @@
     margin-left: 15px;
 }
 
+.PlayerDis
+{
+    height: 30px;
+    width: 90px;
+    margin-left: 15px;
+    margin-top: 12px;
+}
+
 .PlayerNameFont
 {
     font-size: 20px;
@@ -101,7 +112,10 @@
     margin-left: 140px;
 
     text-shadow: 1px 1px 3px 1.0 #000000;
-    color: #ffffff;
     vertical-align: center;
     horizontal-align: right;
+}
+
+.connected {
+    color: #ffffff;
 }

@@ -22,26 +22,53 @@ function CloseTeamSwitch() {
 }
 
 function SetTeamInfo() {
-    $.Msg(Game.GetLocalPlayerInfo().player_team_id);
-    var enemyIDS = Game.GetPlayerIDsOnTeam((Game.GetLocalPlayerInfo().player_team_id == DOTATeam_t.DOTA_TEAM_GOODGUYS) ? DOTATeam_t.DOTA_TEAM_BADGUYS : DOTATeam_t.DOTA_TEAM_GOODGUYS);
-    for(var enemyID in enemyIDS){
-        var enemyInfo = Game.GetPlayerInfo(parseInt(enemyID));
-        var heroIndex = Players.GetPlayerHeroEntityIndex(parseInt(enemyID))
+    var playerIDS = Game.GetAllPlayerIDs();
+    var radiantIDS = Game.GetPlayerIDsOnTeam(DOTATeam_t.DOTA_TEAM_GOODGUYS);
+    var direIDS = Game.GetPlayerIDsOnTeam(DOTATeam_t.DOTA_TEAM_BADGUYS);
 
-        $("#Player"+enemyInfo.player_id+"_Name").text = enemyInfo.player_name;
-        $("#Player"+enemyInfo.player_id+"_Icon").heroname = Entities.GetUnitName(parseInt(heroIndex));
+    var i = 0;
 
-        if(enemyInfo.player_connection_state == DOTAConnectionState_t.DOTA_CONNECTION_STATE_DISCONNECTED ||
-        enemyInfo.player_connection_state == DOTAConnectionState_t.DOTA_CONNECTION_STATE_ABANDONED){
-            $("#Player"+enemyInfo.player_id+"_Name").text = "DISCONNECTED";
-            $("#Player"+enemyInfo.player_id+"_Icon").heroname = "";
+    for(var o = 0; o <= 5; o++){
+        $("#ListDivider"+o).AddClass("hidden");
+    }
+
+    var enemyIDs = (Game.GetLocalPlayerInfo().player_team_id == DOTATeam_t.DOTA_TEAM_GOODGUYS) ? direIDS : radiantIDS;
+    for(var enemyID = enemyIDs[0]; enemyID <= enemyIDs[enemyIDs.length - 1]; enemyID++){
+        var enemyInfo = Game.GetPlayerInfo(enemyID);
+
+        $("#Player"+i+"_Name").text = enemyInfo.player_name;
+        $("#Player"+i+"_Name").AddClass("connected");
+
+        $("#Player"+i+"_Icon").heroname = Players.GetPlayerSelectedHero(enemyInfo.player_id);
+        $("#Player"+i+"_Dis").AddClass("hidden");
+
+        if(enemyInfo.player_connection_state == DOTAConnectionState_t.DOTA_CONNECTION_STATE_ABANDONED || enemyInfo.player_connection_state == DOTAConnectionState_t.DOTA_CONNECTION_STATE_DISCONNECTED){
+            $("#Player"+i+"_Name").text = "DISCONNECTED";
+            $("#Player"+i+"_Name").RemoveClass("connected");
+            $("#Player"+i+"_Dis").RemoveClass("hidden");
         }
+
+        $("#ListDivider"+i).RemoveClass("hidden");
+        i++;
     }
 }
 
-function AttemptTeamSwitch(playerID) {
-    if($("#Player"+num+"_Name").text == "DISCONNECTED"){
-        GameEvents.SendCustomGameEventToServer( "balancePlayer", playerID, ((Players.GetTeam(playerID) == DOTATeam_t.DOTA_TEAM_GOODGUYS) ? DOTATeam_t.DOTA_TEAM_BADGUYS : DOTATeam_t.DOTA_TEAM_GOODGUYS));
-        GameEvents.SendCustomGameEventToServer( "balancePlayer", Game.GetLocalPlayerInfo().player_id, ((Game.GetLocalPlayerInfo().player_team_id == DOTATeam_t.DOTA_TEAM_GOODGUYS) ? DOTATeam_t.DOTA_TEAM_BADGUYS : DOTATeam_t.DOTA_TEAM_GOODGUYS));
+function AttemptTeamSwitch(sentID) {
+
+    var playerIDs = Game.GetAllPlayerIDs();
+    var radiantIDS = Game.GetPlayerIDsOnTeam(DOTATeam_t.DOTA_TEAM_GOODGUYS);
+    var direIDS = Game.GetPlayerIDsOnTeam(DOTATeam_t.DOTA_TEAM_BADGUYS);
+
+    var enemyIDs = (Game.GetLocalPlayerInfo().player_team_id == DOTATeam_t.DOTA_TEAM_GOODGUYS) ? direIDS : radiantIDS;
+    var enemyID = enemyIDs[sentID];
+    var enemyName = Game.GetPlayerInfo(enemyID).player_name;
+
+    if($("#Player"+sentID+"_Name").text == "DISCONNECTED"){
+        GameEvents.SendCustomGameEventToServer( "attemptSwitchTeam", {swapID: Game.GetLocalPlayerInfo().player_id, newTeam: ((Game.GetLocalPlayerInfo().player_team_id == DOTATeam_t.DOTA_TEAM_GOODGUYS) ? DOTATeam_t.DOTA_TEAM_BADGUYS : DOTATeam_t.DOTA_TEAM_GOODGUYS)});
+        for(var otherID in playerIDs){
+            if(Game.GetPlayerInfo(parseInt(otherID)).player_name == enemyName){
+                GameEvents.SendCustomGameEventToServer( "attemptSwitchTeam", {swapID: parseInt(otherID), newTeam: ((Players.GetTeam(parseInt(otherID)) == DOTATeam_t.DOTA_TEAM_GOODGUYS) ? DOTATeam_t.DOTA_TEAM_BADGUYS : DOTATeam_t.DOTA_TEAM_GOODGUYS)});
+            }
+        }
     }
 }
