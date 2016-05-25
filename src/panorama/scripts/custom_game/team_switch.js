@@ -2,6 +2,9 @@
 
 var active = false;
 
+GameEvents.Subscribe( "player_team", SetTeamInfo);
+GameEvents.Subscribe( "player_reconnected", SetTeamInfo);
+
 function TeamSwitchButton (){
     if(!active) {
         ShowTeamSwitch();
@@ -10,7 +13,6 @@ function TeamSwitchButton (){
     }
 }
 function ShowTeamSwitch() {
-
     SetTeamInfo();
 
     active = true;
