@@ -64,9 +64,12 @@ function AttemptTeamSwitch(sentID) {
     var enemyName = Game.GetPlayerInfo(enemyID).player_name;
 
     if($("#Player"+sentID+"_Name").text == "DISCONNECTED"){
+        Game.GetLocalPlayerInfo().player_team_id = ((Game.GetLocalPlayerInfo().player_team_id == DOTATeam_t.DOTA_TEAM_GOODGUYS) ? DOTATeam_t.DOTA_TEAM_BADGUYS : DOTATeam_t.DOTA_TEAM_GOODGUYS);
         GameEvents.SendCustomGameEventToServer( "attemptSwitchTeam", {swapID: Game.GetLocalPlayerInfo().player_id, newTeam: ((Game.GetLocalPlayerInfo().player_team_id == DOTATeam_t.DOTA_TEAM_GOODGUYS) ? DOTATeam_t.DOTA_TEAM_BADGUYS : DOTATeam_t.DOTA_TEAM_GOODGUYS)});
+
         for(var otherID in playerIDs){
             if(Game.GetPlayerInfo(parseInt(otherID)).player_name == enemyName){
+                Game.GetPlayerInfo(parseInt(otherID)).player_team_id = ((Players.GetTeam(parseInt(otherID)) == DOTATeam_t.DOTA_TEAM_GOODGUYS) ? DOTATeam_t.DOTA_TEAM_BADGUYS : DOTATeam_t.DOTA_TEAM_GOODGUYS);
                 GameEvents.SendCustomGameEventToServer( "attemptSwitchTeam", {swapID: parseInt(otherID), newTeam: ((Players.GetTeam(parseInt(otherID)) == DOTATeam_t.DOTA_TEAM_GOODGUYS) ? DOTATeam_t.DOTA_TEAM_BADGUYS : DOTATeam_t.DOTA_TEAM_GOODGUYS)});
             }
         }
