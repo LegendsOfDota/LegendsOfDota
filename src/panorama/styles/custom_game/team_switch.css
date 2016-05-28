@@ -119,3 +119,37 @@
 .connected {
     color: #ffffff;
 }
+
+#BalanceWarning{
+    z-index: 10000;
+    background-color: gradient( linear, 100% 0%, 100% 100%, from( #272b30 ), color-stop( 0.6, #181a1e ), to( #181a1e ) );
+    border: 1px solid #000000;
+    border-radius: 2px;
+    opacity: 0.9;
+    padding: 0px;
+    width: 250px;
+    height: 80px;
+    vertical-align: top;
+    horizontal-align: left;
+
+    margin-top: 45px;
+    margin-left: 225px;
+    flow-children: down;
+}
+
+#BalanceWarningDescription{
+    font-size: 16px;
+    font-family: Radiance;
+  	font-weight: bold;
+    text-align: center;
+
+    //margin-top: -5px;
+    margin-left: 0px;
+    padding: 5px;
+
+    text-shadow: 1px 1px 3px 1.0 #000000;
+    vertical-align: center;
+    horizontal-align: center;
+    color: #ffffff;
+    opacity: 0.8;
+}

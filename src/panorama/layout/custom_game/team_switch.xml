@@ -42,5 +42,8 @@
 				<Label id="Player5_Name" text="PLAYER_NAME" class="PlayerNameFont"/>
 			</Panel>
 		</Panel>
+		<Panel id='BalanceWarning' class= "hidden">
+			<Label id="BalanceWarningDescription" text="Teams have become unbalanced. Press switch to nominate yourself to switch to the enemy side."/>
+		</Panel>
 	</Panel>
 </root>

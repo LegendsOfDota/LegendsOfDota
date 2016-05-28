@@ -22,6 +22,10 @@ function Ingame:init()
         this:switchTeam(eventSourceIndex, args)
     end)
 
+    CustomGameEventManager:RegisterListener( "ask_custom_team_info", function(eventSourceIndex, args)
+        this:returnCustomTeams(eventSourceIndex, args)
+    end)
+
     -- Precache orgre magi stuff
     PrecacheUnitByNameAsync('npc_precache_npc_dota_hero_ogre_magi', function()
         CreateUnitByName('npc_precache_npc_dota_hero_ogre_magi', Vector(-10000, -10000, 0), false, nil, nil, 0)
@@ -63,6 +67,17 @@ function Ingame:onStart()
     ListenToGameEvent('player_connect_full', function(keys)
         this:checkBalanceTeamsNextTick()
     end, nil)
+end
+
+function Ingame:returnCustomTeams(eventSourceIndex, args)
+    local playerCount = PlayerResource:GetPlayerCount();
+    local customTeamAssignments = {};
+
+    for playerID = 0, playerCount do
+        customTeamAssignments[playerID] = PlayerResource:GetCustomTeamAssignment(playerID);
+    end
+
+    CustomGameEventManager:Send_ServerToAllClients( "send_custom_team_info", customTeamAssignments )
 end
 
 function Ingame:switchTeam(eventSourceIndex, args)
