@@ -30,7 +30,7 @@ function UpdateScoreboard()
 			shouldSort = cfg.shouldSort;
 		}
 	}
-	
+
 	if ( ScoreboardUpdater_InitializeScoreboard === null ) { $.Msg( "WARNING: This file requires shared_scoreboard_updater.js to be included." ); }
 
 	var scoreboardConfig =
@@ -43,4 +43,3 @@ function UpdateScoreboard()
 
 	UpdateScoreboard();
 })();
-

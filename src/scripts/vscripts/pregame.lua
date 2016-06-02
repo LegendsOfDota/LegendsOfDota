@@ -762,7 +762,6 @@ end
 -- Setup the selectable heroes
 function Pregame:networkHeroes()
     local allHeroes = LoadKeyValues('scripts/npc/npc_heroes.txt')
-    local allHeroesCustom = LoadKeyValues('scripts/npc/npc_heroes_custom.txt')
     local flags = LoadKeyValues('scripts/kv/flags.kv')
     local oldAbList = LoadKeyValues('scripts/kv/abilities.kv')
     local hashCollisions = LoadKeyValues('scripts/kv/hashes.kv')
@@ -849,9 +848,6 @@ function Pregame:networkHeroes()
 
     self.botHeroes = {}
 
-    -- Contains base stats
-    local baseHero = allHeroes.npc_dota_hero_base
-
     for heroName,heroValues in pairs(allHeroes) do
         -- Ensure it is enabled
         if heroName ~= 'Version' and heroName ~= 'npc_dota_hero_base' and heroValues.Enabled == 1 then
@@ -867,38 +863,23 @@ function Pregame:networkHeroes()
                 end
             end
 
-            -- Grab custom hero data
-            local customHero = allHeroesCustom[heroName] or {}
-
             -- Store all the useful information
             local theData = {
-                AttributePrimary = customHero.AttributePrimary or heroValues.AttributePrimary or baseHero.AttributePrimary,
-                Role = customHero.Role or heroValues.Role or baseHero.Role,
-                Rolelevels = customHero.Rolelevels or heroValues.Rolelevels or baseHero.Rolelevels,
-                AttackCapabilities = customHero.AttackCapabilities or heroValues.AttackCapabilities or baseHero.AttackCapabilities,
-                AttackDamageMin = customHero.AttackDamageMin or heroValues.AttackDamageMin or baseHero.AttackDamageMin,
-                AttackDamageMax = customHero.AttackDamageMax or heroValues.AttackDamageMax or baseHero.AttackDamageMax,
-                AttackRate = customHero.AttackRate or heroValues.AttackRate or baseHero.AttackRate,
-                AttackRange = customHero.AttackRange or heroValues.AttackRange or baseHero.AttackRange,
-                AttackAnimationPoint = customHero.AttackAnimationPoint or heroValues.AttackAnimationPoint or baseHero.AttackAnimationPoint,
-                MovementSpeed = customHero.MovementSpeed or heroValues.MovementSpeed or baseHero.MovementSpeed,
-                AttributeBaseStrength = customHero.AttributeBaseStrength or heroValues.AttributeBaseStrength or baseHero.AttributeBaseStrength,
-                AttributeStrengthGain = customHero.AttributeStrengthGain or heroValues.AttributeStrengthGain or baseHero.AttributeStrengthGain,
-                AttributeBaseIntelligence = customHero.AttributeBaseIntelligence or heroValues.AttributeBaseIntelligence or baseHero.AttributeBaseIntelligence,
-                AttributeIntelligenceGain = customHero.AttributeIntelligenceGain or heroValues.AttributeIntelligenceGain or baseHero.AttributeIntelligenceGain,
-                AttributeBaseAgility = customHero.AttributeBaseAgility or heroValues.AttributeBaseAgility or baseHero.AttributeBaseAgility,
-                AttributeAgilityGain = customHero.AttributeAgilityGain or heroValues.AttributeAgilityGain or baseHero.AttributeAgilityGain,
-                ArmorPhysical = customHero.ArmorPhysical or heroValues.ArmorPhysical or baseHero.ArmorPhysical,
-                MagicalResistance = customHero.MagicalResistance or heroValues.MagicalResistance or baseHero.MagicalResistance,
-                ProjectileSpeed = customHero.ProjectileSpeed or heroValues.ProjectileSpeed or baseHero.ProjectileSpeed,
-                RingRadius = customHero.RingRadius or heroValues.RingRadius or baseHero.RingRadius,
-                MovementTurnRate = customHero.MovementTurnRate or heroValues.MovementTurnRate or baseHero.MovementTurnRate,
-                StatusHealth = customHero.StatusHealth or heroValues.StatusHealth or baseHero.StatusHealth,
-                StatusHealthRegen = customHero.StatusHealthRegen or heroValues.StatusHealthRegen or baseHero.StatusHealthRegen,
-                StatusMana = customHero.StatusMana or heroValues.StatusMana or baseHero.StatusMana,
-                StatusManaRegen = customHero.StatusManaRegen or heroValues.StatusManaRegen or baseHero.StatusManaRegen,
-                VisionDaytimeRange = customHero.VisionDaytimeRange or heroValues.VisionDaytimeRange or baseHero.VisionDaytimeRange,
-                VisionNighttimeRange = customHero.VisionNighttimeRange or heroValues.VisionNighttimeRange or baseHero.VisionNighttimeRange
+                AttributePrimary = heroValues.AttributePrimary,
+                Role = heroValues.Role,
+                Rolelevels = heroValues.Rolelevels,
+                AttackCapabilities = heroValues.AttackCapabilities,
+                AttackDamageMin = heroValues.AttackDamageMin,
+                AttackDamageMax = heroValues.AttackDamageMax,
+                AttackRate = heroValues.AttackRate,
+                AttackRange = heroValues.AttackRange,
+                MovementSpeed = heroValues.MovementSpeed,
+                AttributeBaseStrength = heroValues.AttributeBaseStrength,
+                AttributeStrengthGain = heroValues.AttributeStrengthGain,
+                AttributeBaseIntelligence = heroValues.AttributeBaseIntelligence,
+                AttributeIntelligenceGain = heroValues.AttributeIntelligenceGain,
+                AttributeBaseAgility = heroValues.AttributeBaseAgility,
+                AttributeAgilityGain = heroValues.AttributeAgilityGain
             }
 
             local attr = heroValues.AttributePrimary
@@ -1882,8 +1863,8 @@ function Pregame:initOptionSelector()
                 -- Disable Fountain Camping
                 self:setOption('lodOptionCrazyNoCamping', 1, true)
 
-                -- Enable Universal Shop
-                self:setOption('lodOptionCrazyUniversalShop', 1, true)
+                -- Disable Universal Shop
+                self:setOption('lodOptionCrazyUniversalShop', 0, true)
 
                 -- Disable All Vision
                 self:setOption('lodOptionCrazyAllVision', 0, true)

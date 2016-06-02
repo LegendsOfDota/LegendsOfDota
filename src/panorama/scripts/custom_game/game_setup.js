@@ -1138,6 +1138,26 @@ function hookTabChange(tabName, callback) {
     onLoadTabHook[tabName] = callback;
 }
 
+// Makes hero info appear when you hover the panel that is parsed in
+function hookHeroInfo(panel) {
+    // Show
+    panel.SetPanelEvent('onmouseover', function() {
+        var heroName = panel.GetAttributeString('heroName', '');
+        var info = heroData[heroName];
+
+        var displayNameTitle = $.Localize(heroName);
+        var heroStats = GenerateFormattedHeroStatsString(heroName, info);
+
+        $.DispatchEvent('DOTAShowTitleTextTooltipStyled', panel, displayNameTitle, heroStats, "testStyle");
+        //$.DispatchEvent('DOTAShowHeroStatsTooltip', string heroName, uint8 styleIndex, int32 heroID);
+    });
+
+    // Hide
+    panel.SetPanelEvent('onmouseout', function() {
+        $.DispatchEvent('DOTAHideTitleTextTooltip');
+    });
+}
+
 // Makes skill info appear when you hover the panel that is parsed in
 function hookSkillInfo(panel) {
     // Show
@@ -1155,7 +1175,6 @@ function hookSkillInfo(panel) {
     // Hide
     panel.SetPanelEvent('onmouseout', function() {
         $.DispatchEvent('DOTAHideAbilityTooltip');
-        $.DispatchEvent('DOTAHideTitleTextTooltip');
     });
 }
 
@@ -1206,10 +1225,7 @@ function OnSelectedHeroesChanged(table_name, key, data) {
     // Was it an update on our local player?
     if(playerID == Players.GetLocalPlayer()) {
         // Update our hero icon and text
-        var heroCon = $('#pickingPhaseSelectedHeroImage');
-        heroCon.SetAttributeString('heroName', heroName);
-        heroCon.heroname = heroName;
-
+        $('#pickingPhaseSelectedHeroImage').heroname = heroName;
         $('#pickingPhaseSelectedHeroText').text = $.Localize(heroName);
 
         // Set it so no hero is selected
@@ -1628,7 +1644,6 @@ function setupBuilderTabs() {
 
                 // Hide skill info
                 $.DispatchEvent('DOTAHideAbilityTooltip');
-                $.DispatchEvent('DOTAHideTitleTextTooltip');
             });
 
             $.RegisterEventHandler('DragEnd', con, function(panelId, draggedPanel) {
@@ -1676,9 +1691,6 @@ function setupBuilderTabs() {
     var heroDropCon = $('#pickingPhaseSelectedHeroImage');
     $.RegisterEventHandler('DragEnter', heroDropCon, heroDragEnter);
     $.RegisterEventHandler('DragLeave', heroDropCon, heroDragLeave);
-
-    // Display info about the hero on hover
-    hookHeroInfo(heroDropCon);
 
     var heroDropConBlank = $('#pickingPhaseSelectedHeroImageNone');
     $.RegisterEventHandler('DragEnter', heroDropConBlank, heroDragEnter);
@@ -1759,6 +1771,7 @@ function buildHeroList() {
 
                 // Create the panel
                 var newPanel = $.CreatePanel('DOTAHeroImage', container, 'heroSelector_' + heroName);
+                hookHeroInfo(newPanel);
                 newPanel.SetAttributeString('heroName', heroName);
                 newPanel.heroname = heroName;
                 newPanel.heroimagestyle = 'portrait';
@@ -2135,6 +2148,7 @@ function toggleShowDraftSkills() {
 
 // Makes the given hero container selectable
 function makeHeroSelectable(heroCon) {
+
     heroCon.SetPanelEvent('onactivate', function() {
         var heroName = heroCon.GetAttributeString('heroName', '');
         if(heroName == null || heroName.length <= 0) return;
@@ -2158,7 +2172,6 @@ function makeHeroSelectable(heroCon) {
         displayPanel.SetAttributeString('heroName', heroName);
 
         // Hide skill info
-        $.DispatchEvent('DOTAHideAbilityTooltip');
         $.DispatchEvent('DOTAHideTitleTextTooltip');
 
         // Highlight drop cell
@@ -2193,29 +2206,6 @@ function makeHeroSelectable(heroCon) {
         if(draggedPanel.GetAttributeInt('banThis', 0) == 1) {
             banHero(heroName);
         }
-    });
-
-    // Hook the hero info display
-    hookHeroInfo(heroCon);
-}
-
-function hookHeroInfo(heroCon) {
-    // Show hero info
-    heroCon.SetPanelEvent('onmouseover', function() {
-        var heroName = heroCon.GetAttributeString('heroName', '');
-        var info = heroData[heroName];
-
-        var displayNameTitle = $.Localize(heroName);
-        var heroStats = generateFormattedHeroStatsString(heroName, info);
-
-        // Show the tip
-        $.DispatchEvent('DOTAShowTitleTextTooltipStyled', heroCon, displayNameTitle, heroStats, "testStyle");
-    });
-
-    // Hide hero info
-    heroCon.SetPanelEvent('onmouseout', function() {
-        $.DispatchEvent('DOTAHideAbilityTooltip');
-        $.DispatchEvent('DOTAHideTitleTextTooltip');
     });
 }
 
@@ -2253,7 +2243,6 @@ function makeSkillSelectable(abcon) {
 
         // Hide skill info
         $.DispatchEvent('DOTAHideAbilityTooltip');
-        $.DispatchEvent('DOTAHideTitleTextTooltip');
 
         // Banning
         $('#pickingPhaseBans').SetHasClass('lodSelectedDrop', true)
@@ -3665,90 +3654,36 @@ function OnTeamPlayerListChanged() {
 //--------------------------------------------------------------------------------------------------
 //Generate formatted string of Hero stats from sent
 //--------------------------------------------------------------------------------------------------
-function heroStatsLine(lineName, value, color, color2) {
-    // Ensure we have a color
-    if(color == null) color = 'FFFFFF';
-    if(color2 == null) color2 = '7C7C7C';
+function GenerateFormattedHeroStatsString( heroName, info ) {
 
-    // Create the line
-    return '<font color=\'#' + color + '\'>' + $.Localize(lineName) + ':</font> <font color=\'#' + color2 + '\'>' + value + '</font><br>';
-}
-
-// Converts a string into a number with a certain number of decimal places
-function stringToDecimalPlaces(numberString, places) {
-    if(places == null) places = 2;
-    return parseFloat(numberString).toFixed(places);
-}
-
-function generateFormattedHeroStatsString(heroName, info) {
-    // Will contain hero stats
     var heroStats = '';
+    heroStats += '<font color=\'#7C7C7C\'>_____________________________________</font><br>';
+    heroStats += '<font color=\'#FFFFFF\'>' + $.Localize('heroStats_Damage') + ':</font> <font color=\'#7C7C7C\'>' + info.AttackDamageMin + '-' + info.AttackDamageMax + '</font><br>';
+    heroStats += '<font color=\'#FFFFFF\'>' + $.Localize('heroStats_Armor') + ':</font> <font color=\'#7C7C7C\'>' + '</font><br>';
+    heroStats += '<font color=\'#FFFFFF\'>' + $.Localize('heroStats_attackPoints') + ':</font> <font color=\'#7C7C7C\'>' + '</font><br>';
+    heroStats += '<font color=\'#FFFFFF\'>' + $.Localize('heroStats_baseAttackTime') + ':</font> <font color=\'#7C7C7C\'>' + parseFloat(Math.round(info.AttackRate * 10) / 10).toFixed(1) + '</font><br>';
+    heroStats += '<font color=\'#00FF83\'>' + $.Localize('heroStats_baseHPRegen') + ': ' + '</font><br>';
+    heroStats += '<font color=\'#7C7C7C\'>_____________________________________</font><br>';
 
-    // Seperator used to seperate sections
-    var seperator = '<font color=\'#FFFFFF\'>_____________________________________</font><br>';
+    heroStats += ((info.AttributePrimary == 'DOTA_ATTRIBUTE_STRENGTH') ? '<font color=\'#FF0000\'>' : '<font color=\'#B6E002\'>') + $.Localize('heroStats_strength') + ':</font> <font color=\'#7C7C7C\'>' + info.AttributeBaseStrength + ' + ' + parseFloat(Math.round(info.AttributeStrengthGain * 10) / 10).toFixed(1) + '</font><br>';
+    heroStats += ((info.AttributePrimary == 'DOTA_ATTRIBUTE_AGILITY') ? '<font color=\'#FF0000\'>' : '<font color=\'#B6E002\'>') + $.Localize('heroStats_agility') + ':</font> <font color=\'#7C7C7C\'>' + info.AttributeBaseAgility + ' + ' + parseFloat(Math.round(info.AttributeAgilityGain * 10) / 10).toFixed(1) + '</font><br>';
+    heroStats += ((info.AttributePrimary == 'DOTA_ATTRIBUTE_INTELLECT') ? '<font color=\'#FF0000\'>' : '<font color=\'#B6E002\'>') + $.Localize('heroStats_intelligence:') + ':</font> <font color=\'#7C7C7C\'>' + info.AttributeBaseIntelligence + ' + ' + parseFloat(Math.round(info.AttributeIntelligenceGain * 10) / 10).toFixed(1) + '</font><br>';
+    heroStats += '<br>';
 
-    if(info != null) {
-        // Calculate how many total stats we have
-        var startingAttributes = info.AttributeBaseStrength + info.AttributeBaseAgility + info.AttributeBaseIntelligence;
-        var attributesPerLevel = stringToDecimalPlaces(info.AttributeStrengthGain + info.AttributeAgilityGain + info.AttributeIntelligenceGain);
+    var startingAttributes = info.AttributeBaseStrength + info.AttributeBaseAgility + info.AttributeBaseIntelligence;
+    var attributesPerLevel = info.AttributeStrengthGain + info.AttributeAgilityGain + info.AttributeIntelligenceGain;
+    attributesPerLevel = parseFloat(Math.round(attributesPerLevel * 10) / 10).toFixed(1);
 
-        // Pick the colors for primary attribute
-        var strColor = info.AttributePrimary == 'DOTA_ATTRIBUTE_STRENGTH' ? 'FF3939' : 'FFFFFF';
-        var agiColor = info.AttributePrimary == 'DOTA_ATTRIBUTE_AGILITY' ? 'FF3939' : 'FFFFFF';
-        var intColor = info.AttributePrimary == 'DOTA_ATTRIBUTE_INTELLECT' ? 'FF3939' : 'FFFFFF';
+    heroStats += '<font color=\'#CF6700\'>' + $.Localize('heroStats_attributes_starting') + ':</font> <font color=\'#7C7C7C\'>' + startingAttributes + '</font><br>';
+    heroStats += '<font color=\'#CF6700\'>' + $.Localize('heroStats_attributes_perLevel') + ':</font> <font color=\'#7C7C7C\'>' + attributesPerLevel + '</font><br>';
+    heroStats += '<font color=\'#7C7C7C\'>____________________________________</font><br>';
+    heroStats += '<font color=\'#FFFFFF\'>' + $.Localize('heroStats_attackRange') + ':</font> <font color=\'#7C7C7C\'>' + info.AttackRange + '</font><br>';
+    heroStats += '<font color=\'#FFFFFF\'>' + $.Localize('heroStats_movementSpeed') + ':</font> <font color=\'#7C7C7C\'>' + info.MovementSpeed + '</font><br>';
 
-        // Calculate our stat gain
-        var strGain = stringToDecimalPlaces(info.AttributeStrengthGain);
-        var agiGain = stringToDecimalPlaces(info.AttributeAgilityGain);
-        var intGain = stringToDecimalPlaces(info.AttributeIntelligenceGain);
-
-        // Attack Related Status
-        heroStats += seperator;
-
-        heroStats += heroStatsLine('heroStats_damage', info.AttackDamageMin + '-' + info.AttackDamageMax);
-        heroStats += heroStatsLine('heroStats_attackRange', info.AttackRange);
-        
-        heroStats += heroStatsLine('heroStats_attackRate', stringToDecimalPlaces(info.AttackRate));
-        heroStats += heroStatsLine('heroStats_attackAnimationPoint', stringToDecimalPlaces(info.AttackAnimationPoint));
-        heroStats += heroStatsLine('heroStats_projectileSpeed', info.ProjectileSpeed);
-
-        // Health and Mana
-        heroStats += seperator;
-
-        heroStats += heroStatsLine('heroStats_baseHealth', info.StatusHealth);
-        heroStats += heroStatsLine('heroStats_baseHealthRegen', stringToDecimalPlaces(info.StatusHealthRegen));
-        heroStats += heroStatsLine('heroStats_baseMana', info.StatusMana);
-        heroStats += heroStatsLine('heroStats_baseManaRegen', stringToDecimalPlaces(info.StatusManaRegen));
-        heroStats += heroStatsLine('heroStats_armor', info.ArmorPhysical);
-        heroStats += heroStatsLine('heroStats_magicalResistance', info.MagicalResistance);
-
-        // Attribute Stats
-        heroStats += seperator;
-
-        heroStats += heroStatsLine('heroStats_strength', info.AttributeBaseStrength + ' + ' + strGain, strColor);
-        heroStats += heroStatsLine('heroStats_agility', info.AttributeBaseAgility + ' + ' + agiGain, agiColor);
-        heroStats += heroStatsLine('heroStats_intelligence', info.AttributeBaseIntelligence + ' + ' + intGain, intColor);
-
-        heroStats += '<br>';
-
-        heroStats += heroStatsLine('heroStats_attributes_starting', startingAttributes, 'F9891A');
-        heroStats += heroStatsLine('heroStats_attributes_perLevel', attributesPerLevel, 'F9891A');
-        
-        // General Hero Stats
-        heroStats += seperator;
-
-        heroStats += heroStatsLine('heroStats_movementSpeed', info.MovementSpeed);
-        heroStats += heroStatsLine('heroStats_turnrate', stringToDecimalPlaces(info.MovementTurnRate));
-        heroStats += heroStatsLine('heroStats_visionDay', info.VisionDaytimeRange);
-        heroStats += heroStatsLine('heroStats_visionNight', info.VisionNighttimeRange);
-        heroStats += heroStatsLine('heroStats_ringRadius', info.RingRadius);
-    }
-
-    // Unique Mechanics
-    var heroMechanic = $.Localize("unique_mechanic_" + heroName.substring(14));
-    if(heroMechanic != "unique_mechanic_" + heroName.substring(14)) {
-        heroStats += '<br>';
-        heroStats += heroStatsLine('heroStats_uniqueMechanic', heroMechanic, '23FF27', '70EA72');
+    //MISSING / ?? heroStats += 'UNIQUE MECHANIC: ';
+    if($.Localize("unique_mechanic_" + heroName.substring(14)) != "unique_mechanic_" + heroName.substring(14)){
+        var warning = $.Localize('warning_' + heroName.substring(14));
+        heroStats += '<br><font color=\'#23FF27\'>' + $.Localize('heroStats_uniqueMechanic') + ':</font> <font color=\'#7C7C7C\'>' + $.Localize('unique_mechanic_' + heroName.substring(14)) + '</font><br>';
     }
 
     return heroStats;

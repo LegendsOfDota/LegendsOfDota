@@ -144,8 +144,7 @@ function generatePrecacheData(next) {
         // In s2, no bots are supported, so we can just strip every hero
         var ignoreHeroes = {
             npc_dota_hero_techies: true,
-            npc_dota_hero_gyrocopter: true,
-            npc_dota_hero_riki: true
+            npc_dota_hero_gyrocopter: true
         };
 
         var heroes = rootHeroes.DOTAHeroes;

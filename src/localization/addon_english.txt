@@ -280,7 +280,7 @@
     "hintBreakPassives"                             "Silver Edge, Doom and Demonic Purge are the only ways to disable enemy passives - which can be very useful against passive-heavy heroes, such as Tanks."
     "hintInnateAbilities"                           "Night Stalker, Gyrocopter, Elazor and Meepo will benefit from Aghanim's Scepter Upgrade, irrespective of their chosen abilities."
     "hintReport"                                    "Please report Bugs and Troll Combos so that LoD can continue to improve! Use the Steam Workshop page or the GitHub page to make your reports."
-    
+
     // Hero builder
     "finishBanning"                                 "Finish Banning"
     "unlockBuild"                                   "Unlock Build"
@@ -401,21 +401,14 @@
     "statAbandonLastHour"                           "About {0} minutes ago"
     "statAbandonLessThanDay"                        "About {0} hours ago"
     "statAbandonMoreThanOneDay"                     "About {0} days ago"
-	
-	//Hero Stats
 
-    "heroStats_damage"                              "DAMAGE"
-    "heroStats_armor"                               "ARMOR"
-    "heroStats_magicalResistance"                   "MAGICAL RESISTANCE"
-    "heroStats_attackAnimationPoint"                "ATTACK ANIMATION POINT"
+    //Hero Stats
 
-    "heroStats_baseHealth"                          "BASE HP"
-    "heroStats_baseHealthRegen"                     "BASE HP REGEN"
-    "heroStats_baseMana"                            "BASE MANA"
-    "heroStats_baseManaRegen"                       "BASE MANA REGEN"
-
-    "heroStats_attackRate"                          "BASE ATTACK TIME"
-    "heroStats_projectileSpeed"                     "PROJECTILE SPEED"
+    "heroStats_Damage"                              "DAMAGE"
+    "heroStats_Armor"                               "ARMOR"
+    "heroStats_attackPoints"                        "ATTACK POINT"
+    "heroStats_baseAttackTime"                      "BASE ATTACK TIME"
+    "heroStats_baseHPRegen"                         "BASE HP REGEN"
 
     "heroStats_strength"                            "STRENGTH"
     "heroStats_agility"                             "AGILITY"
@@ -426,25 +419,20 @@
 
     "heroStats_attackRange"                         "ATTACK RANGE"
     "heroStats_movementSpeed"                       "MOVEMENT SPEED"
-    "heroStats_turnrate"                            "TURN SPEED"
 
     "heroStats_uniqueMechanic"                      "UNIQUE MECHANIC"
-
-    "heroStats_ringRadius"                          "HERO SIZE RADIUS"
-    "heroStats_visionDay"                           "DAY VISION"
-    "heroStats_visionNight"                         "NIGHT VISION"
 
     /////////////////
     // UNIQUE HERO MECHANICS
     ////////////////
 
-    "unique_mechanic_meepo"                         "Aghnamin's Scepter<br> will give this hero a free clone."
-    "unique_mechanic_night_stalker"                 "Aghnamin's Scepter<br> will give this hero unobstructed night<br> vision."
-    "unique_mechanic_gyrocopter"                    "Aghnamin's Scepter<br> will give this hero a side gunner."
-    "unique_mechanic_keeper_of_the_light"           "Aghnamin's Scepter<br> will give this hero unobstructed day<br> vision."
-    "unique_mechanic_alchemist"                     "This hero can gift<br> Aghnamin's Scepters."
-    "unique_mechanic_faceless_void"                 "This hero can move<br> freely in friendly and enemy chronospheres."
-	
+    "unique_mechanic_meepo"                         "<font color=\"#70EA72\">Aghnamin's Scepter</font><br> will give you this hero a <font color=\"#70EA72\">free clone.</font>"
+    "unique_mechanic_night_stalker"                 "<font color=\"#70EA72\">Aghnamin's Scepter</font><br> will give you this hero <font color=\"#70EA72\">unobstructed night<br> vision.</font>"
+    "unique_mechanic_gyrocopter"                    "<font color=\"#70EA72\">Aghnamin's Scepter</font><br> will give you this hero a <font color=\"#70EA72\">side gunner.</font>"
+    "unique_mechanic_keeper_of_the_light"           "<font color=\"#70EA72\">Aghnamin's Scepter</font><br> will give you this hero <font color=\"#70EA72\">unobstructed day<br> vision.</font>"
+    "unique_mechanic_alchemist"                     "This hero can <font color=\"#70EA72\">gift<br> Aghnamin's Scepters</font>"
+    "unique_mechanic_faceless_void"                 "This hero can <font color=\"#70EA72\">move<br> freely in friendly and enemy chronospheres</font>"
+
     /////////////////
     // Skill Warnings
     ////////////////
@@ -482,14 +470,13 @@
     "warning_invoker_sun_strike_lod" "<font color=\"#FF4949\">LoD Warning:</font> Aghanim's Scepter will lock this ability to its level 1 version."
     "warning_invoker_tornado_lod" "<font color=\"#FF4949\">LoD Warning:</font> Aghanim's Scepter will lock this ability to its level 1 version."
     "warning_silencer_glaives_of_wisdom" "<font color=\"#FF4949\">LoD Warning:</font> Silencer's Intelligence Steal Ability is part of this ability."
-    "warning_elder_titan_ancestral_spirit" "<font color=\"#FF4949\">LoD Warning:</font> The astral spirit wont have <font color=\"#70EA72\">Natural Order</font> or <font color=\"#70EA72\">Echo Stomp</font>", unless you also have it."
+    "warning_elder_titan_ancestral_spirit" "<font color=\"#FF4949\">LoD Warning:</font> The astral spirit wont have <font color=\"#70EA72\">Natural Order</font> or <font color=\"#70EA72\">Echo Stomp</font>, unless you also have it."
     "warning_skeleton_king_reincarnation" "<font color=\"#FF4949\">LoD Warning:</font> Sometimes the 3 second reincarnation time will be replaced with the default respawn time. This is a bug."
 	"warning_shredder_chakram_2" "<font color=\"#FF4949\">LoD Warning:</font> Requires original <font color=\"#70EA72\">Chakram.</font>"
 	"warning_shadow_demon_shadow_poison_release" "<font color=\"#FF4949\">LoD Warning:</font> Requires <font color=\"#70EA72\">Shadow Poison.</font>"
-	"warning_nevermore_requiem" "<font color=\"#FF4949\">LoD Warning:</font> Requires <font color=\"#70EA72\">Necromastery</font> and stored souls to do damage."	
-	"warning_templar_assassin_trap" "<font color=\"#FF4949\">LoD Warning:</font> Requires <font color=\"#70EA72\">Psionic Trap.</font>"	
+	"warning_nevermore_requiem" "<font color=\"#FF4949\">LoD Warning:</font> Requires <font color=\"#70EA72\">Necromastery</font> and stored souls to do damage."
+	"warning_templar_assassin_trap" "<font color=\"#FF4949\">LoD Warning:</font> Requires <font color=\"#70EA72\">Psionic Trap.</font>"
 	"warning_templar_assassin_psionic_trap" "<font color=\"#FF4949\">LoD Warning:</font> If you don't have <font color=\"#70EA72\">Trap</font>, you will have to manually activate traps."
-	"warning_tiny_grow_lod" "<font color=\"#FF4949\">LoD Warning:</font> You might need to buy an item, level up this skill, or respawn for the scepter upgrade to work.\nBuying an item and selling it will work.\nCheck the modifier to verify you have the upgrade."
 
     /////////////////
     // CUSTOM ABILITIES
@@ -497,7 +484,7 @@
 
     // tiny
     "DOTA_Tooltip_ability_tiny_grow_lod"                                                "Grow"
-    "DOTA_Tooltip_ability_tiny_grow_lod_Description"                                    "Tiny gains craggy mass that increases his power at the cost of his attack speed. Improves movement speed.\n\nUpgradable by Aghanim's Scepter."
+    "DOTA_Tooltip_ability_tiny_grow_lod_Description"                                    "Tiny gains craggy mass that increases his power at the cost of his attack speed. Improves movement speed.\n\nUpgradable by Aghanim's Scepter.\n\n<font color='#70EA72'>You might need to buy an item, level up this skill, or respawn for the scepter upgrade to work.\nBuying an item and selling it will work.\n\nCheck the modifier to verify you have the upgrade.</font>"
     "DOTA_Tooltip_ability_tiny_grow_lod_Lore"                                           "Watching a hill become a mountain is awe-inspiring - especially if the mountain begins laying waste to adversaries."
     "DOTA_Tooltip_ability_tiny_grow_lod_Note0"                                          "Cleave damage is reduced by armor type but not by armor value."
     "DOTA_Tooltip_ability_tiny_grow_lod_Note1"                                          "Cleave damage goes through spell immunity."
