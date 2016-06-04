@@ -495,7 +495,7 @@
 	"warning_tiny_grow_lod" "<font color=\"#FF4949\">LoD Warning:</font> You might need to buy an item, level up this skill, or respawn for the scepter upgrade to work.\nBuying an item and selling it will work.\nCheck the modifier to verify you have the upgrade."
     "warning_ogre_magi_multicast" "<font color=\"#FF4949\">LoD Warning:</font> This version of multicast is the standard version of multicast that ONLY works on Ogre Magi's abilities."
     "warning_ogre_magi_multicast_lod" "<font color=\"#FF4949\">LoD Warning:</font> This ability will not have a cooldown if OP abilities are enabled."
-    "warning_tusk_walrus_kick" "<font color=\"#FF4949\">LoD Warning:</font> Requires lvl 3."
+    "warning_tusk_walrus_kick" "<font color=\"#FF4949\">LoD Warning:</font> Requires level 3."
 
     /////////////////
     // CUSTOM ABILITIES
