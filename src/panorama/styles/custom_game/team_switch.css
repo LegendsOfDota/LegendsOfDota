@@ -1,4 +1,4 @@
-.TeamSwitchRoot
+.teamSwitchRoot
 {
     width: 100%;
     height: 100%;
@@ -11,7 +11,7 @@
     color: #ff0000 !important;
 }
 
-#TeamSwitch_Button
+#teamSwitch_Button
 {
     z-index: 10000;
     background-color: gradient( linear, 100% 0%, 100% 100%, from( #272b30 ), color-stop( 0.6, #181a1e ), to( #181a1e ) );
@@ -29,7 +29,7 @@
     margin-left: 225px;
 }
 
-#TeamSwitch_ButtonTitle
+#teamSwitch_ButtonTitle
 {
     z-index: 10001;
     font-size: 18px;
@@ -47,7 +47,7 @@
     margin-left: 252px;
 }
 
-#TeamSwitch_Panel
+#teamSwitch_Panel
 {
     z-index: 10000;
     background-color: gradient( linear, 100% 0%, 100% 100%, from( #272b30 ), color-stop( 0.6, #181a1e ), to( #181a1e ) );
@@ -65,7 +65,7 @@
     flow-children: down;
 }
 
-#TeamSwitchDescription
+#teamSwitchDescription
 {
     font-size: 18px;
     font-family: Radiance;
@@ -81,19 +81,19 @@
     margin-top: 10px;
 }
 
-.ListDivider
+.listDivider
 {
     height: 55px;
 }
 
-.PlayerIcon
+.playerIcon
 {
     height: 50px;
     width: 90px;
     margin-left: 15px;
 }
 
-.PlayerDis
+.playerDis
 {
     height: 30px;
     width: 90px;
@@ -101,7 +101,7 @@
     margin-top: 12px;
 }
 
-.PlayerNameFont
+.playerNameFont
 {
     font-size: 20px;
     font-family: Radiance;
@@ -120,7 +120,7 @@
     color: #ffffff;
 }
 
-#BalanceWarning{
+#balanceWarning{
     z-index: 10000;
     background-color: gradient( linear, 100% 0%, 100% 100%, from( #272b30 ), color-stop( 0.6, #181a1e ), to( #181a1e ) );
     border: 1px solid #000000;
@@ -137,7 +137,7 @@
     flow-children: down;
 }
 
-#BalanceWarningDescription{
+#balanceWarningDescription{
     font-size: 16px;
     font-family: Radiance;
   	font-weight: bold;
