@@ -5,45 +5,45 @@
 	<scripts>
 		<include src="file://{resources}/scripts/custom_game/team_switch.js" />
 	</scripts>
-	<Panel hittest="false" class='TeamSwitchRoot'>
-		<Button id="TeamSwitch_Button" onactivate="TeamSwitchButton()"/>
-		<Label id="TeamSwitch_ButtonTitle" text="Switch Teams" class="TeamSwitchButtonFont"/>
-		<Panel id='TeamSwitch_Panel' class="hidden">
-			<Label id="TeamSwitchDescription" text="Select a hero to switch teams with"/>
+	<Panel hittest="false" class="teamSwitchRoot">
+		<Button id="teamSwitch_Button" onactivate="teamSwitchButton()"/>
+		<Label id="teamSwitch_ButtonTitle" text="Switch Teams" class="teamSwitchButtonFont"/>
+		<Panel id="teamSwitch_Panel" class="hidden">
+			<Label id="teamSwitchDescription" text="Select a hero to switch teams with"/>
 
-			<Panel id="ListDivider0" class= "ListDivider" onactivate="AttemptTeamSwitch(0)">
-				<DOTAHeroImage id="Player0_Icon" class="PlayerIcon" heroname="" heroimagestyle="landscape" />
-				<Image id="Player0_Dis" src="s2r://panorama/images/custom_game/icon_disconnect_png.vtex" hittest="false" class="PlayerDis"/>
-				<Label id="Player0_Name" text="PLAYER_NAME" class="PlayerNameFont"/>
+			<Panel id="listDivider0" class= "listDivider" onactivate="attemptTeamSwitch(0)">
+				<DOTAHeroImage id="player0_Icon" class="playerIcon" heroname="" heroimagestyle="landscape" />
+				<Image id="player0_Dis" src="s2r://panorama/images/custom_game/icon_disconnect_png.vtex" hittest="false" class="playerDis"/>
+				<Label id="player0_Name" text="PLAYER_NAME" class="playerNameFont"/>
 			</Panel>
-			<Panel id="ListDivider1" class= "ListDivider" onactivate="AttemptTeamSwitch(1)">
-				<DOTAHeroImage id="Player1_Icon" class="PlayerIcon" heroname="" heroimagestyle="landscape" />
-				<Image id="Player1_Dis" src="s2r://panorama/images/custom_game/icon_disconnect_png.vtex" hittest="false" class="PlayerDis"/>
-				<Label id="Player1_Name" text="PLAYER_NAME" class="PlayerNameFont"/>
+			<Panel id="listDivider1" class= "listDivider" onactivate="attemptTeamSwitch(1)">
+				<DOTAHeroImage id="player1_Icon" class="playerIcon" heroname="" heroimagestyle="landscape" />
+				<Image id="player1_Dis" src="s2r://panorama/images/custom_game/icon_disconnect_png.vtex" hittest="false" class="playerDis"/>
+				<Label id="player1_Name" text="PLAYER_NAME" class="playerNameFont"/>
 			</Panel>
-			<Panel id="ListDivider2" class= "ListDivider" onactivate="AttemptTeamSwitch(2)">
-				<DOTAHeroImage id="Player2_Icon" class="PlayerIcon" heroname="" heroimagestyle="landscape" />
-				<Image id="Player2_Dis" src="s2r://panorama/images/custom_game/icon_disconnect_png.vtex" hittest="false" class="PlayerDis"/>
-				<Label id="Player2_Name" text="PLAYER_NAME" class="PlayerNameFont"/>
+			<Panel id="listDivider2" class= "listDivider" onactivate="attemptTeamSwitch(2)">
+				<DOTAHeroImage id="player2_Icon" class="playerIcon" heroname="" heroimagestyle="landscape" />
+				<Image id="player2_Dis" src="s2r://panorama/images/custom_game/icon_disconnect_png.vtex" hittest="false" class="playerDis"/>
+				<Label id="player2_Name" text="PLAYER_NAME" class="playerNameFont"/>
 			</Panel>
-			<Panel id="ListDivider3" class= "ListDivider" onactivate="AttemptTeamSwitch(3)">
-				<DOTAHeroImage id="Player3_Icon" class="PlayerIcon" heroname="" heroimagestyle="landscape" />
-				<Image id="Player3_Dis" src="s2r://panorama/images/custom_game/icon_disconnect_png.vtex" hittest="false" class="PlayerDis"/>
-				<Label id="Player3_Name" text="PLAYER_NAME" class="PlayerNameFont"/>
+			<Panel id="listDivider3" class= "listDivider" onactivate="attemptTeamSwitch(3)">
+				<DOTAHeroImage id="player3_Icon" class="playerIcon" heroname="" heroimagestyle="landscape" />
+				<Image id="player3_Dis" src="s2r://panorama/images/custom_game/icon_disconnect_png.vtex" hittest="false" class="playerDis"/>
+				<Label id="player3_Name" text="PLAYER_NAME" class="playerNameFont"/>
 			</Panel>
-			<Panel id="ListDivider4" class= "ListDivider" onactivate="AttemptTeamSwitch(4)">
-				<DOTAHeroImage id="Player4_Icon" class="PlayerIcon" heroname="" heroimagestyle="landscape" />
-				<Image id="Player4_Dis" src="s2r://panorama/images/custom_game/icon_disconnect_png.vtex" hittest="false" class="PlayerDis"/>
-				<Label id="Player4_Name" text="PLAYER_NAME" class="PlayerNameFont"/>
+			<Panel id="listDivider4" class= "listDivider" onactivate="attemptTeamSwitch(4)">
+				<DOTAHeroImage id="player4_Icon" class="playerIcon" heroname="" heroimagestyle="landscape" />
+				<Image id="player4_Dis" src="s2r://panorama/images/custom_game/icon_disconnect_png.vtex" hittest="false" class="playerDis"/>
+				<Label id="player4_Name" text="PLAYER_NAME" class="playerNameFont"/>
 			</Panel>
-			<Panel id="ListDivider5" class= "ListDivider" onactivate="AttemptTeamSwitch(5)">
-				<DOTAHeroImage id="Player5_Icon" class="PlayerIcon" heroname="" heroimagestyle="landscape" />
-				<Image id="Player5_Dis" src="s2r://panorama/images/custom_game/icon_disconnect_png.vtex" hittest="false" class="PlayerDis"/>
-				<Label id="Player5_Name" text="PLAYER_NAME" class="PlayerNameFont"/>
+			<Panel id="listDivider5" class= "listDivider" onactivate="attemptTeamSwitch(5)">
+				<DOTAHeroImage id="player5_Icon" class="playerIcon" heroname="" heroimagestyle="landscape" />
+				<Image id="player5_Dis" src="s2r://panorama/images/custom_game/icon_disconnect_png.vtex" hittest="false" class="playerDis"/>
+				<Label id="player5_Name" text="PLAYER_NAME" class="playerNameFont"/>
 			</Panel>
 		</Panel>
-		<Panel id='BalanceWarning' class= "hidden">
-			<Label id="BalanceWarningDescription" text="Teams have become unbalanced. Press switch to nominate yourself to switch to the enemy side."/>
+		<Panel id="balanceWarning" class= "hidden">
+			<Label id="balanceWarningDescription" text="Teams have become unbalanced. Press switch to nominate yourself to switch to the enemy side."/>
 		</Panel>
 	</Panel>
 </root>
