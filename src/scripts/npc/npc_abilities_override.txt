@@ -1,5 +1,10 @@
 "DOTAAbilities"
 {
+	"tusk_walrus_kick"
+	 {
+        	"RequiredLevel"            "3"
+	 } 
+	 
 	"abyssal_underlord_atrophy_aura"
 	 {
         	"AbilityTextureName"            "Atrophy_Aura"
