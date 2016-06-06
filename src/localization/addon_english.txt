@@ -282,7 +282,7 @@
     "hintBreakPassives"                             "Silver Edge, Doom and Demonic Purge are the only ways to disable enemy passives - which can be very useful against passive-heavy heroes, such as Tanks."
     "hintInnateAbilities"                           "Night Stalker, Gyrocopter, Elazor and Meepo will benefit from Aghanim's Scepter Upgrade, irrespective of their chosen abilities."
     "hintReport"                                    "Please report Bugs and Troll Combos so that LoD can continue to improve! Use the Steam Workshop page or the GitHub page to make your reports."
-    "hintMemoryLeak"                                "If you are experiencing crashing, it is probably due to a memory leak issue with the GUI. The developer is working hard to fix this. Restarting Dota2 is a short-term fix for this memory build-up issue."
+    "hintMemoryLeak"                                "If you are experiencing crashing, it is probably due to a memory leak issue with the GUI. The developer is working hard to fix this. Restarting Dota 2 is a short-term fix for this memory build-up issue."
     
     // Hero builder
     "finishBanning"                                 "Finish Banning"
