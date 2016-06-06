@@ -83,6 +83,9 @@ function onGetPlayerStats(table_name, key, data) {
     }, {
         img: 'file://{images}/spellicons/weaver_the_swarm.png',
         txt: '#hintReport'
+    }, {
+        img: 'file://{images}/spellicons/keeper_of_the_light_mana_leak.png',
+        txt: '#hintMemoryLeak'
     }];
 
     // How long to wait before we show the next tip
