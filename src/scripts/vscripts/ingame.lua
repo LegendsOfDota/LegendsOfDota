@@ -9,12 +9,22 @@ local Ingame = class({})
 
 -- Init Ingame stuff, sets up all ingame related features
 function Ingame:init()
+    local this = self
     -- Init everything
     self:handleRespawnModifier()
     self:initGoldBalancer()
 
     -- Setup standard rules
     GameRules:GetGameModeEntity():SetTowerBackdoorProtectionEnabled(true)
+
+    -- Balance Player
+    CustomGameEventManager:RegisterListener('attemptSwitchTeam', function(eventSourceIndex, args)
+        this:switchTeam(eventSourceIndex, args)
+    end)
+
+    CustomGameEventManager:RegisterListener( "ask_custom_team_info", function(eventSourceIndex, args)
+        this:returnCustomTeams(eventSourceIndex, args)
+    end)
 
     -- Precache orgre magi stuff
     PrecacheUnitByNameAsync('npc_precache_npc_dota_hero_ogre_magi', function()
@@ -59,11 +69,26 @@ function Ingame:onStart()
     end, nil)
 end
 
+function Ingame:returnCustomTeams(eventSourceIndex, args)
+    local playerCount = PlayerResource:GetPlayerCount();
+    local customTeamAssignments = {};
+
+    for playerID = 0, playerCount do
+        customTeamAssignments[playerID] = PlayerResource:GetCustomTeamAssignment(playerID);
+    end
+
+    CustomGameEventManager:Send_ServerToAllClients( "send_custom_team_info", customTeamAssignments )
+end
+
+function Ingame:switchTeam(eventSourceIndex, args)
+    local this = self
+    this:balancePlayer(args.swapID, args.newTeam)
+end
+
 -- Balances a player onto another team
 function Ingame:balancePlayer(playerID, newTeam)
     -- Balance the player
     PlayerResource:SetCustomTeamAssignment(playerID, newTeam)
-
     -- Balance their hero
     local hero = PlayerResource:GetSelectedHeroEntity(playerID)
     if IsValidEntity(hero) then
