@@ -497,6 +497,8 @@
     "warning_ogre_magi_multicast" "<font color=\"#FF4949\">LoD Warning:</font> Only works with <font color=\"#70EA72\">Fireblast, Ignire, Bloodlust</font> and <font color=\"#70EA72\">Unrefined Fireblast</font>. Aghanim's Scepter will not give <font color=\"#70EA72\">Unrefined Fireblast</font> as an extra ability."
     "warning_ogre_magi_multicast_lod" "<font color=\"#FF4949\">LoD Warning:</font> This ability will not have a cooldown if OP abilities are enabled. Aghanim's Scepter will not give <font color=\"#70EA72\">Unrefined Fireblast</font> as an extra ability."
     "warning_meepo_poof" "<font color=\"#FF4949\">LoD Warning:</font> Can teleport to any ally who has the same hero as you."
+	"warning_morphling_morph_str_lod"  "<font color=\"#FF4949\">LoD Warning:</font> This Ability Includes <font color=\"#70EA72\">Morph(Agility Gain)</font>. To activate the Attribute shift Auto-cast the ability. To swap between Strength and Agility Morph cast it."
+	"warning_morphling_morph_agi_lod"  "<font color=\"#FF4949\">LoD Warning:</font> To activate the Attribute shift Auto-cast the ability. To swap between Strength and Agility Morph cast it."
 
     /////////////////
     // CUSTOM ABILITIES
@@ -878,6 +880,28 @@
     "DOTA_Tooltip_modifier_slark_essence_shift_intellect_datadriven_buff_counter_Description"				"Stealing %dMODIFIER_PROPERTY_STATS_INTELLECT_BONUS% intelligence."
     "DOTA_Tooltip_modifier_slark_essence_shift_intellect_datadriven_debuff_counter"			"Essence Shift"
     "DOTA_Tooltip_modifier_slark_essence_shift_intellect_datadriven_debuff_counter_Description"	"Losing %dMODIFIER_PROPERTY_STATS_STRENGTH_BONUS% of each attribute."
+	
+	//Strength Morph Lod
+	"DOTA_Tooltip_ability_morphling_morph_str_lod"								"MORPH (STRENGTH GAIN)"
+	"DOTA_Tooltip_ability_morphling_morph_str_lod_Lore"							"Shifting water makes it difficult to discern the nature of Morphling."
+	"DOTA_Tooltip_ability_morphling_morph_str_lod_Note0"						"Continues to convert agility to strength even while disabled."
+	"DOTA_Tooltip_ability_morphling_morph_str_lod_Note1"						"Can only convert base strength. Bonus strength cannot be converted."
+	"DOTA_Tooltip_ability_morphling_morph_str_lod_Description"					"Morphling shifts its form, pulling points from Agility and pouring them into Strength. The process is reversible. Additional points in Morph increase the rate of stat change. Passively grants bonus Strength."
+	"DOTA_Tooltip_ability_morphling_morph_str_lod_shiftRate"					"SHIFT RATE:"
+	"DOTA_Tooltip_ability_morphling_morph_str_lod_pointsPerShift"				"POINTS PER SHIFT:"
+	"DOTA_Tooltip_ability_morphling_morph_str_lod_bonusAttributes"				"BONUS STRENGTH:"
+	"DOTA_Tooltip_ability_morphling_morph_str_lod_manaCostPerSecond"			"MANA COST PER SECOND:"
+	
+	//Agility Morph Lod
+	"DOTA_Tooltip_ability_morphling_morph_agi_lod"								"MORPH (AGILITY GAIN)"
+	"DOTA_Tooltip_ability_morphling_morph_str_lod_Lore"							"Shifting water makes it difficult to discern the nature of Morphling."
+	"DOTA_Tooltip_ability_morphling_morph_agi_lod_Note0"						"Continues to convert strength to agility even while disabled."
+	"DOTA_Tooltip_ability_morphling_morph_agi_lod_Note1"						"Can only convert base agility. Bonus agility cannot be converted."
+	"DOTA_Tooltip_ability_morphling_morph_agi_lod_Description"					"Morphling shifts its form, pulling points from Strength and pouring them into Agility. The process is reversible. Additional points in Morph increase the rate of stat change. Passively grants bonus Agility."
+	"DOTA_Tooltip_ability_morphling_morph_agi_lod_shiftRate"					"SHIFT RATE:"
+	"DOTA_Tooltip_ability_morphling_morph_agi_lod_pointsPerShift"				"POINTS PER SHIFT:"
+	"DOTA_Tooltip_ability_morphling_morph_agi_lod_bonusAttributes"				"BONUS AGILITY:"
+	"DOTA_Tooltip_ability_morphling_morph_agi_lod_manaCostPerSecond"			"MANA COST PER SECOND:"
 
     "DOTA_Tooltip_ability_death_prophet_witchcraft"                                 "Witchcraft"
     "DOTA_Tooltip_ability_death_prophet_witchcraft_Description"                     "Decreases the cooldowns of abilities by upto 4 seconds, a cooldown can not be lowered below 1 second. The Witchcraft cooldown reduction is applied before octarine core reduction."
