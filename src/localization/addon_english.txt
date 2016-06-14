@@ -498,7 +498,7 @@
     "warning_ogre_magi_multicast_lod" "<font color=\"#FF4949\">LoD Warning:</font> This ability will not have a cooldown if OP abilities are enabled. Aghanim's Scepter will not give <font color=\"#70EA72\">Unrefined Fireblast</font> as an extra ability."
     "warning_meepo_poof" "<font color=\"#FF4949\">LoD Warning:</font> Can teleport to any ally who has the same hero as you."
 	"warning_morphling_morph_str_lod"  "<font color=\"#FF4949\">LoD Warning:</font> This Ability Includes <font color=\"#70EA72\">Morph(Agility Gain)</font>. To activate the Attribute shift Auto-cast the ability. To swap between Strength and Agility Morph cast it."
-	"warning_morphling_morph_agi_lod"  "<font color=\"#FF4949\">LoD Warning:</font> To activate the Attribute shift Auto-cast the ability. To swap between Strength and Agility Morph cast it."
+	"warning_morphling_morph_agi_lod"  "<font color=\"#FF4949\">LoD Warning:</font> This Ability Includes <font color=\"#70EA72\">Morph(Strength Gain)</font>. To activate the Attribute shift Auto-cast the ability. To swap between Agility and Strength Morph cast it."
 
     /////////////////
     // CUSTOM ABILITIES
