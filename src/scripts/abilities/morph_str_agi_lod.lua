@@ -58,26 +58,18 @@ function strengthMorph( event )
 	local shiftRate = event.shiftRate
 	local manaCost = event.manaCostPerSecond * shiftRate
 	
-	local activeState = false
-	
 	--If conditions are met Strength Morph begins.
-	if autoCastStatus == true and caster:IsHero() and caster:GetMana() >= manaCost and baseAgility >= pointsPerTick + 1  then
-		caster:SpendMana(manaCost, ability)
-		caster:SetBaseStrength(baseStrength + pointsPerTick)
-		caster:SetBaseAgility(baseAgility - pointsPerTick)
-		caster:CalculateStatBonus()
-		if activeState == false then
-			activeState = true
-		end
-	else
-		if activeState == true then
-			activeState = false
-		end
-	end
-
 	--Starts and stops Sound and Particles.
-	if activeState == true then
+	if autoCastStatus == true then
+	
 		ability:ApplyDataDrivenModifier(caster, caster, "str_morph_particle", nil)
+		
+		if caster:IsHero() and caster:GetMana() >= manaCost and baseAgility >= pointsPerTick + 1  then
+			caster:SpendMana(manaCost, ability)
+			caster:SetBaseStrength(baseStrength + pointsPerTick)
+			caster:SetBaseAgility(baseAgility - pointsPerTick)
+			caster:CalculateStatBonus()
+		end
 	else
 		caster:StopSound("Hero_Morphling.MorphStrengh")
 		caster:RemoveModifierByName("str_morph_particle")
@@ -98,31 +90,24 @@ function agilityMorph( event )
 	local shiftRate = event.shiftRate
 	local manaCost = event.manaCostPerSecond * shiftRate
 	
-	local activeState = false
-	
 	--If conditions are met Agility Morph begins.
-	if autoCastStatus == true and caster:IsHero() and caster:GetMana() >= manaCost and baseStrength >= pointsPerTick + 1 then
-		caster:SpendMana(manaCost, ability)
-		caster:SetBaseStrength(baseStrength - pointsPerTick)
-		caster:SetBaseAgility(baseAgility + pointsPerTick)
-		caster:CalculateStatBonus()
-		if	activeState == false then
-			activeState = true
-		end
-	else
-		if activeState == true then
-			activeState = false
-		end
-	end
-	
 	--Starts and stops Sound and Particles.
-	if activeState == true then
+	if autoCastStatus == true then
+	
 		ability:ApplyDataDrivenModifier(caster, caster, "agi_morph_particle", nil)
+		
+		if caster:IsHero() and caster:GetMana() >= manaCost and baseStrength >= pointsPerTick + 1 then
+			caster:SpendMana(manaCost, ability)
+			caster:SetBaseStrength(baseStrength - pointsPerTick)
+			caster:SetBaseAgility(baseAgility + pointsPerTick)
+			caster:CalculateStatBonus()
+		end
 	else
 		caster:StopSound("Hero_Morphling.MorphAgility")
 		caster:RemoveModifierByName("agi_morph_particle")
 	end
 end
+	
 
 --Turns of auto-cast when owner dies.
 function whenCasterDies( event )
