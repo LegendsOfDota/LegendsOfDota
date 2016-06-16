@@ -4,48 +4,88 @@ Autor: TheRisen41
 Date: 10.06.16
 ]]
 
---Swaps Strength Morph with Agility Morph and turns off auto-cast if necessary.
-function swapStrToAgi( event )
-			
-		local caster = event.caster	
-		local ability = event.ability
-		
-		local main_ability_name = ability:GetAbilityName()
-		local sub_ability_name = event.sub_ability_name
-		
-		--Swaps Abilities		
-		caster:SwapAbilities(main_ability_name, sub_ability_name, false, true)
-		
-		local autoCastStatusMain = ability:GetAutoCastState()
-		
-		--Turns off auto-cast if it was left on.
-		if autoCastStatusMain == true then
-			ability:ToggleAutoCast()
-		end
+function OnToggleOnSTR( event )
+
+	local caster = event.caster
+	local ability = event.ability
+	
+	ability:ApplyDataDrivenModifier(caster, caster, "modifier_str_morph_trigger_lod", nil)
 end
 
---Swaps Agility Morph with Strength Morph and turns off auto-cast if necessary.
-function swapAgiToStr( event )
-			
-		local caster = event.caster	
-		local sub_ability = event.ability
-		
-		local main_ability_name = event.main_ability_name
-		local sub_ability_name = sub_ability:GetAbilityName()
-		
-		--Swaps Abilities
-		caster:SwapAbilities(main_ability_name, sub_ability_name, true, false)
-		
-		local autoCastStatusSub = sub_ability:GetAutoCastState()
-		
-		--Turns off auto-cast if it was left on.
-		if autoCastStatusSub == true then
-			sub_ability:ToggleAutoCast()
-		end
+function OnToggleOffSTR( event )
+
+	local caster = event.caster
+	local ability = event.ability
+	
+	caster:RemoveModifierByName("modifier_str_morph_trigger_lod")
+	caster:StopSound("Hero_Morphling.MorphStrengh")
 end
 
---Starts the Strength Morph if auto-cast is on and applies Particels and Sound.
-function strengthMorph( event )
+function OnToggleOnAGI( event )
+
+	local caster = event.caster
+	local ability = event.ability
+	
+	ability:ApplyDataDrivenModifier(caster, caster, "modifier_agi_morph_trigger_lod", nil)
+end
+
+
+function OnToggleOffAGI( event )
+
+	local caster = event.caster
+	local ability = event.ability
+	
+	caster:RemoveModifierByName("modifier_agi_morph_trigger_lod")
+	caster:StopSound("Hero_Morphling.MorphAgility")
+end
+
+--Swaps Strength Morph and Agility Morph dependend on the Autocaststatus.
+function SwapAbilities( event )
+		
+	local caster = event.caster	
+	
+	local ability1 = event.ability
+	local ability1_name = ability1:GetAbilityName()
+	
+	local ability2_name = event.ability2_name
+	local ability2 = caster:FindAbilityByName(ability2_name)
+	
+	local autoCastStatus1 = ability1:GetAutoCastState()
+	local autoCastStatus2 = ability2:GetAutoCastState()
+	
+	local toggleState1 = ability1:GetToggleState()
+	local toggleState2 = ability2:GetToggleState()
+
+	local ability1Index = ability1:GetAbilityIndex()
+	local ability2Index = ability2:GetAbilityIndex()
+	
+	--print("A1 Index = "..ability1Index..", A2 Index = "..ability2Index)
+	
+	if autoCastStatus1 == true and ability2Index > ability1Index then
+			caster:SwapAbilities(ability1_name, ability2_name, false, true)
+		if autoCastStatus2 == false then
+			ability2:ToggleAutoCast()
+		end
+		if toggleState1 == true and toggleState2 == false then
+			ability1:ToggleAbility()
+			ability2:ToggleAbility()
+		end
+	end
+
+	if autoCastStatus2 == false and ability2Index < ability1Index then
+		caster:SwapAbilities(ability1_name, ability2_name, true, false)
+		if autoCastStatus1 == true then
+			ability1:ToggleAutoCast()
+		end
+		if toggleState2 == true and toggleState1 == false then
+			ability1:ToggleAbility()
+			ability2:ToggleAbility()
+		end
+	end
+end
+
+--Starts the Strength Morph.
+function StrengthMorph( event )
 
 	local caster = event.caster
 	local ability = event.ability
@@ -58,26 +98,17 @@ function strengthMorph( event )
 	local shiftRate = event.shiftRate
 	local manaCost = event.manaCostPerSecond * shiftRate
 	
-	--If conditions are met Strength Morph begins.
-	--Starts and stops Sound and Particles.
-	if autoCastStatus == true then
-	
-		ability:ApplyDataDrivenModifier(caster, caster, "str_morph_particle", nil)
-		
-		if caster:IsHero() and caster:GetMana() >= manaCost and baseAgility >= pointsPerTick + 1  then
-			caster:SpendMana(manaCost, ability)
-			caster:SetBaseStrength(baseStrength + pointsPerTick)
-			caster:SetBaseAgility(baseAgility - pointsPerTick)
-			caster:CalculateStatBonus()
-		end
-	else
-		caster:StopSound("Hero_Morphling.MorphStrengh")
-		caster:RemoveModifierByName("str_morph_particle")
+	--If conditions are met Strength Morph begins.		
+	if caster:IsHero() and caster:GetMana() >= manaCost and baseAgility >= pointsPerTick + 1  then
+		caster:SpendMana(manaCost, ability)
+		caster:SetBaseStrength(baseStrength + pointsPerTick)
+		caster:SetBaseAgility(baseAgility - pointsPerTick)
+		caster:CalculateStatBonus()
 	end
 end
 
---Starts the Agility Morph if auto-cast is on and applies Particels and Sound.
-function agilityMorph( event )
+--Starts the Agility Morph.
+function AgilityMorph( event )
 	
 	local caster = event.caster
 	local ability = event.ability
@@ -91,36 +122,26 @@ function agilityMorph( event )
 	local manaCost = event.manaCostPerSecond * shiftRate
 	
 	--If conditions are met Agility Morph begins.
-	--Starts and stops Sound and Particles.
-	if autoCastStatus == true then
-	
-		ability:ApplyDataDrivenModifier(caster, caster, "agi_morph_particle", nil)
-		
-		if caster:IsHero() and caster:GetMana() >= manaCost and baseStrength >= pointsPerTick + 1 then
-			caster:SpendMana(manaCost, ability)
-			caster:SetBaseStrength(baseStrength - pointsPerTick)
-			caster:SetBaseAgility(baseAgility + pointsPerTick)
-			caster:CalculateStatBonus()
-		end
-	else
-		caster:StopSound("Hero_Morphling.MorphAgility")
-		caster:RemoveModifierByName("agi_morph_particle")
+	if caster:IsHero() and caster:GetMana() >= manaCost and baseStrength >= pointsPerTick + 1 then
+		caster:SpendMana(manaCost, ability)
+		caster:SetBaseStrength(baseStrength - pointsPerTick)
+		caster:SetBaseAgility(baseAgility + pointsPerTick)
+		caster:CalculateStatBonus()
 	end
 end
 	
 
---Turns of auto-cast when owner dies.
-function whenCasterDies( event )
+--Turns off Toggle when owner dies.
+function WhenCasterDies( event )
 	
-	print("OWNER IS DEAD!!!!")
 	local caster = event.caster
 	local ability_name = event.ability_name
 	local ability = event.ability
 	
 	local ability2 = caster:FindAbilityByName(ability_name)
 	
-	local ability1State = ability:GetAutoCastState()
-	local ability2State = ability2:GetAutoCastState()
+	local ability1State = ability:GetToggleState()
+	local ability2State = ability2:GetToggleState()
 	
 	if ability1State == true then
 		ability:ToggleAutoCast()
@@ -132,7 +153,7 @@ function whenCasterDies( event )
 end
 
 --Upgrades corresponing Ability and re-applies the modifier to update the values.
-function upgradeAbility( event )
+function UpgradeAbility( event )
 	
 	local caster = event.caster
 	
@@ -153,7 +174,11 @@ function upgradeAbility( event )
 	local modifier_name = event.modifier_name
 	--print(modifier_name)
 	
+	local toggleState = ability1:GetToggleState()
+	
 	--Reapply modifier to update values.
-	caster:RemoveModifierByNameAndCaster(modifier_name, caster)
-	ability1:ApplyDataDrivenModifier(caster, caster, modifier_name, nil)
+	if toggleState == true then
+		caster:RemoveModifierByNameAndCaster(modifier_name, caster)
+		ability1:ApplyDataDrivenModifier(caster, caster, modifier_name, nil)
+	end
 end

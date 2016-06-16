@@ -497,8 +497,8 @@
     "warning_ogre_magi_multicast" "<font color=\"#FF4949\">LoD Warning:</font> Only works with <font color=\"#70EA72\">Fireblast, Ignire, Bloodlust</font> and <font color=\"#70EA72\">Unrefined Fireblast</font>. Aghanim's Scepter will not give <font color=\"#70EA72\">Unrefined Fireblast</font> as an extra ability."
     "warning_ogre_magi_multicast_lod" "<font color=\"#FF4949\">LoD Warning:</font> This ability will not have a cooldown if OP abilities are enabled. Aghanim's Scepter will not give <font color=\"#70EA72\">Unrefined Fireblast</font> as an extra ability."
     "warning_meepo_poof" "<font color=\"#FF4949\">LoD Warning:</font> Can teleport to any ally who has the same hero as you."
-	"warning_morphling_morph_str_lod"  "<font color=\"#FF4949\">LoD Warning:</font> To activate the Attribute shift Auto-cast the ability. To swap between Strength and Agility Morph cast it."
-	"warning_morphling_morph_agi_lod"  "<font color=\"#FF4949\">LoD Warning:</font> To activate the Attribute shift Auto-cast the ability. To swap between Agility and Strength Morph cast it."
+	"warning_morphling_morph_str_lod"  "<font color=\"#FF4949\">LoD Warning:</font> To activate the Attribute shift Toggle it. To swap between Strength and Agility Morph Auto-Cast it."
+	"warning_morphling_morph_agi_lod"  "<font color=\"#FF4949\">LoD Warning:</font> To activate the Attribute shift Toggle it. To swap between Agility and Strength Morph Auto-Cast it."
 
     /////////////////
     // CUSTOM ABILITIES
@@ -891,6 +891,8 @@
 	"DOTA_Tooltip_ability_morphling_morph_str_lod_pointsPerShift"				"POINTS PER SHIFT:"
 	"DOTA_Tooltip_ability_morphling_morph_str_lod_bonusAttributes"				"BONUS STRENGTH:"
 	"DOTA_Tooltip_ability_morphling_morph_str_lod_manaCostPerSecond"			"MANA COST PER SECOND:"
+	"DOTA_Tooltip_modifier_str_morph_trigger_lod"								"MORPH STRENGTH"
+	"DOTA_Tooltip_modifier_str_morph_trigger_lod_Description"					"Gaining strength at the cost of agility"
 	
 	//Agility Morph Lod
 	"DOTA_Tooltip_ability_morphling_morph_agi_lod"								"MORPH (AGILITY GAIN)"
@@ -902,6 +904,8 @@
 	"DOTA_Tooltip_ability_morphling_morph_agi_lod_pointsPerShift"				"POINTS PER SHIFT:"
 	"DOTA_Tooltip_ability_morphling_morph_agi_lod_bonusAttributes"				"BONUS AGILITY:"
 	"DOTA_Tooltip_ability_morphling_morph_agi_lod_manaCostPerSecond"			"MANA COST PER SECOND:"
+	"DOTA_Tooltip_modifier_agi_morph_trigger_lod"								"MORPH AGILITY"
+	"DOTA_Tooltip_modifier_agi_morph_trigger_lod_Description"					"Gaining agility at the cost of strength"
 
     "DOTA_Tooltip_ability_death_prophet_witchcraft"                                 "Witchcraft"
     "DOTA_Tooltip_ability_death_prophet_witchcraft_Description"                     "Decreases the cooldowns of abilities by upto 4 seconds, a cooldown can not be lowered below 1 second. The Witchcraft cooldown reduction is applied before octarine core reduction."
