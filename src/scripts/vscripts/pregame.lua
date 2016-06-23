@@ -3099,9 +3099,14 @@ function Pregame:checkForReady()
     local maxTime = OptionManager:GetOption('pickingTime')
     local minTime = 3
 
+    -- Instantly start selection phase if only host can ban
+    local hostBanningAccepted
+
     -- If we are in the banning phase
     if self:getPhase() == constants.PHASE_BANNING then
         maxTime = OptionManager:GetOption('banningTime')
+
+        hostBanningAccepted = (self.optionStore['lodOptionBanningHostBanning'] == 1 and self.isReady[Pregame:getHostPlayer():GetPlayerID()] == 1)
     end
 
     -- If we are in the random phase
@@ -3133,7 +3138,7 @@ function Pregame:checkForReady()
         -- Someone is ready, timer should be moving
 
         -- Is time currently frozen?
-        if self.freezeTimer ~= nil then
+        if self.freezeTimer ~= nil and not hostBanningAccepted then
             -- Start the clock
 
             if readyPlayers >= totalPlayers then
@@ -3147,9 +3152,7 @@ function Pregame:checkForReady()
             -- Check if we can lower the timer
 
             -- If everyone is ready, set the remaining time to be the min
-            if readyPlayers >= totalPlayers or 
-                (self.optionStore['lodOptionBanningHostBanning'] == 1 and self.isReady[Pregame:getHostPlayer():GetPlayerID()] == 1) then -- Hack to instantly start selection phase if only host can ban
-
+            if readyPlayers >= totalPlayers or hostBanningAccepted then
                 if currentTime > minTime then
                     self:setEndOfPhase(Time() + minTime)
                 end
