@@ -852,6 +852,13 @@
     "DOTA_Tooltip_ability_earthshaker_aftershock_lod_aftershock_range"                  "RADIUS:"
     "DOTA_Tooltip_ability_earthshaker_aftershock_lod_tooltip_duration"                  "DURATION:"
 
+    // Rearm
+    "DOTA_Tooltip_ability_tinker_rearm_lod"                                   "Rearm"
+    "DOTA_Tooltip_ability_tinker_rearm_lod_Description"                       "CHANNELED - Removes 30 seconds from the cooldown on most of Tinker's items and abilities."
+    "DOTA_Tooltip_ability_tinker_rearm_lod_Lore"                              "A new battery here, another set of rockets there, Boush continually improves on existing technology."
+    "DOTA_Tooltip_ability_tinker_rearm_lod_Note0"				      "Rearm works on all items except Black King Bar, Arcane Boots, Helm of the Dominator, Hand of Midas, Refresher Orb, Linken's Sphere, and Necronomicon."
+    "DOTA_Tooltip_ability_tinker_rearm_lod_channel_tooltip"			      "TIME TO REARM:"
+
     // Essence Shift
     "DOTA_Tooltip_ability_slark_essence_shift_strength_lod"                                             "Essence Shift - Strength"
     "DOTA_Tooltip_ability_slark_essence_shift_strength_lod_Description"					"Slark steals the life essence of enemy heroes with his attacks, draining each of their attributes and converting them to bonus Strength."
