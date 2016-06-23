@@ -886,4 +886,13 @@
     //"DOTA_Tooltip_ability_death_prophet_witchcraft_carrion_swarm_mana_cost_adjust"    "MANA COST DECREASE:"
     //"DOTA_Tooltip_ability_death_prophet_witchcraft_exorcism_1_extra_spirits"      "ADDED EXORCISM SPIRITS:"
     //"DOTA_Tooltip_ability_death_prophet_witchcraft_bonus_movement_speed"          "%MOVEMENT SPEED:"
+    
+    // global break
+    "DOTA_Tooltip_modifier_silencer_global_break"                                              "Global Break"
+    "DOTA_Tooltip_modifier_silencer_global_break_Description"                                  "Disables abilities"
+    "DOTA_Tooltip_ability_silencer_global_break"                                               "Global Break"
+    "DOTA_Tooltip_ability_silencer_global_break_Description"                                   "This Hero breaks heroes on the map, disabling most passive abilities for the duration."
+    "DOTA_Tooltip_modifier_silencer_global_break_duration"                                      "DURATION:"
+		
+
 }
