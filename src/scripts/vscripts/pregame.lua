@@ -3147,7 +3147,9 @@ function Pregame:checkForReady()
             -- Check if we can lower the timer
 
             -- If everyone is ready, set the remaining time to be the min
-            if readyPlayers >= totalPlayers then
+            if readyPlayers >= totalPlayers or 
+                (self.optionStore['lodOptionBanningHostBanning'] == 1 and self.isReady[Pregame:getHostPlayer():GetPlayerID()] == 1) then -- Hack to instantly start selection phase if only host can ban
+
                 if currentTime > minTime then
                     self:setEndOfPhase(Time() + minTime)
                 end
@@ -3960,6 +3962,22 @@ function Pregame:getActivePlayers()
     end
 
     return total
+end
+
+-- Get host player
+function Pregame:getHostPlayer()
+    local player
+
+    for i=0,24 do
+        if PlayerResource:IsValidPlayer(i) and PlayerResource:GetConnectionState(i) == 2 then
+            player = PlayerResource:GetPlayer(i)
+            if GameRules:PlayerHasCustomGameHostPrivileges(player) then
+                break
+            end
+        end
+    end
+
+    return player
 end
 
 -- Adds extra towers
