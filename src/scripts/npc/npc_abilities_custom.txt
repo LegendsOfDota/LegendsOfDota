@@ -2480,7 +2480,7 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_datadriven"
-		"AbilityTextureName"			"Morph_Str_icon"
+		"AbilityTextureName"			"morphling_morph_str"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_TOGGLE | DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
 				
 		"AbilityType"					"DOTA_ABILITY_TYPE_BASIC"
@@ -2520,7 +2520,7 @@
 			"RunScript"
 			{
 				"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
-				"Function"				"OnToggleOnSTR"
+				"Function"				"onToggleOnSTR"
 			}
 		}
 		"OnToggleOff"
@@ -2528,7 +2528,7 @@
 			"RunScript"
 			{
 				"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
-				"Function"				"OnToggleOffSTR"
+				"Function"				"onToggleOffSTR"
 			}
 		}
 		"OnOwnerDied"
@@ -2536,8 +2536,8 @@
 			"RunScript"
 			{
 				"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
-				"Function"				"WhenCasterDies"
-				"ability_name"			"morphling_morph_agi_lod"
+				"Function"				"onOwnerDied"
+				"abilityName"			"morphling_morph_agi_lod"
 			}
 		}
 		"OnUpgrade"
@@ -2545,9 +2545,9 @@
 			"RunScript"
 			{
 				"ScriptFile"		"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
-				"Function"			"UpgradeAbility"
-				"ability_name"		"morphling_morph_agi_lod"
-				"modifier_name"		"modifier_str_morph_trigger_lod"
+				"Function"			"upgradeAbility"
+				"abilityName"		"morphling_morph_agi_lod"
+				"modifierName"		"modifier_str_morph_trigger_lod"
 			}
 		}
 		"Modifiers"
@@ -2574,7 +2574,7 @@
 					"RunScript"
 					{
 						"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
-						"Function"				"StrengthMorph"
+						"Function"				"strengthMorph"
 						"pointsPerTick"			"%pointsPerShift"
 						"manaCostPerSecond"		"%manaCostPerSecond"
 						"shiftRate"				"%shiftRate"
@@ -2602,8 +2602,8 @@
 					"RunScript"
 					{
 						"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
-						"Function"				"SwapAbilities"
-						"ability2_name"			"morphling_morph_agi_lod"
+						"Function"				"swapAbilities"
+						"ability2Name"			"morphling_morph_agi_lod"
 					}
 				}	
 			}
@@ -2622,7 +2622,7 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass"						"ability_datadriven"
-		"AbilityTextureName"			"Morph_Agi_icon"
+		"AbilityTextureName"			"morphling_morph_agi"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_TOGGLE | DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
 				
 		"AbilityType"					"DOTA_ABILITY_TYPE_BASIC"
@@ -2662,7 +2662,7 @@
 			"RunScript"
 			{
 				"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
-				"Function"				"OnToggleOnAGI"
+				"Function"				"onToggleOnAGI"
 			}
 		}
 		"OnToggleOff"
@@ -2670,7 +2670,7 @@
 			"RunScript"
 			{
 				"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
-				"Function"				"OnToggleOffAGI"
+				"Function"				"onToggleOffAGI"
 			}
 		}
 		"OnOwnerDied"
@@ -2678,8 +2678,8 @@
 			"RunScript"
 			{
 				"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
-				"Function"				"WhenCasterDies"
-				"ability_name"			"morphling_morph_str_lod"
+				"Function"				"onOwnerDied"
+				"abilityName"			"morphling_morph_str_lod"
 			}
 		}
 		"OnUpgrade"
@@ -2687,9 +2687,9 @@
 			"RunScript"
 			{
 				"ScriptFile"		"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
-				"Function"			"UpgradeAbility"
-				"ability_name"		"morphling_morph_str_lod"
-				"modifier_name"		"modifier_agi_morph_trigger_lod"
+				"Function"			"upgradeAbility"
+				"abilityName"		"morphling_morph_str_lod"
+				"modifierName"		"modifier_agi_morph_trigger_lod"
 			}
 		}
 		"Modifiers"
@@ -2705,7 +2705,7 @@
 					"RunScript"
 					{
 						"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
-						"Function"				"AgilityMorph"
+						"Function"				"agilityMorph"
 						"pointsPerTick"			"%pointsPerShift"
 						"manaCostPerSecond"		"%manaCostPerSecond"
 						"shiftRate"				"%shiftRate"

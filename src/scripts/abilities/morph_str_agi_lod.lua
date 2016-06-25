@@ -1,10 +1,4 @@
---[[
-Title: Lua Script for bidirectional version of Morph(Strength and Agility)
-Autor: TheRisen41
-Date: 10.06.16
-]]
-
-function OnToggleOnSTR( event )
+function onToggleOnSTR( event )
 
 	local caster = event.caster
 	local ability = event.ability
@@ -12,7 +6,7 @@ function OnToggleOnSTR( event )
 	ability:ApplyDataDrivenModifier(caster, caster, "modifier_str_morph_trigger_lod", nil)
 end
 
-function OnToggleOffSTR( event )
+function onToggleOffSTR( event )
 
 	local caster = event.caster
 	local ability = event.ability
@@ -21,7 +15,7 @@ function OnToggleOffSTR( event )
 	caster:StopSound("Hero_Morphling.MorphStrengh")
 end
 
-function OnToggleOnAGI( event )
+function onToggleOnAGI( event )
 
 	local caster = event.caster
 	local ability = event.ability
@@ -30,7 +24,7 @@ function OnToggleOnAGI( event )
 end
 
 
-function OnToggleOffAGI( event )
+function onToggleOffAGI( event )
 
 	local caster = event.caster
 	local ability = event.ability
@@ -40,15 +34,15 @@ function OnToggleOffAGI( event )
 end
 
 --Swaps Strength Morph and Agility Morph dependend on the Autocaststatus.
-function SwapAbilities( event )
+function swapAbilities( event )
 		
 	local caster = event.caster	
 	
 	local ability1 = event.ability
-	local ability1_name = ability1:GetAbilityName()
+	local ability1Name = ability1:GetAbilityName()
 	
-	local ability2_name = event.ability2_name
-	local ability2 = caster:FindAbilityByName(ability2_name)
+	local ability2Name = event.ability2Name
+	local ability2 = caster:FindAbilityByName(ability2Name)
 	
 	local autoCastStatus1 = ability1:GetAutoCastState()
 	local autoCastStatus2 = ability2:GetAutoCastState()
@@ -59,10 +53,8 @@ function SwapAbilities( event )
 	local ability1Index = ability1:GetAbilityIndex()
 	local ability2Index = ability2:GetAbilityIndex()
 	
-	--print("A1 Index = "..ability1Index..", A2 Index = "..ability2Index)
-	
 	if autoCastStatus1 == true and ability2Index > ability1Index then
-			caster:SwapAbilities(ability1_name, ability2_name, false, true)
+			caster:SwapAbilities(ability1Name, ability2Name, false, true)
 		if autoCastStatus2 == false then
 			ability2:ToggleAutoCast()
 		end
@@ -73,7 +65,7 @@ function SwapAbilities( event )
 	end
 
 	if autoCastStatus2 == false and ability2Index < ability1Index then
-		caster:SwapAbilities(ability1_name, ability2_name, true, false)
+		caster:SwapAbilities(ability1Name, ability2Name, true, false)
 		if autoCastStatus1 == true then
 			ability1:ToggleAutoCast()
 		end
@@ -85,7 +77,7 @@ function SwapAbilities( event )
 end
 
 --Starts the Strength Morph.
-function StrengthMorph( event )
+function strengthMorph( event )
 
 	local caster = event.caster
 	local ability = event.ability
@@ -108,7 +100,7 @@ function StrengthMorph( event )
 end
 
 --Starts the Agility Morph.
-function AgilityMorph( event )
+function agilityMorph( event )
 	
 	local caster = event.caster
 	local ability = event.ability
@@ -132,13 +124,13 @@ end
 	
 
 --Turns off Toggle when owner dies.
-function WhenCasterDies( event )
+function onOwnerDied( event )
 	
 	local caster = event.caster
-	local ability_name = event.ability_name
+	local abilityName = event.abilityName
 	local ability = event.ability
 	
-	local ability2 = caster:FindAbilityByName(ability_name)
+	local ability2 = caster:FindAbilityByName(abilityName)
 	
 	local ability1State = ability:GetToggleState()
 	local ability2State = ability2:GetToggleState()
@@ -153,7 +145,7 @@ function WhenCasterDies( event )
 end
 
 --Upgrades corresponing Ability and re-applies the modifier to update the values.
-function UpgradeAbility( event )
+function upgradeAbility( event )
 	
 	local caster = event.caster
 	
@@ -161,7 +153,7 @@ function UpgradeAbility( event )
 	local ability1Name = ability1:GetAbilityName()
 	local ability1Level = ability1:GetLevel()
 
-	local ability2Name = event.ability_name
+	local ability2Name = event.abilityName
 	
 	local ability2Handle = caster:FindAbilityByName(ability2Name)
 	local ability2Level = ability2Handle:GetLevel()
@@ -171,14 +163,13 @@ function UpgradeAbility( event )
 		ability2Handle:SetLevel(ability1Level)
 	end
 	
-	local modifier_name = event.modifier_name
-	--print(modifier_name)
-	
+	local modifierName = event.modifierName
+
 	local toggleState = ability1:GetToggleState()
 	
 	--Reapply modifier to update values.
 	if toggleState == true then
-		caster:RemoveModifierByNameAndCaster(modifier_name, caster)
-		ability1:ApplyDataDrivenModifier(caster, caster, modifier_name, nil)
+		caster:RemoveModifierByNameAndCaster(modifierName, caster)
+		ability1:ApplyDataDrivenModifier(caster, caster, modifierName, nil)
 	end
 end
