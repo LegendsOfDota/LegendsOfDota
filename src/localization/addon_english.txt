@@ -831,6 +831,17 @@
     "DOTA_Tooltip_ability_treant_eyes_in_the_forest_lod_Note1"                  "If the enemy has True Sight, they will be able to see which trees are enchanted."
     "DOTA_Tooltip_ability_treant_eyes_in_the_forest_lod_Lore"                       "One can never be too certain who, or what, might need protecting."
 
+    // Starfall
+    "DOTA_Tooltip_ability_mirana_starfall_lod"                                          "Starstorm"
+    "DOTA_Tooltip_ability_mirana_starfall_lod_Description"                              "Calls down a wave of meteors to damage nearby enemy units. The closest enemy unit to Mirana in a %starfall_secondary_radius% radius will be struck a second time for 75%% of the damage.\n\nUpgradable by Aghanim's Scepter."
+    "DOTA_Tooltip_ability_mirana_starfall_lod_Lore"                                     "The Goddess breaks the strata to empower her Princess in the time of need."
+    "DOTA_Tooltip_ability_mirana_starfall_lod_Note0"                                    "Starstorm is not blocked by Linken's Sphere."
+    "DOTA_Tooltip_ability_mirana_starfall_lod_Note1"                                    "Starstorm cannot hit invisible units."
+    "DOTA_Tooltip_ability_mirana_starfall_lod_Note2"                                    "Starstorm will choose a new target for the second star if the first died before impact."
+    "DOTA_Tooltip_ability_mirana_starfall_lod_starfall_radius"                          "RADIUS:"
+    "DOTA_Tooltip_ability_mirana_starfall_lod_scepter_interval"                         "SCEPTER INTERVAL:"
+    "DOTA_Tooltip_ability_mirana_starfall_lod_aghanim_description"                      "Passively triggers Starstorm every 8 seconds. Does not trigger if the enemy doesn't see Mirana."
+
     // Essence Aura
     "DOTA_Tooltip_ability_obsidian_destroyer_essence_aura_lod"                      "Essence Aura"
     "DOTA_Tooltip_ability_obsidian_destroyer_essence_aura_lod_Description"          "Whenever nearby allied Heroes or Outworld Devourer itself casts a spell, it gains a chance to restore a percentage of its mana pool.  Outworld Devourer also passively gains a bonus to its base mana pool.  Several skills with no cooldown and toggled spells cannot trigger Essence Aura."
