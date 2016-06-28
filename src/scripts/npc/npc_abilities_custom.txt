@@ -2702,7 +2702,264 @@
                 }
             }
         }
-    }    
+    }
+	//=================================================================================================================
+	// Morphling: Morph (Strength gain)
+	//=================================================================================================================
+	"morphling_morph_str_lod"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityTextureName"			"morphling_morph_str"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_TOGGLE | DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
+				
+		"AbilityType"					"DOTA_ABILITY_TYPE_BASIC"
+		"MaxLevel"						"4"
+		
+		"AbilityCastPoint"				"0.0 0.0 0.0 0.0"
+		
+		"AbilityCooldown"				"0.0 0.0 0.0 0.0"
+		
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"manaCostPerSecond"			"30 30 30 30"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"pointsPerShift"			"1"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"shiftRate"					"0.5 0.25 0.125 0.0625"
+			}
+			"04"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"bonusAttributes"			"3 4 5 6"
+			}
+		}		
+		"OnToggleOn"
+		{
+			"RunScript"
+			{
+				"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
+				"Function"				"onToggleOnSTR"
+			}
+		}
+		"OnToggleOff"
+		{
+			"RunScript"
+			{
+				"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
+				"Function"				"onToggleOffSTR"
+			}
+		}
+		"OnOwnerDied"
+		{
+			"RunScript"
+			{
+				"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
+				"Function"				"onOwnerDied"
+				"abilityName"			"morphling_morph_agi_lod"
+			}
+		}
+		"OnUpgrade"
+		{
+			"RunScript"
+			{
+				"ScriptFile"		"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
+				"Function"			"upgradeAbility"
+				"abilityName"		"morphling_morph_agi_lod"
+				"modifierName"		"modifier_str_morph_trigger_lod"
+			}
+		}
+		"Modifiers"
+		{
+			"morph_bonus_attributes"
+			{
+				"Passive"				"1"
+				"IsHidden"				"1"
+			
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_STATS_AGILITY_BONUS"		"%bonusAttributes"
+					"MODIFIER_PROPERTY_STATS_STRENGTH_BONUS"	"%bonusAttributes"
+				}
+			}
+			"modifier_str_morph_trigger_lod"
+			{
+				"Passive"				"0"
+				"IsHidden"				"0"
+				
+				"ThinkInterval"			"%shiftRate"
+				"OnIntervalThink"
+				{
+					"RunScript"
+					{
+						"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
+						"Function"				"strengthMorph"
+						"pointsPerTick"			"%pointsPerShift"
+						"manaCostPerSecond"		"%manaCostPerSecond"
+						"shiftRate"				"%shiftRate"
+					}
+				}
+				"OnCreated"
+				{
+					"FireSound"
+					{
+						"EffectName"		"Hero_Morphling.MorphStrengh"
+						"Target"			"CASTER"
+					}
+				}
+				"EffectName"			"particles/units/heroes/hero_morphling/morphling_morph_str.vpcf"
+				"EffectAttachtype"		"follow_origin"
+			}
+			"morph_swap"
+			{
+				"Passive"				"1"
+				"IsHidden"				"1"
+				
+				"ThinkInterval"			"0.025"
+				"OnIntervalThink"
+				{
+					"RunScript"
+					{
+						"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
+						"Function"				"swapAbilities"
+						"ability2Name"			"morphling_morph_agi_lod"
+					}
+				}	
+			}
+		}
+		"precache"
+		{
+			"particle"			"particles/units/heroes/hero_morphling/morphling_morph_str.vpcf"
+			"soundfile"			"soundevents/game_sounds_heroes/game_sounds_morphling.vsndevts"
+		}
+	}
+	//=================================================================================================================
+	// Morphling: Morph (Agility Gain) Note: This Ability is tied to morphling_morph_str_lod
+	//=================================================================================================================
+	"morphling_morph_agi_lod"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityTextureName"			"morphling_morph_agi"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_TOGGLE | DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
+				
+		"AbilityType"					"DOTA_ABILITY_TYPE_BASIC"
+		"MaxLevel"						"4"
+		
+		"AbilityCastPoint"				"0.0 0.0 0.0 0.0"
+		
+		"AbilityCooldown"				"0.0 0.0 0.0 0.0"
+		
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"manaCostPerSecond"			"30 30 30 30"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"pointsPerShift"			"1"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"shiftRate"					"0.5 0.25 0.125 0.0625"
+			}
+			"04"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"bonusAttributes"			"3 4 5 6"
+			}
+		}		
+		"OnToggleOn"
+		{
+			"RunScript"
+			{
+				"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
+				"Function"				"onToggleOnAGI"
+			}
+		}
+		"OnToggleOff"
+		{
+			"RunScript"
+			{
+				"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
+				"Function"				"onToggleOffAGI"
+			}
+		}
+		"OnOwnerDied"
+		{
+			"RunScript"
+			{
+				"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
+				"Function"				"onOwnerDied"
+				"abilityName"			"morphling_morph_str_lod"
+			}
+		}
+		"OnUpgrade"
+		{
+			"RunScript"
+			{
+				"ScriptFile"		"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
+				"Function"			"upgradeAbility"
+				"abilityName"		"morphling_morph_str_lod"
+				"modifierName"		"modifier_agi_morph_trigger_lod"
+			}
+		}
+		"Modifiers"
+		{
+			"modifier_agi_morph_trigger_lod"
+			{
+				"Passive"				"0"
+				"IsHidden"				"0"
+				
+				"ThinkInterval"			"%shiftRate"
+				"OnIntervalThink"
+				{
+					"RunScript"
+					{
+						"ScriptFile"			"scripts/vscripts/../abilities/morph_str_agi_lod.lua"
+						"Function"				"agilityMorph"
+						"pointsPerTick"			"%pointsPerShift"
+						"manaCostPerSecond"		"%manaCostPerSecond"
+						"shiftRate"				"%shiftRate"
+					}
+				}
+				"OnCreated"
+				{
+					"FireSound"
+					{
+						"EffectName"		"Hero_Morphling.MorphAgility"
+						"Target"			"CASTER"
+					}
+				}
+				"EffectName"			"particles/units/heroes/hero_morphling/morphling_morph_agi.vpcf"
+				"EffectAttachtype"		"follow_origin"
+			}
+		}
+		"precache"
+		{
+			"particle"			"particles/units/heroes/hero_morphling/morphling_morph_agi.vpcf"
+			"soundfile"			"soundevents/game_sounds_heroes/game_sounds_morphling.vsndevts"
+		}
+	}
     //=================================================================================================================
     // Dummy unit spell -- Taken from reflex github.com/bmddota/reflexdota
     //=================================================================================================================
