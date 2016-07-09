@@ -906,6 +906,12 @@
     "DOTA_Tooltip_ability_riki_backstab_lod_Note1" "Bonus damage from Backstab cannot be evaded" 
     "DOTA_Tooltip_ability_riki_backstab_lod_agility_damage" "%AGI DAMAGE MULT:" 
     "DOTA_Tooltip_ability_riki_backstab_lod_backstab_angle" "BACKSTAB ANGLE:"
+    //Melting Strike
+    "DOTA_Tooltip_ability_melting_strike_toggled_lod""Melting Strike"
+    "DOTA_Tooltip_ability_melting_strike_toggled_lod_Description""Melts away the armor of heroes hit by the spirit's attack if the spirit has enough mana. Each successive hit increases the amount of armor melted."
+    "DOTA_Tooltip_ability_melting_strike_toggled_lod_minus_armor""ARMOR REMOVED PER HIT:"
+    "DOTA_Tooltip_ability_melting_strike_toggled_lod_max_minus_armor""MAX ARMOR REMOVED:"
+    "DOTA_Tooltip_ability_melting_strike_toggled_lod_duration""DURATION:"
     
     "DOTA_Tooltip_ability_death_prophet_witchcraft"                                 "Witchcraft"
     "DOTA_Tooltip_ability_death_prophet_witchcraft_Description"                     "Decreases the cooldowns of abilities by up to 4 seconds, a cooldown can not be lowered below 1 second. The Witchcraft cooldown reduction is applied before octarine core reduction."
