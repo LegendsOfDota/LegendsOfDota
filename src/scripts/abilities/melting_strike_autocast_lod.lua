@@ -12,8 +12,7 @@ function melting_strike_autocast( keys )
 	local stackCount = 0
 	local modifierMinusArmor = keys.modifier_minus_armor
 
-	if target:IsHero() and attacker:GetMana() >= manaCost and not attacker:IsIllusion then
-
+	if target:IsHero() and attacker:GetMana() >= manaCost and not attacker:IsIllusion() then
 		if target:HasModifier(modifierMinusArmor) then
 			stackCount = target:GetModifierStackCount(modifierMinusArmor, ability)
 			target:RemoveModifierByName(modifierMinusArmor)
