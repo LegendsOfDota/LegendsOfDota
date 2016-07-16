@@ -2769,88 +2769,80 @@
     //=================================================================================================================
     // Invoker: Melting Strike 
     //=================================================================================================================
-    "melting_strike_toggled_lod"
+    "melting_strike_autocast"
     {
-        "BaseClass"                     "ability_datadriven"
-        "AbilityBehavior"               "DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_TOGGLE"
-        "AbilityUnitTargetTeam"         "DOTA_UNIT_TARGET_TEAM_ENEMY"
-        "AbilityUnitTargetType"         "DOTA_UNIT_TARGET_HERO"
-        "SpellImmunityType"             "SPELL_IMMUNITY_ENEMIES_NO"
-        "MaxLevel"                      "1"
-        "AbilityTextureName"            "melting_strike_lod"
+    	"BaseClass"						"ability_datadriven"
+    	"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_ATTACK | DOTA_ABILITY_BEHAVIOR_AUTOCAST"
+    	"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+    	"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+    	"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+    	"MaxLevel"						"1"
+    	"AbilityTextureName"			"melting_strike"
+    	"AbilityManaCost"				"40"
     
-        "AbilitySpecial"
-        {
-            "01"
-            {
-                "var_type"          "FIELD_INTEGER"
-                "minus_armor"           "-1"
-            }
-            "02"
-            {
-                "var_type"          "FIELD_INTEGER"
-                "max_minus_armor"       "10"
-            }
-            "03"
-            {
-                "var_type"          "FIELD_FLOAT"
-                "duration"              "5.0"
-            }
-            "04"
-            {
-                "var_type"          "FIELD_INTEGER"
-                "mana_cost"             "40"
-            }
-        }
     
-        "OnToggleOn"
-        {
-            "ApplyModifier"
-            {
-                "Target"       "CASTER"
-                "ModifierName" "modifier_melting_strike_toggled"
-            }
-        }
-        "OnToggleOff"
-        {
-            "RemoveModifier"
-            {
-                "Target"       "CASTER"
-                "ModifierName" "modifier_melting_strike_toggled"
-            }
-        }
-        "Modifiers"
-        {
+    	"AbilitySpecial"
+    	{
+    		"01"
+    		{
+    			"var_type"			"FIELD_INTEGER"
+    			"minus_armor"			"-1"
+    		}
+    		"02"
+    		{
+    			"var_type"			"FIELD_INTEGER"
+    			"max_minus_armor"		"10"
+    		}
+    		"03"
+    		{
+    			"var_type"			"FIELD_FLOAT"
+    			"duration"				"5.0"
+    		}
+    		"04"
+    		{
+    			"var_type"			"FIELD_INTEGER"
+    			"mana_cost"				"40"
+    		}
+    	}
+    	
+    	"Modifiers"
+    	{
     
-            "modifier_melting_strike_toggled"
-            {
-                "Passive"           "1"
-                "IsHidden"          "1"
-                "IsDebuff"          "0"
-        
-                "OnAttackLanded"
-                {
-                    "RunScript"
-                    {
-                        "ScriptFile"    "scripts/vscripts/../abilities/melting_strike_toggled_lod.lua"
-                        "Function"      "melting_strike_toggled"
-                        "modifier_minus_armor"  "modifier_melting_strike_minus_armor"
-                    }
-                }
-            }
-            
-            "modifier_melting_strike_minus_armor"
-            {
-                "IsHidden"      "0"
-                "IsPurgable"    "0"
-                "IsDebuff"      "1"
+    		"modifier_melting_strike_autocast"
+    		{
+    			"Passive"			"1"
+    			"IsHidden"			"1"
+    			"IsDebuff"			"0"
+    		
+    			"Orb"
+    			{
+    				"Priority"			"DOTA_ORB_PRIORITY_ABILITY"
+    				"CastAttack"		"1"
+    			}
+    			
+    			"OnOrbImpact"
+    			{
+    				"RunScript"
+    				{
+    					"ScriptFile"	"heroes/melting_strike_autocast.lua"
+    					"Function"		"melting_strike_autocast"
+    					"modifier_minus_armor"	"modifier_melting_strike_minus_armor"
+    				}
+    			}
+    		}
     
-                "Properties"
-                {
-                    "MODIFIER_PROPERTY_PHYSICAL_ARMOR_BONUS" "%minus_armor"
-                }
-            }
-        }
+    		"modifier_melting_strike_minus_armor"
+    		{
+    			"IsHidden"		"0"
+    			"IsPurgable"	"0"
+    			"IsDebuff"		"1"
+    
+    			"Properties"
+    			{
+    				"MODIFIER_PROPERTY_PHYSICAL_ARMOR_BONUS" "%minus_armor"
+    			}
+    		}
+    	}
     }
 
     //=================================================================================================================
