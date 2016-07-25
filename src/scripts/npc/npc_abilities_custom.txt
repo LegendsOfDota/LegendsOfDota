@@ -2779,7 +2779,7 @@
     	"MaxLevel"						"1"
     	"AbilityTextureName"			"melting_strike"
     	"AbilityManaCost"				"40"
-    
+        "AbilityCastRange"              "600"
     
     	"AbilitySpecial"
     	{
