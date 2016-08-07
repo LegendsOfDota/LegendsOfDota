@@ -621,21 +621,30 @@ function lodVoting:getVotesRequired()
         end
     end
 
-    -- Work out how many votes are needed for this thing to pass
-    local votesRequired = totalPeople
-    if self.activeVoteInfo.voteMode == constants.VOTE_COUNT_MODE_FAIR then
-        votesRequired = math.ceil(totalPeople * 0.5 + 1)
+    -- Grab the total number of votes so far
+    local totalVotesSoFar = self.activeVoteInfo.totalYes + self.activeVoteInfo.totalNo
 
-        if votesRequired > totalPeople then
-            votesRequired = totalPeople
+    -- Work out how many votes are needed for this thing to pass
+    local votesRequiredIfEveryoneVotes = totalPeople
+    local votesRequiredToPass = totalVotesSoFar
+    if self.activeVoteInfo.voteMode == constants.VOTE_COUNT_MODE_FAIR then
+        votesRequiredIfEveryoneVotes = math.ceil(totalPeople * 0.5 + 1)
+
+        if votesRequiredIfEveryoneVotes > totalPeople then
+            votesRequiredIfEveryoneVotes = totalPeople
+        end
+
+        votesRequiredToPass = math.ceil(totalVotesSoFar * 0.5 + 1)
+        if votesRequiredToPass > totalVotesSoFar then
+            votesRequiredToPass = totalVotesSoFar
         end
     end
 
     -- Work out how many "no" votes are needed for this vote to fail
-    local votesForFail = totalPeople - votesRequired + 1
+    local votesForFail = totalPeople - votesRequiredIfEveryoneVotes + 1
 
     -- Return the info
-    return totalPeople, votesRequired, votesForFail
+    return totalPeople, votesRequiredToPass, votesForFail
 end
 
 -- Checks the progress of a vote
@@ -657,7 +666,7 @@ function lodVoting:checkVoteProgress(voteID)
 	end
 
 	-- Has everyone voted?
-	if self.activeVoteInfo.totalYes + self.activeVoteInfo.totalNo >= votesForFail then
+	if self.activeVoteInfo.totalYes + self.activeVoteInfo.totalNo >= totalPeople then
 		-- Everyone has voted
 		self:endVote()
 		return
@@ -696,6 +705,11 @@ function lodVoting:endVote()
 	if self.activeVoteInfo.totalNo >= votesForFail then
 		passed = false
 	end
+
+    -- Not enough yes?
+    if self.activeVoteInfo.totalYes < votesRequired then
+        passed = false
+    end
 
 	-- Update it
 	self.activeVoteInfo.finished = true
