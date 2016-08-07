@@ -7,7 +7,8 @@ local OptionManager = require('optionmanager')
 
 -- Options
 local maxVoteDuration = 30			-- How long a vote lasts for
-local voteShowTimeAfterFinished = 5	-- How long to show the vote for after the vote finishes
+local voteShowTimeAfterFinished = 5 -- How long to show the vote for after the vote finishes
+local voteCooldownDelay = 8         -- How long before another vote can be created after a vote passes / fails
 local failedVoteWaitPeriod = 120	-- How long a player has to wait if their current vote fails
 
 -- Define the clas
@@ -53,6 +54,23 @@ function lodVoting:onPlyVoteCreate(eventSourceIndex, args)
     		text = 'votingErrorVoteInProgress'
     	})
     	return
+    end
+
+    -- Are we still waiting for a cooldown on votes?
+    if self.voteCooldown then
+        local cooldownLeft = self.voteCooldown - Time()
+
+        if cooldownLeft > 0 then
+            -- Tell the player
+            notifications:send(ply, {
+                sort = 'lodDanger',
+                text = 'votingErrorCooldown',
+                params = {
+                    ['cooldownLeft'] = math.ceil(cooldownLeft)
+                }
+            })
+            return
+        end
     end
 
     -- Ensure the player has waited long enough before making another vote
@@ -684,6 +702,9 @@ function lodVoting:endVote()
 	self.activeVoteInfo.hideTime = Time() + voteShowTimeAfterFinished
 	self.activeVoteInfo.passed = passed
 	network:updateVoteInfo(self.activeVoteInfo)
+
+    -- Add a cooldown to stop another vote from instantly being created
+    self.voteCooldown = Time() + voteCooldownDelay
 
 	-- Did the vote pass?
 	if passed then
