@@ -619,7 +619,6 @@ function onSelectedBuildChanged(data) {
     var maxSlots = Game.shared.optionValueList['lodOptionCommonMaxSlots'] || 6;
     var defaultSkill = 'life_stealer_empty_1';
 
-    var playerID = Players.GetLocalPlayer();
     var theBuild = Game.shared.selectedSkills[playerID];
 
     for(var i=1; i<=maxSlots; ++i) {
