@@ -1,6 +1,7 @@
 <root>
     <styles>
         <include src="file://{resources}/styles/custom_game/game_setup.css" />
+        <include src="file://{resources}/styles/custom_game/shared/shared.css" />
     </styles>
     <scripts>
         <include src="file://{resources}/scripts/custom_game/team_player_review.js" />
@@ -14,12 +15,12 @@
         </Panel>
 
         <Panel id="reviewPhasePlayerSkillContainer">
-            <DOTAAbilityImage id="playerSkill1" abilityname="life_stealer_empty_1" onactivate="onPlayerAbilityClicked(1)" />
-            <DOTAAbilityImage id="playerSkill2" abilityname="life_stealer_empty_1" onactivate="onPlayerAbilityClicked(2)" />
-            <DOTAAbilityImage id="playerSkill3" abilityname="life_stealer_empty_1" onactivate="onPlayerAbilityClicked(3)" />
-            <DOTAAbilityImage id="playerSkill4" abilityname="life_stealer_empty_1" onactivate="onPlayerAbilityClicked(4)" />
-            <DOTAAbilityImage id="playerSkill5" abilityname="life_stealer_empty_1" onactivate="onPlayerAbilityClicked(5)" />
-            <DOTAAbilityImage id="playerSkill6" abilityname="life_stealer_empty_1" onactivate="onPlayerAbilityClicked(6)" />
+            <DOTAAbilityImage id="playerSkill1" abilityname="life_stealer_empty_1" />
+            <DOTAAbilityImage id="playerSkill2" abilityname="life_stealer_empty_1" />
+            <DOTAAbilityImage id="playerSkill3" abilityname="life_stealer_empty_1" />
+            <DOTAAbilityImage id="playerSkill4" abilityname="life_stealer_empty_1" />
+            <DOTAAbilityImage id="playerSkill5" abilityname="life_stealer_empty_1" />
+            <DOTAAbilityImage id="playerSkill6" abilityname="life_stealer_empty_1" />
         </Panel>
 
         <Panel class="playerNameContainer">

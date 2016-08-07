@@ -62,7 +62,11 @@ Game.shared.addInputChangedEvent = function(panel, callback, extraInfo) {
 
 // Adds a notification
 var notifcationTotal = 0;
-Game.shared.addNotification = function(notificationRoot, options) {
+var notificationRoot = null;
+Game.shared.addNotification = function(options) {
+    // If we have no notification root, don't do anything
+    if(notificationRoot == null) return;
+
     // Grab useful stuff
     var notificationID = ++notifcationTotal;
 
@@ -100,3 +104,28 @@ Game.shared.addNotification = function(notificationRoot, options) {
         });
     });
 }
+
+// Resiteres the current notification root
+Game.shared.registerNotifications = function(panel) {
+    notificationRoot = panel;
+}
+
+// Stub
+Game.shared.focusNothing = function(){};
+
+// Phases
+Game.shared.PHASE_LOADING = 1;          // Waiting for players, etc
+Game.shared.PHASE_OPTION_VOTING = 2;    // Selection options
+Game.shared.PHASE_OPTION_SELECTION = 3; // Selection options
+Game.shared.PHASE_BANNING = 4;          // Banning stuff
+Game.shared.PHASE_SELECTION = 5;        // Selecting heroes
+Game.shared.PHASE_DRAFTING = 6;         // Place holder for drafting mode
+Game.shared.PHASE_RANDOM_SELECTION = 7; // Random build selection (For All Random)
+Game.shared.PHASE_REVIEW = 8;           // Review Phase
+Game.shared.PHASE_INGAME = 9;           // Game has started
+
+// Constants
+Game.shared.maxSlots = 6;
+
+// Current phase
+Game.shared.currentPhase = Game.shared.PHASE_LOADING;

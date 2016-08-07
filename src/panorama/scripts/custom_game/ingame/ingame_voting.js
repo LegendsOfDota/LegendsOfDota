@@ -376,8 +376,6 @@ function closeActiveVotePanel() {
 	// Hook vote changes
 	Game.shared.hookAndFire('phase_ingame', OnGetIngameData);
 
-	// Listen for notifications
-    GameEvents.Subscribe('lodNotification', function(data) {
-        Game.shared.addNotification($('#lodNotificationArea'), data);
-    });
+	// Register for notifications
+	Game.shared.registerNotifications($('#lodNotificationArea'));
 })();

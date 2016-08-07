@@ -1,15 +1,10 @@
 "use strict";
 
-// Stub
-//var setSelectedDropAbility = function(){};
-//var setSelectedHelperHero = function(){};
-//var makeSkillSelectable = function(){};
-
-// The current hero we hold
-//var currentSelectedHero = '';
+// Our player's ID
+var ourPlayerID = -1;
 
 // When player details are changed
-function OnPlayerDetailsChanged() {
+function onPlayerDetailsChanged() {
     var playerID = $.GetContextPanel().GetAttributeInt('playerID', -1);
     var playerInfo = Game.GetPlayerInfo(playerID);
     if (!playerInfo) return;
@@ -52,8 +47,37 @@ function OnGetHeroData(heroName) {
 	heroCon.SetAttributeString('heroName', heroName);
 }
 
+// When hero data is updated
+function onSelectedHeroChanged(data) {
+    var playerID = data.playerID;
+
+    if(playerID == ourPlayerID) {
+        updatedSelectedHero();
+    }
+}
+
+// Updates the hero in our slot
+function updatedSelectedHero() {
+    var heroName = Game.shared.selectedHeroes[ourPlayerID];
+
+    if(heroName != null) {
+        // Show the actual hero icon
+        var mainPanel = $.GetContextPanel();
+        mainPanel.SetHasClass('no_hero_selected', false);
+
+        // Put the hero image in place
+        var heroCon = $('#playerHeroImage');
+        heroCon.heroname = heroName;
+        heroCon.SetAttributeString('heroName', heroName);
+    }
+}
+
 // When we get the slot count
-function OnGetHeroSlotCount(maxSlots) {
+function onMaxSlotsChanged() {
+    // Grab max slots
+    var maxSlots = Game.shared.optionValueList['lodOptionCommonMaxSlots'];
+
+    // Toggle stuff on / off
 	$('#playerSkill1').visible = maxSlots >= 1;
 	$('#playerSkill2').visible = maxSlots >= 2;
 	$('#playerSkill3').visible = maxSlots >= 3;
@@ -62,9 +86,49 @@ function OnGetHeroSlotCount(maxSlots) {
 	$('#playerSkill6').visible = maxSlots >= 6;
 }
 
+// When a player's selected attribute changes
+function onAttrChanged(data) {
+    var playerID = data.playerID;
+    if(ourPlayerID == playerID) {
+        updateSelectedAttribute();
+    }
+}
+
+function updateSelectedAttribute() {
+    var newAttr = Game.shared.selectedAttr[ourPlayerID];
+    if(newAttr == null) return;
+
+    var attr = 'file://{images}/primary_attribute_icons/primary_attribute_icon_strength.psd';
+    if(newAttr == 'agi') {
+        attr = 'file://{images}/primary_attribute_icons/primary_attribute_icon_agility.psd';
+    } else if(newAttr == 'int') {
+        attr = 'file://{images}/primary_attribute_icons/primary_attribute_icon_intelligence.psd';
+    }
+
+    // Grab con
+    var con = $('#playerAttribute');
+
+    // Set it
+    con.SetImage(attr);
+
+    // Show it
+    con.SetHasClass('doNotShow', false);
+}
+
+function onSelectedBuildChanged(data) {
+    var playerID = data.playerID;
+
+    if(playerID == ourPlayerID) {
+        updateBuildData();
+    }
+}
+
 // When we get build data
-function OnGetHeroBuildData(build) {
-	for(var i=1; i<=6; ++i) {
+function updateBuildData() {
+    var build = Game.shared.selectedSkills[ourPlayerID];
+    if(build == null) return;
+
+	for(var i=1; i<=Game.shared.maxSlots; ++i) {
 		var con = $('#playerSkill' + i);
 
 		if(build[i]) {
@@ -77,58 +141,21 @@ function OnGetHeroBuildData(build) {
 	}
 }
 
-// Hooks the abilities to show what they are
-function hookStuff(hookSkillInfo, makeSkillSelectable, makeHeroSelectable) {
-	// Hook it up
-	for(var i=1; i<=6; ++i) {
-		(function(con) {
-			hookSkillInfo(con);
-			con.SetAttributeString('abilityname', '');
-			//con.SetPanelEvent('onactivate', function() {
-	        //    setSelectedDropAbility(con.GetAttributeString('abilityname'), con);
-	        //});
-
-			makeSkillSelectable(con);
-		})($('#playerSkill' + i));
-	}
-
-	// Make the hero selectable
-	makeHeroSelectable($('#playerHeroImage'));
-
-	// Store ability
-	//setSelectedHelperHero = setSelectedHelperHeroReplace;
-}
-
-function OnGetNewAttribute(newAttr) {
-	var attr = 'file://{images}/primary_attribute_icons/primary_attribute_icon_strength.psd';
-	if(newAttr == 'agi') {
-		attr = 'file://{images}/primary_attribute_icons/primary_attribute_icon_agility.psd';
-	} else if(newAttr == 'int') {
-		attr = 'file://{images}/primary_attribute_icons/primary_attribute_icon_intelligence.psd';
-	}
-
-	// Grab con
-	var con = $('#playerAttribute');
-
-	// Set it
-	con.SetImage(attr);
-
-	// Show it
-	con.SetHasClass('doNotShow', false);
-}
-
-function onPlayerAbilityClicked(slotID) {
-	//var con = $('#playerSkill' + slotID);
-	//setSelectedDropAbility(con.GetAttributeString('abilityname', ''), con);
-}
-
-/*function onPlayerHeroClicked() {
-	// Set the selected hero
-	setSelectedHelperHero(currentSelectedHero);
-}*/
-
-function setReadyState(newState) {
+function onReadyChanged(data) {
+    var newState = data[ourPlayerID];
     $.GetContextPanel().SetHasClass("lodPlayerIsReady", newState == 1);
+}
+
+// Sets the playerID of this panel
+function setPlayerID(playerID) {
+    // Store it
+    ourPlayerID = playerID;
+
+    // Run all events
+    updatedSelectedHero();
+    updateBuildData();
+    updateSelectedAttribute();
+
 }
 
 // When this panel loads
@@ -137,14 +164,29 @@ function setReadyState(newState) {
 	// Grab the main panel
 	var mainPanel = $.GetContextPanel();
 
-    OnPlayerDetailsChanged();
-    $.RegisterForUnhandledEvent('DOTAGame_PlayerDetailsChanged', OnPlayerDetailsChanged);
+    onPlayerDetailsChanged();
+    $.RegisterForUnhandledEvent('DOTAGame_PlayerDetailsChanged', onPlayerDetailsChanged);
 
-    // Add the events
-    mainPanel.OnGetHeroData = OnGetHeroData;
-    mainPanel.OnGetHeroSlotCount = OnGetHeroSlotCount;
-    mainPanel.OnGetHeroBuildData = OnGetHeroBuildData;
-    mainPanel.OnGetNewAttribute = OnGetNewAttribute;
-    mainPanel.hookStuff = hookStuff;
-    mainPanel.setReadyState = setReadyState;
+    // Hook skill info
+    for(var i=1; i<=Game.shared.maxSlots; ++i) {
+        var con = $('#playerSkill' + i);
+        con.SetAttributeString('abilityname', '');
+        Game.shared.hookSkillInfo(con);
+
+        // Make it draggable
+        Game.shared.makeSkillSelectable(con);
+    }
+
+    // Hook the hero icon
+    Game.shared.makeHeroSelectable($('#playerHeroImage'));
+
+    // Register for events
+    Game.shared.events.on('heroChanged', onSelectedHeroChanged);
+    Game.shared.events.on('buildChanged', onSelectedBuildChanged);
+    Game.shared.events.on('maxSlotsChanged', onMaxSlotsChanged);
+    Game.shared.events.on('attrChanged', onAttrChanged);
+    Game.shared.events.on('readyChanged', onReadyChanged);
+
+    // Define exports
+    mainPanel.setPlayerID = setPlayerID;
 })();

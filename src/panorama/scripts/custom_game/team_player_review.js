@@ -8,14 +8,14 @@ var makeSkillSelectable = function(){};
 // Should we make everything small?
 var shouldMakeSmall = false;
 
-// The hero that we are
-var ourHeroName = null;
-
 // Have we already loaded our hero model?
 var loadedHeroModel = false;
 
+// Our player's ID
+var ourPlayerID = -1;
+
 // When player details are changed
-function OnPlayerDetailsChanged() {
+function onPlayerDetailsChanged() {
     var playerID = $.GetContextPanel().GetAttributeInt('playerID', -1);
     var playerInfo = Game.GetPlayerInfo(playerID);
     if (!playerInfo) return;
@@ -47,55 +47,38 @@ function OnPlayerDetailsChanged() {
     $.GetContextPanel().SetHasClass("player_has_host_privileges", playerInfo.player_has_host_privileges);
 }
 
-// When we get hero data
-function OnGetHeroData(heroName) {
-    // Store our hero name
-    ourHeroName = heroName;
-}
-
 // When review phase starts
-function OnReviewPhaseStart() {
-    if(ourHeroName != null && !loadedHeroModel) {
-        // We have now loaded our hero icon
-        loadedHeroModel = true;
+var failCount = 0;
+function onReviewPhaseStart() {
+    var ourHeroName = Game.shared.selectedHeroes[ourPlayerID];
 
-        // Show the actual hero icon
-        var mainPanel = $.GetContextPanel();
-        mainPanel.SetHasClass('no_hero_selected', false);
+    if(!loadedHeroModel) {
+        if(ourHeroName == null) {
+            // Stop this from being called too many times
+            if(++failCount > 3) return;
 
-        // Put the hero image in place
-        var con = $('#reviewPhaseHeroImageContainer');
+            // Run it again after a short delay
+            $.Schedule(1, onReviewPhaseStart);
+        } else {
+            // We have now loaded our hero icon
+            loadedHeroModel = true;
 
-        var size = 256;
-        if(shouldMakeSmall) {
-            size = 84;
+            // Show the actual hero icon
+            var mainPanel = $.GetContextPanel();
+            mainPanel.SetHasClass('no_hero_selected', false);
+
+            // Put the hero image in place
+            var con = $('#reviewPhaseHeroImageContainer');
+
+            var size = 256;
+            if(shouldMakeSmall) {
+                size = 84;
+            }
+
+            var heroImage = $.CreatePanel('Panel', con, 'reviewPhaseHeroImageLoader');
+            heroImage.BLoadLayoutFromString('<root><Panel><DOTAScenePanel style="width: ' + size + 'px; height: ' + size + 'px; opacity-mask: url(\'s2r://panorama/images/masks/softedge_box_png.vtex\');" unit="' + ourHeroName + '"/></Panel></root>', false, false);
         }
-
-        var heroImage = $.CreatePanel('Panel', con, 'reviewPhaseHeroImageLoader');
-        heroImage.BLoadLayoutFromString('<root><Panel><DOTAScenePanel style="width: ' + size + 'px; height: ' + size + 'px; opacity-mask: url(\'s2r://panorama/images/masks/softedge_box_png.vtex\');" unit="' + ourHeroName + '"/></Panel></root>', false, false);
     }
-}
-
-// When we get the slot count
-function OnGetHeroSlotCount(maxSlots) {
-	$('#playerSkill1').visible = maxSlots >= 1;
-	$('#playerSkill2').visible = maxSlots >= 2;
-	$('#playerSkill3').visible = maxSlots >= 3;
-	$('#playerSkill4').visible = maxSlots >= 4;
-	$('#playerSkill5').visible = maxSlots >= 5;
-	$('#playerSkill6').visible = maxSlots >= 6;
-}
-
-// When we get build data
-function OnGetHeroBuildData(build) {
-	for(var i=1; i<=6; ++i) {
-		var con = $('#playerSkill' + i);
-
-		if(build[i]) {
-			con.abilityname = build[i];
-			con.SetAttributeString('abilityname', build[i]);
-		}
-	}
 }
 
 // Do the highlight
@@ -177,7 +160,7 @@ function makeSwapable(slotID, abcon) {
         if(selectedSlotID != -1) {
         	if(selectedSlotID != slotID) {
         		// Do the swap slot
-        		swapSlots(selectedSlotID, slotID);
+        		Game.shared.swapSlots(selectedSlotID, slotID);
         	}
 
         	// None selected anymore
@@ -188,39 +171,6 @@ function makeSwapable(slotID, abcon) {
     });
 }
 
-// Swaps two slots
-function swapSlots(slot1, slot2) {
-    // Push it to the server to validate
-    GameEvents.SendCustomGameEventToServer('lodSwapSlots', {
-        slot1: slot1,
-        slot2: slot2
-    });
-}
-
-// Hooks the abilities to show what they are
-function hookStuff(hookSkillInfo, makeSkillSelectable, setSelectedHelperHeroReplace, canSwap) {
-	// Hook it up
-	for(var i=1; i<=6; ++i) {
-		(function(con) {
-			hookSkillInfo(con);
-			con.SetAttributeString('abilityname', '');
-			//con.SetPanelEvent('onactivate', function() {
-	        //    setSelectedDropAbility(con.GetAttributeString('abilityname'), con);
-	        //});
-
-			if(canSwap) {
-				// Make it swapable
-				makeSwapable(i, con);
-			}
-
-			//makeSkillSelectable(con);
-		})($('#playerSkill' + i));
-	}
-
-	// Store ability
-	setSelectedHelperHero = setSelectedHelperHeroReplace;
-}
-
 function setShouldBeSmall(shouldMakeSmallTemp) {
     // Store the temp
     shouldMakeSmall = shouldMakeSmallTemp;
@@ -229,31 +179,102 @@ function setShouldBeSmall(shouldMakeSmallTemp) {
     $.GetContextPanel().SetHasClass('tooManyPlayers', shouldMakeSmall);
 }
 
-function OnGetNewAttribute(newAttr) {
-	var attr = 'file://{images}/primary_attribute_icons/primary_attribute_icon_strength.psd';
-	if(newAttr == 'agi') {
-		attr = 'file://{images}/primary_attribute_icons/primary_attribute_icon_agility.psd';
-	} else if(newAttr == 'int') {
-		attr = 'file://{images}/primary_attribute_icons/primary_attribute_icon_intelligence.psd';
-	}
+function onSelectedBuildChanged(data) {
+    var playerID = data.playerID;
 
-	// Grab con
-	var con = $('#playerAttribute');
-
-	// Set it
-	con.SetImage(attr);
-
-	// Show it
-	con.SetHasClass('doNotShow', false);
+    if(playerID == ourPlayerID) {
+        updateBuildData();
+    }
 }
 
-function onPlayerAbilityClicked(slotID) {
-	//var con = $('#playerSkill' + slotID);
-	//setSelectedDropAbility(con.GetAttributeString('abilityname', ''), con);
+// When we get build data
+function updateBuildData() {
+    var build = Game.shared.selectedSkills[ourPlayerID];
+    if(build == null) return;
+
+    for(var i=1; i<=Game.shared.maxSlots; ++i) {
+        var con = $('#playerSkill' + i);
+
+        if(build[i]) {
+            con.abilityname = build[i];
+            con.SetAttributeString('abilityname', build[i]);
+        } else {
+            con.abilityname = 'life_stealer_empty_1';
+            con.SetAttributeString('abilityname', 'life_stealer_empty_1');
+        }
+    }
 }
 
-function setReadyState(newState) {
+// When we get the slot count
+function onMaxSlotsChanged() {
+    // Grab max slots
+    var maxSlots = Game.shared.optionValueList['lodOptionCommonMaxSlots'];
+
+    // Toggle stuff on / off
+    $('#playerSkill1').visible = maxSlots >= 1;
+    $('#playerSkill2').visible = maxSlots >= 2;
+    $('#playerSkill3').visible = maxSlots >= 3;
+    $('#playerSkill4').visible = maxSlots >= 4;
+    $('#playerSkill5').visible = maxSlots >= 5;
+    $('#playerSkill6').visible = maxSlots >= 6;
+}
+
+// When a player's selected attribute changes
+function onAttrChanged(data) {
+    var playerID = data.playerID;
+    if(ourPlayerID == playerID) {
+        updateSelectedAttribute();
+    }
+}
+
+function updateSelectedAttribute() {
+    var newAttr = Game.shared.selectedAttr[ourPlayerID];
+    if(newAttr == null) return;
+
+    var attr = 'file://{images}/primary_attribute_icons/primary_attribute_icon_strength.psd';
+    if(newAttr == 'agi') {
+        attr = 'file://{images}/primary_attribute_icons/primary_attribute_icon_agility.psd';
+    } else if(newAttr == 'int') {
+        attr = 'file://{images}/primary_attribute_icons/primary_attribute_icon_intelligence.psd';
+    }
+
+    // Grab con
+    var con = $('#playerAttribute');
+
+    // Set it
+    con.SetImage(attr);
+
+    // Show it
+    con.SetHasClass('doNotShow', false);
+}
+
+// When a player's ready state changes
+function onReadyChanged(data) {
+    var newState = data[ourPlayerID];
     $.GetContextPanel().SetHasClass("lodPlayerIsReady", newState == 1);
+}
+
+// When the current phase changes
+function onPhaseChanged(data) {
+    // Is it review phase time?
+    if(Game.shared.currentPhase == Game.shared.PHASE_REVIEW) {
+        // Review phase has started
+        onReviewPhaseStart();
+    }
+}
+
+// Sets the playerID of this panel
+function setPlayerID(playerID) {
+    // Store it
+    ourPlayerID = playerID;
+
+    // Run all events
+    if(Game.shared.currentPhase == Game.shared.PHASE_REVIEW) {
+        // Review phase has started
+        updateBuildData();
+        updateSelectedAttribute();
+        onReviewPhaseStart();
+    }
 }
 
 // When this panel loads
@@ -262,16 +283,27 @@ function setReadyState(newState) {
 	// Grab the main panel
 	var mainPanel = $.GetContextPanel();
 
-    OnPlayerDetailsChanged();
-    $.RegisterForUnhandledEvent('DOTAGame_PlayerDetailsChanged', OnPlayerDetailsChanged);
+    onPlayerDetailsChanged();
+    $.RegisterForUnhandledEvent('DOTAGame_PlayerDetailsChanged', onPlayerDetailsChanged);
 
-    // Add the events
-    mainPanel.OnGetHeroData = OnGetHeroData;
-    mainPanel.OnGetHeroSlotCount = OnGetHeroSlotCount;
-    mainPanel.OnGetHeroBuildData = OnGetHeroBuildData;
-    mainPanel.OnGetNewAttribute = OnGetNewAttribute;
-    mainPanel.hookStuff = hookStuff;
-    mainPanel.setReadyState = setReadyState;
-    mainPanel.OnReviewPhaseStart = OnReviewPhaseStart;
+    // Hook skill info
+    for(var i=1; i<=Game.shared.maxSlots; ++i) {
+        var con = $('#playerSkill' + i);
+        con.SetAttributeString('abilityname', '');
+        Game.shared.hookSkillInfo(con);
+
+        // Make it swappable
+        makeSwapable(i, con);
+    }
+
+    // Register for events
+    Game.shared.events.on('buildChanged', onSelectedBuildChanged);
+    Game.shared.events.on('maxSlotsChanged', onMaxSlotsChanged);
+    Game.shared.events.on('attrChanged', onAttrChanged);
+    Game.shared.events.on('readyChanged', onReadyChanged);
+    Game.shared.events.on('phaseChanged', onPhaseChanged);
+
+    // Define exports
     mainPanel.setShouldBeSmall = setShouldBeSmall;
+    mainPanel.setPlayerID = setPlayerID;
 })();

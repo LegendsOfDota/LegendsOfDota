@@ -384,17 +384,17 @@
     visibility: collapse;
 }
 
-.no_hero_selected #playerHeroImage {
+/*.no_hero_selected #playerHeroImage {
     visibility: collapse;
-}
+}*/
 
 #playerNoHeroSelected {
     visibility: collapse;
 }
 
-.no_hero_selected #playerNoHeroSelected {
+/*.no_hero_selected #playerNoHeroSelected {
     visibility: visible;
-}
+}*/
 
 #playerHeroImageContainer {
     horizontal-align: center;
@@ -600,7 +600,7 @@
     height: 320px;
 }
 
-#heroBuilderLockButtonBans {
+/*#heroBuilderLockButtonBans {
     visibility: collapse;
     vertical-align: bottom;
     margin-bottom: 8px;
@@ -612,7 +612,7 @@
 
 #heroBuilderLockButtonBans.hideThisButton {
     visibility: collapse;
-}
+}*/
 
 /* Selection */
 
@@ -645,13 +645,13 @@
     border: 1px solid #AAFFAA;
 }
 
-#heroBuilderLockButton {
+/*#heroBuilderLockButton {
     visibility: collapse;
 }
 
 .phase_selection #heroBuilderLockButton {
     visibility: visible;
-}
+}*/
 
 /* All Random */
 
@@ -984,16 +984,16 @@
     visibility: visible;
 }
 
-#pickingPhaseLeftSide {
+/*#pickingPhaseLeftSide {
     height: 100%;
     width: 320px;
     flow-children: down;
 
     background-color: gradient( linear, 100% 0%, 100% 100%, from( #272b30 ), color-stop( 0.6, #181a1e ), to( #181a1e ) );
     box-shadow: black -4px -4px 8px 8px;
-}
+}*/
 
-#pickingPhaseBuild {
+/*#pickingPhaseBuild {
     flow-children: down;
     width: 100%;
     height: 200px;
@@ -1006,9 +1006,9 @@
 
 .phase_selection_selected #pickingPhaseBuild {
     visibility: visible;
-}
+}*/
 
-#pickingPhaseBans {
+/*#pickingPhaseBans {
     flow-children: down;
     visibility: collapse;
     vertical-align: bottom;
@@ -1016,29 +1016,29 @@
 
 .phase_banning_selected #pickingPhaseBans {
     visibility: visible;
-}
+}*/
 
-#banningButtonContainer {
+/*#banningButtonContainer {
     flow-children: right;
     padding: 8px;
     transition-property: opacity;
     transition-duration: 0.25s;
-}
+}*/
 
-.lodBanningHeader {
+/*.lodBanningHeader {
     font-size: 24px;
     padding-left: 8px;
-}
+}*/
 
-.lodBanningInstructions {
+/*.lodBanningInstructions {
     padding-left: 12px;
-}
+}*/
 
-#lodBanLimits {
+/*#lodBanLimits {
     padding-left: 12px;
-}
+}*/
 
-#lodBanThisSkill {
+/*#lodBanThisSkill {
     width: 48px;
     height: 48px;
     border: 1px solid #000000;
@@ -1047,19 +1047,19 @@
 
 #lodBanSkillButton {
     vertical-align: middle;
-}
+}*/
 
-#pickingPhaseSelectedHero {
+/*#pickingPhaseSelectedHero {
     margin: 4px;
     width: 100%;
-}
+}*/
 
-#pickingPhaseSelectedHeroImageCon {
+/*#pickingPhaseSelectedHeroImageCon {
     horizontal-align: middle;
     vertical-align: middle;
-}
+}*/
 
-.notDraftable {
+/*.notDraftable {
     opacity: .1;
     saturation: 0.0;
     wash-color: #FFFF00FF;
@@ -1104,9 +1104,9 @@
 
 .unique_skills_mode #lodToggleButton {
     visibility: visible;
-}
+}*/
 
-.pickingPhaseAttr {
+/*.pickingPhaseAttr {
     width: 24px;
     height: 24px;
     background-color: #000000;
@@ -1124,18 +1124,18 @@
 
 .pickingPhaseAttr Label {
     color: #000000;
-}
+}*/
 
-#pickingPhaseSelectedHeroImage {
+/*#pickingPhaseSelectedHeroImage {
     width: 128px;
     height: 72px;
-}
+}*/
 
-.no_hero_selected #pickingPhaseSelectedHeroImage {
+/*.no_hero_selected #pickingPhaseSelectedHeroImage {
     visibility: collapse;
-}
+}*/
 
-.pickingPhaseSelectedHeroImage {
+/*.pickingPhaseSelectedHeroImage {
     border: 1px solid #000000;
     border-radius: 4px;
 }
@@ -1144,24 +1144,24 @@
     visibility: collapse;
     width: 128px;
     height: 72px;
-}
+}*/
 
-.no_hero_selected #pickingPhaseSelectedHeroImageNone {
+/*.no_hero_selected #pickingPhaseSelectedHeroImageNone {
     visibility: visible;
-}
+}*/
 
-#pickingPhaseSelectedHeroText {
+/*#pickingPhaseSelectedHeroText {
     horizontal-align: middle;
     vertical-align: bottom;
     text-shadow: 0px 0px 2px 4.0 #000000FF;
     margin-bottom: 4px;
-}
+}*/
 
-#pickingPhaseSelectedAttr {
+/*#pickingPhaseSelectedAttr {
     flow-children: down;
-}
+}*/
 
-#pickingPhaseBuildSkills {
+/*#pickingPhaseBuildSkills {
     flow-children: right;
     horizontal-align: middle;
 }
@@ -1173,13 +1173,13 @@
 
     border: 1px solid #000000;
     border-radius: 4px;
-}
+}*/
 
-#pickingPhaseBuildButtons {
+/*#pickingPhaseBuildButtons {
     flow-children: right;
     horizontal-align: middle;
     margin-top: 8px;
-}
+}*/
 
 /*#pickingPhaseBuildButtons Button {
     width: 140px;
@@ -1199,49 +1199,49 @@
     text-align: center;
 }*/
 
-.pickingPhaseTab {
+/*.pickingPhaseTab {
     flow-children: down;
     width: 100%;
     height: 100%;
     overflow: squish scroll;
-}
+}*/
 
-#pickingPhaseRightSide {
+/*#pickingPhaseRightSide {
     background-color: #000000;
     width: fill-parent-flow(0);
     height: 100%;
-}
+}*/
 
-#pickingPhaseTabs {
+/*#pickingPhaseTabs {
     width: 100%;
     height: 500px;
-}
+}*/
 
-#pickingPhaseTabsContent {
+/*#pickingPhaseTabsContent {
     width: 100%;
     height: 100%;
-}
+}*/
 
-#pickingPhaseHeroTabContent {
+/*#pickingPhaseHeroTabContent {
     flow-children: down;
     max-width: 1280px;
-}
+}*/
 
-.pickingPhaseTabContent {
+/*.pickingPhaseTabContent {
     width: 100%;
     height: 100%;
     background-color: #000000;
-}
+}*/
 
-.pickingHeroList {
+/*.pickingHeroList {
     padding-left: 16px;
     width: 100%;
     height: 200px;
     /*background-color: #111111;*/
-    margin-bottom: 4px;
-}
+    /*margin-bottom: 4px;
+}*/
 
-.pickingHeroListHeroes {
+/*.pickingHeroListHeroes {
     width: fill-parent-flow(1);
     margin-left: 36px;
     flow-children: right-wrap;
@@ -1255,13 +1255,13 @@
     margin-top: 4px;
     border: 1px solid #111111;
     border-radius: 4px;
-}
+}*/
 
-.should_hide_this_hero {
+/*.should_hide_this_hero {
     opacity: 0.05;
-}
+}*/
 
-.pickingHeroListCategory {
+/*.pickingHeroListCategory {
     width: 200px;
     font-family: Radiance,FZLanTingHei-R-GBK,TH Sarabun New,YDYGO 540,Gulim,MingLiU;
     font-size: 16px;
@@ -1276,31 +1276,31 @@
     transform-origin: 0% 0%;
 
     border-bottom: 2px solid #6f829cee;
-}
+}*/
 
-#pickingHeroListFilters {
+/*#pickingHeroListFilters {
     flow-children: down;
     padding: 8px;
     margin-left: 32px;
-}
+}*/
 
-#heroPickingFiltersClear {
+/*#heroPickingFiltersClear {
     visibility: collapse;
-}
+}*/
 
 .lod_hero_filter_selected {
     box-shadow: #00FF00FF 0px 0px 4px 0px;
 }
 
-.pickingHeroListFilterHeading {
+/*.pickingHeroListFilterHeading {
     margin-left: 8px;
-}
+}*/
 
-.pickingHeroListFilterGroup {
+/*.pickingHeroListFilterGroup {
     flow-children: right;
-}
+}*/
 
-#pickingPhaseSkillTabContent {
+/*#pickingPhaseSkillTabContent {
     width: 100%;
     height: 100%;
     flow-children: down;
@@ -1308,22 +1308,22 @@
     horizontal-align: center;
 
     padding-left: 4px;
-}
+}*/
 
-#pickingPhaseTabFilterThingo {
+/*#pickingPhaseTabFilterThingo {
     flow-children: right;
     width: 100%;
-}
+}*/
 
-#pickingPhaseSkillTabContentSkills {
+/*#pickingPhaseSkillTabContentSkills {
     width: 100%;
     height: 100%;
     background-color: #111111;
     flow-children: right-wrap;
     overflow: squish scroll;
-}
+}*/
 
-.lodSkillTabButton {
+/*.lodSkillTabButton {
     background-color: gradient(linear, 0% 0%, 0% 100%, from(#3A607377), to(#16222A77));
     padding: 4px;
     margin-right: 8px;
@@ -1343,9 +1343,9 @@
 .lodSkillTabButton Label {
     color: #FFFFFF;
     horizontal-align: center;
-}
+}*/
 
-.lodMiniAbility {
+/*.lodMiniAbility {
     width: 32px;
     height: 32px;
 
@@ -1385,22 +1385,22 @@
 
 .grouped_skills .lodMiniAbility.ultimateAbility {
     vertical-align: bottom;
-}
+}*/
 
-.lodSearchPanel {
+/*.lodSearchPanel {
     flow-children: right;
     border: 2px solid #556663FF;
     background-color: #333333;
     margin: 8px;
-}
+}*/
 
-.lodSearchText {
+/*.lodSearchText {
     width: fill-parent-flow(1.0);
     border: 0px solid transparent;
     background-color: #00000000;
-}
+}*/
 
-.lodSearchButton {
+/*.lodSearchButton {
     position: 302.400024px 0.0px 0.0px;
     background-image: url("s2r://panorama/images/control_icons/icon_search_png.vtex");
     background-repeat: no-repeat;
@@ -1410,52 +1410,52 @@
     vertical-align: middle;
     margin: 0px 8px;
     wash-color: #667774dd;
-}
+}*/
 
-#lodSkillCategoryHolder {
+/*#lodSkillCategoryHolder {
     margin: 8px;
     vertical-align: top;
-}
+}*/
 
-.buildingHelperHeroPreviewContainer {
+/*.buildingHelperHeroPreviewContainer {
     width: 100%;
     vertical-align: top;
     padding: 0px;
     margin: 0px;
-}
+}*/
 
-#buildingHelperHeroPreview {
+/*#buildingHelperHeroPreview {
     width: 100%;
     flow-children: down;
     vertical-align: top;
     margin: 0px;
-}
+}*/
 
-#buildingHelperHeroPreviewHeroContainer {
+/*#buildingHelperHeroPreviewHeroContainer {
     horizontal-align: center;
     margin-bottom: 8px;
-}
+}*/
 
-#buildingHelperHeroPreviewHero {
+/*#buildingHelperHeroPreviewHero {
     margin-top: 8px;
     border: 1px solid #000000;
-}
+}*/
 
-#buildingHelperHeroPreviewHeroName {
+/*#buildingHelperHeroPreviewHeroName {
     horizontal-align: center;
     vertical-align: bottom;
     text-shadow: 0px 0px 2px 4.0 #000000FF;
     margin-bottom: 4px;
-}
+}*/
 
-#buildingHelperHeroPreviewHeroSelect {
+/*#buildingHelperHeroPreviewHeroSelect {
     horizontal-align: center;
     visibility: collapse;
 }
 
 .phase_selection_selected #buildingHelperHeroPreviewHeroSelect {
     visibility: visible;
-}
+}*/
 
 #buildingHelperHeroPreviewHeroBan {
     horizontal-align: center;
@@ -1466,12 +1466,12 @@
     visibility: visible;
 }
 
-#buildingHelperHeroPreviewHeroContainer DOTAHeroImage {
+/*#buildingHelperHeroPreviewHeroContainer DOTAHeroImage {
     width: 128px;
     height: 72px;
-}
+}*/
 
-#buildingHelperHeroPreviewSkillsContainer {
+/*#buildingHelperHeroPreviewSkillsContainer {
     flow-children: right-wrap;
     horizontal-align: center;
     margin-top: 8px;
@@ -1483,9 +1483,9 @@
     margin-bottom: 4px;
     width: 48px;
     height: 48px;
-}
+}*/
 
-.lodSelected {
+/*.lodSelected {
     animation-name: lodHighlightLoop;
     animation-duration: 0.5s;
     animation-timing-function: ease-in-out;
@@ -1531,9 +1531,9 @@
 
 .lodSelectedDrop:hover {
     opacity: 0.1;
-}
+}*/
 
-.heroBuildMenuButton {
+/*.heroBuildMenuButton {
     background-color: gradient(linear, 0% 0%, 0% 100%, from(#3A607377), to(#16222A77));
     border: 1px solid #000000;
     border-radius: 4px;
@@ -1549,9 +1549,9 @@
 
 .heroBuildMenuButton:hover {
     wash-color: #FFFFFFFF;
-}
+}*/
 
-.heroBuildMenuButtonSmall {
+/*.heroBuildMenuButtonSmall {
     background-color: gradient(linear, 0% 0%, 0% 100%, from(#3A607377), to(#16222A77));
     border: 1px solid #000000;
     border-radius: 4px;
@@ -1568,23 +1568,17 @@
 
 .heroBuildMenuButtonSmall:hover {
     wash-color: #FFFFFFFF;
-}
+}*/
 
-.disableButton {
-    opacity: 0.0;
-    transition-property: opacity;
-    transition-duration: 0.25s;
-}
-
-.lockBuildButton {
+/*.lockBuildButton {
     width: fill-parent-flow(1.0);
 }
 
 .lockBuildButton Label {
     horizontal-align: center;
-}
+}*/
 
-.makeThePlayerNoticeThisButton {
+/*.makeThePlayerNoticeThisButton {
     animation-name: lodButtonHighlight;
     animation-duration: 1.51s;
     animation-timing-function: ease-in-out;
@@ -1601,35 +1595,35 @@
     100% {
         box-shadow: #00FF00FF 0px 0px 1px 0px;
     }
-}
+}*/
 
-.buildingHelperInfoText {
+/*.buildingHelperInfoText {
     margin-left: 8px;
-}
+}*/
 
-.addMarginBelow {
+/*.addMarginBelow {
     margin-bottom: 8px;
-}
+}*/
 
-#pickingPhaseMainTabContent {
+/*#pickingPhaseMainTabContent {
     padding: 8px;
     flow-children: down;
-}
+}*/
 
-.buildCategoryLabel {
+/*.buildCategoryLabel {
     font-size: 24px;
     margin: 8px;
-}
+}*/
 
-#pickingPhaseRecommendedBuildContainer {
+/*#pickingPhaseRecommendedBuildContainer {
     horizontal-align: center;
     width: fit-children;
     flow-children: right-wrap;
     height: 100%;
     overflow: squish scroll;
-}
+}*/
 
-.recommendedBuild {
+/*.recommendedBuild {
     flow-children: down;
     border: 1px solid #444444;
     border-radius: 4px;
@@ -1697,7 +1691,7 @@
     color: #FFFFFF;
     margin-left: 4px;
     vertical-align: middle;
-}
+}*/
 
 /*
     BANNING INTERFACE
@@ -2134,9 +2128,9 @@
     visibility: collapse;
 }
 
-.potential_drop_target {
+/*.potential_drop_target {
     opacity: 0.1;
-}
+}*/
 
 /* A comment (aka, invisible) */
 .comment {
@@ -2150,9 +2144,9 @@
     font-weight: bold;
 }
 
-.addMarginTop {
+/*.addMarginTop {
     margin-top: 8px;
-}
+}*/
 
 /*
     Option Importer

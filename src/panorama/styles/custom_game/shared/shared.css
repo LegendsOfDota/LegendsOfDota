@@ -1,0 +1,121 @@
+.makeThePlayerNoticeThisButton {
+    animation-name: lodButtonHighlight;
+    animation-duration: 1.51s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+@keyframes 'lodButtonHighlight' {
+    0% {
+        box-shadow: #00FF00FF 0px 0px 1px 0px;
+    }
+    50% {
+        box-shadow: #00FF00FF 0px 0px 8px 0px;
+    }
+    100% {
+        box-shadow: #00FF00FF 0px 0px 1px 0px;
+    }
+}
+
+.disableButton {
+    opacity: 0.0;
+    transition-property: opacity;
+    transition-duration: 0.25s;
+}
+
+.heroBuildMenuButtonSmall {
+    background-color: gradient(linear, 0% 0%, 0% 100%, from(#3A607377), to(#16222A77));
+    border: 1px solid #000000;
+    border-radius: 4px;
+    wash-color: #cccccc;
+    padding: 4px;
+    padding-left: 8px;
+    horizontal-align: left;
+    margin-left: 8px;
+    margin-right: 8px;
+
+    transition-property: opacity;
+    transition-duration: 0.25s;
+}
+
+.heroBuildMenuButtonSmall:hover {
+    wash-color: #FFFFFFFF;
+}
+
+.heroBuildMenuButton {
+    background-color: gradient(linear, 0% 0%, 0% 100%, from(#3A607377), to(#16222A77));
+    border: 1px solid #000000;
+    border-radius: 4px;
+    wash-color: #cccccc;
+    padding: 4px;
+    padding-left: 8px;
+    horizontal-align: left;
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.heroBuildMenuButton:hover {
+    wash-color: #FFFFFFFF;
+}
+
+.lockBuildButton {
+    width: fill-parent-flow(1.0);
+}
+
+.lockBuildButton Label {
+    horizontal-align: center;
+}
+
+.lodSelected {
+    animation-name: lodHighlightLoop;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+@keyframes 'lodHighlightLoop' {
+    0% {
+        border: 1px solid #FF0000;
+        border-radius: 4px;
+    }
+    50% {
+        border: 4px solid #FF0000;
+        border-radius: 4px;
+    }
+    100% {
+        border: 1px solid #FF0000;
+        border-radius: 4px;
+    }
+}
+
+.lodSelectedDrop {
+    animation-name: lodHighlightLoopDrop;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+@keyframes 'lodHighlightLoopDrop' {
+    0% {
+        border: 1px solid #00FF00;
+        border-radius: 4px;
+    }
+    50% {
+        border: 4px solid #00FF00;
+        border-radius: 4px;
+    }
+    100% {
+        border: 1px solid #00FF00;
+        border-radius: 4px;
+    }
+}
+
+.lodSelectedDrop:hover {
+    opacity: 0.1;
+}
+
+.potential_drop_target {
+    opacity: 0.1;
+}

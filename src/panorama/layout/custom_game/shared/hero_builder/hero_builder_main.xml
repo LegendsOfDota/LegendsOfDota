@@ -1,0 +1,185 @@
+<root>
+    <styles>
+        <include src="s2r://panorama/styles/dotastyles.vcss_c" />
+        <include src="s2r://panorama/styles/play.vcss_c" />
+        <include src="file://{resources}/styles/custom_game/shared/hero_builder.css" />
+        <include src="file://{resources}/styles/custom_game/shared/shared.css" />
+    </styles>
+
+    <scripts>
+        <include src="file://{resources}/scripts/custom_game/shared/hero_builder/hero_builder.js" />
+    </scripts>
+
+    <Panel class="rootHeroBuilderPanel">
+        <Panel id="pickingPhaseLeftSide">
+            <Panel id="pickingPhaseTabs">
+                <Panel id="pickingPhaseMainTab" class="pickingPhaseTab">
+                    <Label text="Find a hero" link="pickingPhaseHeroTab" class="heroBuildMenuButton" />
+                    <Label text="Find a skill" link="pickingPhaseSkillTab" class="heroBuildMenuButton" />
+
+                    <Panel id="pickingPhaseMainTabHeroPreview" class="buildingHelperHeroPreviewContainer" />
+                </Panel>
+                <Panel id="pickingPhaseHeroTab" class="pickingPhaseTab">
+                    <Label text="Back" link="pickingPhaseMainTab" class="heroBuildMenuButton" />
+
+                    <Label text="Filter by name:" class="buildingHelperInfoText addMarginTop" />
+                    <Panel class="lodSearchPanel">
+                        <TextEntry id="lodHeroSearchInput" multiline="false" textmode="normal" class="lodSearchText" />
+                        <Button class="lodSearchButton" onactivate="$('#lodHeroSearchInput').SetFocus()" />
+                    </Panel>
+
+                    <Panel id="pickingPhaseHeroTabHeroPreview" class="buildingHelperHeroPreviewContainer">
+                        <Panel id="buildingHelperHeroPreview">
+                            <Panel id="buildingHelperHeroPreviewHeroContainer">
+                                <DOTAHeroImage id="buildingHelperHeroPreviewHero" heroname="npc_dota_hero_nevermore" />
+                                <Label id="buildingHelperHeroPreviewHeroName" text="heroName" />
+                            </Panel>
+
+                            <Button id="buildingHelperHeroPreviewHeroSelect" class="heroBuildMenuButtonSmall" onactivate="onNewHeroSelected()">
+                                <Label text="selectHero" />
+                            </Button>
+
+                            <Button id="buildingHelperHeroPreviewHeroBan" class="heroBuildMenuButtonSmall" onactivate="onHeroBanButtonPressed()">
+                                <Label text="banHero" />
+                            </Button>
+
+                            <Panel id="buildingHelperHeroPreviewSkillsContainer">
+                                <DOTAAbilityImage id="buildingHelperHeroPreviewSkill1" abilityname="life_stealer_empty_1" />
+                                <DOTAAbilityImage id="buildingHelperHeroPreviewSkill2" abilityname="life_stealer_empty_1" />
+                                <DOTAAbilityImage id="buildingHelperHeroPreviewSkill3" abilityname="life_stealer_empty_1" />
+                                <DOTAAbilityImage id="buildingHelperHeroPreviewSkill4" abilityname="life_stealer_empty_1" />
+                                <DOTAAbilityImage id="buildingHelperHeroPreviewSkill5" abilityname="life_stealer_empty_1" />
+                                <DOTAAbilityImage id="buildingHelperHeroPreviewSkill6" abilityname="life_stealer_empty_1" />
+                                <DOTAAbilityImage id="buildingHelperHeroPreviewSkill7" abilityname="life_stealer_empty_1" />
+                                <DOTAAbilityImage id="buildingHelperHeroPreviewSkill8" abilityname="life_stealer_empty_1" />
+                                <DOTAAbilityImage id="buildingHelperHeroPreviewSkill9" abilityname="life_stealer_empty_1" />
+                                <DOTAAbilityImage id="buildingHelperHeroPreviewSkill10" abilityname="life_stealer_empty_1" />
+                                <DOTAAbilityImage id="buildingHelperHeroPreviewSkill11" abilityname="life_stealer_empty_1" />
+                                <DOTAAbilityImage id="buildingHelperHeroPreviewSkill12" abilityname="life_stealer_empty_1" />
+                                <DOTAAbilityImage id="buildingHelperHeroPreviewSkill13" abilityname="life_stealer_empty_1" />
+                                <DOTAAbilityImage id="buildingHelperHeroPreviewSkill14" abilityname="life_stealer_empty_1" />
+                                <DOTAAbilityImage id="buildingHelperHeroPreviewSkill15" abilityname="life_stealer_empty_1" />
+                                <DOTAAbilityImage id="buildingHelperHeroPreviewSkill16" abilityname="life_stealer_empty_1" />
+                            </Panel>
+                        </Panel>
+                    </Panel>
+                </Panel>
+                <Panel id="pickingPhaseSkillTab" class="pickingPhaseTab">
+                    <Label text="Back" link="pickingPhaseMainTab" class="heroBuildMenuButton addMarginBelow" />
+
+                    <Label text="Filter by name:" class="buildingHelperInfoText" />
+                    <Panel class="lodSearchPanel">
+                        <TextEntry id="lodSkillSearchInput" multiline="false" textmode="normal" class="lodSearchText" />
+                        <Button class="lodSearchButton" onactivate="$('#lodSkillSearchInput').SetFocus()" />
+                    </Panel>
+                    <Label text="Filter by category:" class="buildingHelperInfoText" />
+                    <DropDown id="lodSkillCategoryHolder" />
+                    <ToggleButton id="buttonHeroGrouping" text="Group Hero Abilities" onactivate="toggleHeroGrouping()" />
+                    <ToggleButton id="buttonShowBanned" text="Show Banned Skills" onactivate="toggleShowBanned()" />
+                    <ToggleButton text="Show Disallowed Skills" onactivate="toggleShowDisallowed()" />
+                    <ToggleButton id="toggleShowDraftAblilities" text="Show Non Draft Skills" onactivate="toggleShowDraftSkills()" />
+                    <ToggleButton id="lodToggleButton" text="Show Taken Skills" onactivate="toggleShowTaken()" />
+                </Panel>
+            </Panel>
+
+            <Panel id="pickingPhaseBuild">
+                <Panel id="pickingPhaseSelectedHero">
+                    <Panel id="pickingPhaseSelectedAttr">
+                        <Button class="pickingPhaseAttr" id="pickingPhaseSelectHeroStr" onactivate="setPrimaryAttr('str');">
+                            <Image text="Str" src="file://{images}/primary_attribute_icons/primary_attribute_icon_strength.psd" />
+                        </Button>
+
+                         <Button class="pickingPhaseAttr" id="pickingPhaseSelectHeroAgi" onactivate="setPrimaryAttr('agi');">
+                            <Image text="Str" src="file://{images}/primary_attribute_icons/primary_attribute_icon_agility.psd" />
+                        </Button>
+
+                         <Button class="pickingPhaseAttr" id="pickingPhaseSelectHeroInt" onactivate="setPrimaryAttr('int');">
+                            <Image text="Str" src="file://{images}/primary_attribute_icons/primary_attribute_icon_intelligence.psd" />
+                        </Button>
+                    </Panel>
+
+                    <Panel id="pickingPhaseSelectedHeroImageCon" class="no_hero_selected">
+                        <DOTAHeroImage id="pickingPhaseSelectedHeroImage" class="pickingPhaseSelectedHeroImage" heroname="" heroimagestyle="landscape" />
+                        <Image id="pickingPhaseSelectedHeroImageNone" class="pickingPhaseSelectedHeroImage" src="file://{images}/heroes/npc_dota_hero_default.png" />
+                        <Label id="pickingPhaseSelectedHeroText" text="Random" />
+                    </Panel>
+                </Panel>
+
+                <Panel id="pickingPhaseBuildSkills">
+                    <DOTAAbilityImage id="lodYourAbility1" abilityname="life_stealer_empty_1" onactivate="onYourAbilityIconPressed(1)" />
+                    <DOTAAbilityImage id="lodYourAbility2" abilityname="life_stealer_empty_1" onactivate="onYourAbilityIconPressed(2)" />
+                    <DOTAAbilityImage id="lodYourAbility3" abilityname="life_stealer_empty_1" onactivate="onYourAbilityIconPressed(3)" />
+                    <DOTAAbilityImage id="lodYourAbility4" abilityname="life_stealer_empty_1" onactivate="onYourAbilityIconPressed(4)" />
+                    <DOTAAbilityImage id="lodYourAbility5" abilityname="life_stealer_empty_1" onactivate="onYourAbilityIconPressed(5)" />
+                    <DOTAAbilityImage id="lodYourAbility6" abilityname="life_stealer_empty_1" onactivate="onYourAbilityIconPressed(6)" />
+                </Panel>
+
+                <Panel id="pickingPhaseBuildButtons">
+                    <Button id="heroBuilderLockButton" class="heroBuildMenuButtonSmall lockBuildButton makeThePlayerNoticeThisButton" onactivate="onLockBuildButtonPressed()">
+                        <Label id="heroBuilderLockButtonText" text="lockBuild" />
+                    </Button>
+                </Panel>
+            </Panel>
+            <Panel id="pickingPhaseBans">
+                <Label class="lodBanningHeader" text="lodBanningSection" />
+                <Label class="lodBanningInstructions" text="lodBanningInstructions" />
+                <Label id="lodBanLimits" text="banLimits" />
+
+                <Panel id="banningButtonContainer" class="disableButton">
+                    <DOTAAbilityImage id="lodBanThisSkill" abilityname="life_stealer_empty_1" />
+                    <Button id="lodBanSkillButton" class="heroBuildMenuButtonSmall" onactivate="onBanButtonPressed()">
+                        <Label text="banAbility" />
+                    </Button>
+                </Panel>
+
+                <Button id="heroBuilderLockButtonBans" class="heroBuildMenuButtonSmall lockBuildButton makeThePlayerNoticeThisButton" onactivate="onLockBuildButtonPressed()">
+                    <Label text="finishBanning" />
+                </Button>
+            </Panel>
+        </Panel>
+
+        <Panel id="pickingPhaseRightSide">
+            <Panel id="pickingPhaseTabsContent">
+                <Panel id="pickingPhaseMainTabContent" class="pickingPhaseTabContent">
+                    <Label class="buildCategoryLabel" text="txtRecommendedBuilds" />
+                    <Panel id="pickingPhaseRecommendedBuildContainer" />
+                </Panel>
+
+                <Panel id="pickingPhaseHeroTabContent" class="pickingPhaseTabContent">
+                    <Panel class="pickingHeroList">
+                        <Label text="Strength" class="pickingHeroListCategory"/>
+                        <Panel id="strHeroContainer" class="pickingHeroListHeroes"/>
+                    </Panel>
+
+                    <Panel class="pickingHeroList">
+                        <Label text="Agility" class="pickingHeroListCategory"/>
+                        <Panel id="agiHeroContainer" class="pickingHeroListHeroes"/>
+                    </Panel>
+
+                    <Panel class="pickingHeroList">
+                        <Label text="Intelligence" class="pickingHeroListCategory"/>
+                        <Panel id="intHeroContainer" class="pickingHeroListHeroes"/>
+                    </Panel>
+
+                    <Panel id="pickingHeroListFilters">
+                        <Label class="pickingHeroListFilterHeading" text="Filter Heroes:" />
+                        <Panel class="pickingHeroListFilterGroup">
+                            <Label id="heroPickingFiltersMelee" class="heroBuildMenuButtonSmall" text="Melee" onactivate="onHeroFilterPressed('melee')" />
+                            <Label id="heroPickingFiltersRanged" class="heroBuildMenuButtonSmall" text="Ranged" onactivate="onHeroFilterPressed('ranged')" />
+                            <Label id="heroPickingFiltersClear" class="heroBuildMenuButtonSmall" text="Clear Filters" onactivate="onHeroFilterPressed('clear')" />
+                        </Panel>
+                    </Panel>
+                </Panel>
+
+                <Panel id="pickingPhaseSkillTabContent" class="pickingPhaseTabContent">
+                    <Panel id="pickingPhaseTabFilterThingo" />
+                    <Panel id="pickingPhaseSkillTabContentSkills" />
+                </Panel>
+
+                <Panel id="pickingPhaseRecommendedBuildsTabContent" class="pickingPhaseTabContent">
+                    <Label text="rec content"/>
+                </Panel>
+            </Panel>
+        </Panel>
+    </Panel>
+</root>

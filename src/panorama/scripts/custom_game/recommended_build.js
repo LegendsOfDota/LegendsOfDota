@@ -1,14 +1,14 @@
 // Store build data to send to the server
 var buildData = null;
 
-function setBuildData(makeHeroSelectable, hookSkillInfo, makeSkillSelectable, hero, build, attr, title) {
+function setBuildData(hero, build, attr, title) {
     // Push skills
     for(var slotID=1; slotID<=6; ++slotID) {
         var slot = $('#recommendedSkill' + slotID);
 
         // Make it selectable and show info
-        makeSkillSelectable(slot);
-        hookSkillInfo(slot);
+        Game.shared.makeSkillSelectable(slot);
+        Game.shared.hookSkillInfo(slot);
 
         if(build[slotID]) {
             slot.visible = true;
@@ -23,7 +23,7 @@ function setBuildData(makeHeroSelectable, hookSkillInfo, makeSkillSelectable, he
     var heroImageCon = $('#recommendedHeroImage');
     heroImageCon.heroname = hero;
     heroImageCon.SetAttributeString('heroName', hero);
-    makeHeroSelectable(heroImageCon);
+    Game.shared.makeHeroSelectable(heroImageCon);
 
     // Set the title
     var titleLabel = $('#buildName');

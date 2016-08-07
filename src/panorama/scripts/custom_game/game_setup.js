@@ -2,69 +2,26 @@
 
 // Shared stuff
 var allOptions = Game.shared.allOptions;
-var recommendedBuilds = Game.shared.recommendedBuilds;
-
-// Phases
-var PHASE_LOADING = 1;          // Waiting for players, etc
-var PHASE_OPTION_VOTING = 2;    // Selection options
-var PHASE_OPTION_SELECTION = 3; // Selection options
-var PHASE_BANNING = 4;          // Banning stuff
-var PHASE_SELECTION = 5;        // Selecting heroes
-var PHASE_DRAFTING = 6;         // Place holder for drafting mode
-var PHASE_RANDOM_SELECTION = 7; // Random build selection (For All Random)
-var PHASE_REVIEW = 8;           // Review Phase
-var PHASE_INGAME = 9;           // Game has started
-
-// Hero data
-var heroData = {};
-var abilityHeroOwner = {};
-var abilityCustomGroups = {};
-
-// Ability Data
-var flagData = {}
-var flagDataInverse = {}
 
 // Used to make data transfer smoother
 var dataHooks = {};
 
-// Used to hook when players are clicking around
-var onLoadTabHook = {};
-
-// Used to store selected heroes and skills
-var selectedHeroes = {};
-var selectedAttr = {};
-var selectedSkills = {};
-var readyState = {};
-
 // Hide enemy picks?
 var hideEnemyPicks = false;
 
-// Mirror Draft stuff
-var heroDraft = null;
-var abilityDraft = null;
-
 // The current phase we are in
-var currentPhase = PHASE_LOADING;
-var selectedPhase = PHASE_OPTION_SELECTION;
+var currentPhase = Game.shared.PHASE_LOADING;
+var selectedPhase = Game.shared.PHASE_OPTION_SELECTION;
 var endOfTimer = -1;
 var freezeTimer = -1;
 var lastTimerShow = -1;
 var allowCustomSettings = false;
-
-// Current hero & Skill
-var currentSelectedHero = '';
-var currentSelectedSkill = '';
-var currentSelectedSlot = -1;
-var currentSelectedAbCon = null;
 
 // List of all player team panels
 //var allPlayerPanels = [];
 var activeUnassignedPanels = {};
 var activePlayerPanels = {};
 var activeReviewPanels = {};
-
-// List of hero panels
-var heroPanelMap = {};
 
 // List of option links
 var allOptionLinks = {};
@@ -74,24 +31,6 @@ var lastOptionValues = {};
 
 // Map of optionName -> callback for value change
 var optionFieldMap = {};
-
-// Map of categories that are allowed to be picked from
-var allowedCategories = {};
-
-// Should we show banned / disallowed skills?
-var showBannedSkills = true;
-var showDisallowedSkills = false;
-var showTakenSkills = true;
-var showNonDraftSkills = false;
-var useSmartGrouping = true;
-
-// List of banned abilities
-var bannedAbilities = {};
-var bannedHeroes = {};
-
-// List of taken abilities
-var takenAbilities = {};
-var takenTeamAbilities = {};
 
 // Keeping track of bans
 var currentHeroBans = 0;
@@ -106,48 +45,21 @@ var waitingForPrecache = true;
 // Are we a premium player?
 var isPremiumPlayer = false;
 
-// Used to calculate filters (stub function)
-var calculateFilters = function(){};
-var calculateHeroFilters = function(){};
+// The picking phase panel
+var pickingPhasePanel;
 
 // Focuses on nothing
-function focusNothing() {
+Game.shared.focusNothing = function() {
     $('#mainSelectionRoot').SetFocus();
-}
-
-// Hooks a tab change
-function hookTabChange(tabName, callback) {
-    onLoadTabHook[tabName] = callback;
-}
-
-// Makes skill info appear when you hover the panel that is parsed in
-function hookSkillInfo(panel) {
-    // Show
-    panel.SetPanelEvent('onmouseover', function() {
-        var ability = panel.GetAttributeString('abilityname', 'life_stealer_empty_1');
-
-        // If no ability, give life stealer empty
-        if(ability == '') {
-            ability = 'life_stealer_empty_1';
-        }
-
-        $.DispatchEvent('DOTAShowAbilityTooltip', panel, ability);
-    });
-
-    // Hide
-    panel.SetPanelEvent('onmouseout', function() {
-        $.DispatchEvent('DOTAHideAbilityTooltip');
-        $.DispatchEvent('DOTAHideTitleTextTooltip');
-    });
 }
 
 // Hero data has changed
 function OnHeroDataChanged(table_name, key, data) {
-    heroData[key] = data;
+    Game.shared.heroData[key] = data;
 
     for(var i=1; i<=16; ++i) {
         if(data['Ability' + i] != null) {
-            abilityHeroOwner[data['Ability' + i]] = key;
+            Game.shared.abilityHeroOwner[data['Ability' + i]] = key;
         }
     }
 
@@ -156,16 +68,16 @@ function OnHeroDataChanged(table_name, key, data) {
     var myHookNumber = ++dataHooks.OnHeroDataChanged;
     $.Schedule(1, function() {
         if(dataHooks.OnHeroDataChanged == myHookNumber) {
-            buildHeroList();
+            pickingPhasePanel.buildHeroList();
         }
     });
 }
 
 // Flag data has changed
-function OnFlagDataChanged(table_name, key, data) {
+function OnflagDataChanged(table_name, key, data) {
     // Flag data
     if(data.isFlagData) {
-        flagDataInverse[key] = data.flagData;
+        Game.shared.flagDataInverse[key] = data.flagData;
 
         // Do the schedule
         if(dataHooks.OnFlagDataChanged == null) dataHooks.OnFlagDataChanged = 0;
@@ -181,69 +93,43 @@ function OnFlagDataChanged(table_name, key, data) {
     // Custom group data
     if(data.isCustomGroup) {
         for(var abilityName in data.data) {
-            abilityCustomGroups[abilityName] = data.groupName;
+            Game.shared.abilityCustomGroups[abilityName] = data.groupName;
         }
         return;
     }
 }
 
 // Selected heroes has changed
-var allSelectedHeroes = {};
-function OnSelectedHeroesChanged(table_name, key, data) {
+function onSelectedHeroChanged(data) {
     // Grab data
     var playerID = data.playerID;
-    var heroName = data.heroName;
-
-    // Store the change
-    selectedHeroes[playerID] = heroName;
+    //var heroName = data.heroName;
 
     // Was it an update on our local player?
     if(playerID == Players.GetLocalPlayer()) {
         // Update our hero icon and text
-        var heroCon = $('#pickingPhaseSelectedHeroImage');
-        heroCon.SetAttributeString('heroName', heroName);
-        heroCon.heroname = heroName;
-
-        $('#pickingPhaseSelectedHeroText').text = $.Localize(heroName);
-
-        // Set it so no hero is selected
-        $('#pickingPhaseSelectedHeroImageCon').SetHasClass('no_hero_selected', false);
+        //pickingPhasePanel.onSelectedHeroChanged();
 
         // We have now picked a hero
         pickedAHero = true;
     }
 
     // Shows which heroes have been taken
-    showTakenHeroes();
-    updateHeroPreviewFilters();
-    updateRecommendedBuildFilters();
+    //pickingPhasePanel.showTakenHeroes();
+    //pickingPhasePanel.updateHeroPreviewFilters();
+    //pickingPhasePanel.updateRecommendedBuildFilters();
 
-    if(activePlayerPanels[playerID]) {
-        activePlayerPanels[playerID].OnGetHeroData(heroName);
-    }
+    //if(activePlayerPanels[playerID]) {
+    //    activePlayerPanels[playerID].OnGetHeroData(heroName);
+    //}
 
-    if(activeReviewPanels[playerID]) {
-        activeReviewPanels[playerID].OnGetHeroData(heroName);
-
-        if(currentPhase == PHASE_REVIEW) {
-            activeReviewPanels[playerID].OnReviewPhaseStart();
-        }
-    }
-}
-
-// Shows which heroes have been taken
-function showTakenHeroes() {
-    // Calculate which heroes are taken
-    allSelectedHeroes = {};
-    for(var playerID in selectedHeroes) {
-        allSelectedHeroes[selectedHeroes[playerID]] = true;
-    }
-
-    // Mark them as taken
-    for(var heroName in heroPanelMap) {
-        var panel = heroPanelMap[heroName];
-        panel.SetHasClass('takenHero', allSelectedHeroes[heroName] != null);
-    }
+    //if(activeReviewPanels[playerID]) {
+    //    activeReviewPanels[playerID].OnGetHeroData(heroName);
+//
+//        if(currentPhase == Game.shared.PHASE_REVIEW) {
+//            activeReviewPanels[playerID].OnReviewPhaseStart();
+//        }
+//    }
 }
 
 // Selected primary attribute changes
@@ -253,23 +139,27 @@ function OnSelectedAttrChanged(table_name, key, data) {
     var newAttr = data.newAttr;
 
     // Store the change
-    selectedAttr[playerID] = newAttr;
+    Game.shared.selectedAttr[playerID] = newAttr;
+
+    // Trigger the event
+    Game.shared.events.trigger('attrChanged', {
+        playerID: playerID,
+        newAttr: newAttr
+    });
 
     // Was it an update on our local player?
     if(playerID == Players.GetLocalPlayer()) {
         // Update which attribute is selected
-        $('#pickingPhaseSelectHeroStr').SetHasClass('selectedAttribute', newAttr == 'str');
-        $('#pickingPhaseSelectHeroAgi').SetHasClass('selectedAttribute', newAttr == 'agi');
-        $('#pickingPhaseSelectHeroInt').SetHasClass('selectedAttribute', newAttr == 'int');
+        //pickingPhasePanel.onHeroAttributeChanged();
     }
 
     // Push the attribute
     if(activePlayerPanels[playerID]) {
-        activePlayerPanels[playerID].OnGetNewAttribute(newAttr);
+        //activePlayerPanels[playerID].OnGetNewAttribute(newAttr);
     }
 
     if(activeReviewPanels[playerID]) {
-        activeReviewPanels[playerID].OnGetNewAttribute(newAttr);
+        //activeReviewPanels[playerID].OnGetNewAttribute(newAttr);
     }
 }
 
@@ -278,40 +168,29 @@ function OnSelectedSkillsChanged(table_name, key, data) {
     var playerID = data.playerID;
 
     // Store the change
-    selectedSkills[playerID] = data.skills;
+    Game.shared.selectedSkills[playerID] = data.skills;
+
+    // Fire the event
+    Game.shared.events.trigger('buildChanged', {
+        playerID: playerID,
+        newSkills: data.skills
+    })
 
     // Grab max slots
     var maxSlots = Game.shared.optionValueList['lodOptionCommonMaxSlots'] || 6;
     var defaultSkill = 'life_stealer_empty_1';
 
     if(playerID == Players.GetLocalPlayer()) {
-        for(var i=1; i<=maxSlots; ++i) {
-            // Default to no skills
-            if(!selectedSkills[playerID][i]) {
-                var ab = $('#lodYourAbility' + i);
-                ab.abilityname = defaultSkill;
-                ab.SetAttributeString('abilityname', defaultSkill);
-            }
-        }
-
-        for(var key in selectedSkills[playerID]) {
-            var ab = $('#lodYourAbility' + key);
-            var abName = selectedSkills[playerID][key];
-
-            if(ab != null) {
-                ab.abilityname = abName;
-                ab.SetAttributeString('abilityname', abName);
-            }
-        }
+        //pickingPhasePanel.onHeroBuildUpdated();
     }
 
     // Push the build
     if(activePlayerPanels[playerID]) {
-        activePlayerPanels[playerID].OnGetHeroBuildData(data.skills);
+        //activePlayerPanels[playerID].OnGetHeroBuildData(data.skills);
     }
 
     if(activeReviewPanels[playerID]) {
-        activeReviewPanels[playerID].OnGetHeroBuildData(data.skills);
+        //activeReviewPanels[playerID].OnGetHeroBuildData(data.skills);
     }
 
     // Update which skills are taken
@@ -323,12 +202,12 @@ function updateTakenSkills() {
     var myTeam = (Game.GetPlayerInfo(Players.GetLocalPlayer()) || {}).player_team_id || -1;
 
     // Reset taken skills
-    takenTeamAbilities = {};
-    takenAbilities = {};
+    Game.shared.takenTeamAbilities = {};
+    Game.shared.takenAbilities = {};
 
     // Loop over each build
-    for(var playerID in selectedSkills) {
-        var build = selectedSkills[playerID];
+    for(var playerID in Game.shared.selectedSkills) {
+        var build = Game.shared.selectedSkills[playerID];
 
         var theTeam = (Game.GetPlayerInfo(parseInt(playerID)) || {}).player_team_id || -1;
 
@@ -336,18 +215,18 @@ function updateTakenSkills() {
             var abilityName = build[slotID];
 
             // This ability is taken
-            takenAbilities[abilityName] = true;
+            Game.shared.takenAbilities[abilityName] = true;
 
             if(myTeam == theTeam) {
-                takenTeamAbilities[abilityName] = true;
+                Game.shared.takenTeamAbilities[abilityName] = true;
             }
         }
     }
 
     // Rebuild the visible skills
-    calculateFilters();
-    updateHeroPreviewFilters();
-    updateRecommendedBuildFilters();
+    pickingPhasePanel.calculateFilters();
+    pickingPhasePanel.updateHeroPreviewFilters();
+    pickingPhasePanel.updateRecommendedBuildFilters();
 }
 
 // A ban was sent through
@@ -358,22 +237,22 @@ function OnSkillBanned(table_name, key, data) {
 
     if(heroName != null) {
         // Store the ban
-        bannedHeroes[heroName] = true;
+        Game.shared.bannedHeroes[heroName] = true;
 
         // Recalculate filters
-        calculateHeroFilters();
-        updateHeroPreviewFilters();
-        updateRecommendedBuildFilters();
+        pickingPhasePanel.calculateHeroFilters();
+        pickingPhasePanel.updateHeroPreviewFilters();
+        pickingPhasePanel.updateRecommendedBuildFilters();
     }
 
     if(abilityName != null) {
         // Store the ban
-        bannedAbilities[abilityName] = true;
+        Game.shared.bannedAbilities[abilityName] = true;
 
         // Recalculate filters
-        calculateFilters();
-        updateHeroPreviewFilters();
-        updateRecommendedBuildFilters();
+        pickingPhasePanel.calculateFilters();
+        pickingPhasePanel.updateHeroPreviewFilters();
+        pickingPhasePanel.updateRecommendedBuildFilters();
     }
 
     if(data.playerID != null) {
@@ -394,35 +273,31 @@ function OnSkillBanned(table_name, key, data) {
 // Server just sent the ready state
 function OnGetReadyState(table_name, key, data) {
     // Store it
-    readyState = data;
+    Game.shared.readyState = data;
+
+    // Fire the event
+    Game.shared.events.trigger('readyChanged', data);
 
     // Process it
     for(var playerID in data) {
         var panel = activePlayerPanels[playerID];
         if(panel) {
-            panel.setReadyState(data[playerID])
+            //panel.setReadyState(data[playerID])
         }
 
         var panel = activeReviewPanels[playerID];
         if(panel) {
-            panel.setReadyState(data[playerID])
+            //panel.setReadyState(data[playerID])
         }
 
         // Is it our local player?
         if(playerID == Players.GetLocalPlayer()) {
-            $('#heroBuilderLockButton').SetHasClass('makeThePlayerNoticeThisButton', data[playerID] == 0);
-            $('#heroBuilderLockButtonBans').SetHasClass('makeThePlayerNoticeThisButton', data[playerID] == 0);
-            $('#heroBuilderLockButtonBans').SetHasClass('hideThisButton', data[playerID] == 1);
+            var playerIsReady = data[playerID] == 1;
 
-            $('#allRandomLockButton').visible = data[playerID] == 0;
-            $('#reviewReadyButton').visible = data[playerID] == 0;
-
-            // Set the text
-            if(data[playerID] == 0) {
-                $('#heroBuilderLockButtonText').text = $.Localize('lockBuild');
-            } else {
-                $('#heroBuilderLockButtonText').text = $.Localize('unlockBuild');
-            }
+            // Push the data, push it real, good
+            //pickingPhasePanel.setReadyState(playerIsReady);
+            $('#allRandomLockButton').visible = !playerIsReady;
+            $('#reviewReadyButton').visible = !playerIsReady;
         }
     }
 }
@@ -456,7 +331,7 @@ function OnGetRandomBuilds(table_name, key, data) {
             var buildCon = $.CreatePanel('Panel', con, 'allRandomBuild' + buildID);
             buildCon.BLoadLayout('file://{resources}/layout/custom_game/all_random_build.xml', false, false);
             buildCon.setBuild(buildID, theBuild.heroName, theBuild.build);
-            buildCon.hook(hookSkillInfo);
+            buildCon.hook(Game.shared.hookSkillInfo);
 
             allRandomBuildContainers[buildID] = buildCon;
         }
@@ -492,17 +367,17 @@ function OnGetDraftArray(table_name, key, data) {
     if(!draftPlayers[playerID]) return;
 
     var draftArray = data.draftArray;
-    heroDraft = draftArray.heroDraft;
-    abilityDraft = draftArray.abilityDraft;
+    Game.shared.heroDraft = draftArray.heroDraft;
+    Game.shared.abilityDraft = draftArray.abilityDraft;
 
     // Run the calculations
-    calculateFilters();
-    calculateHeroFilters();
-    updateHeroPreviewFilters();
-    updateRecommendedBuildFilters();
+    pickingPhasePanel.calculateFilters();
+    pickingPhasePanel.calculateHeroFilters();
+    pickingPhasePanel.updateHeroPreviewFilters();
+    pickingPhasePanel.updateRecommendedBuildFilters();
 
-    // Show the button to show non-draft abilities
-    $('#toggleShowDraftAblilities').visible = true;
+    // The draft array was updated
+    Game.shared.events.trigger('draftArrayUpdated');
 }
 
 // Update the highlights
@@ -513,833 +388,23 @@ function updateAllRandomHighlights() {
     }
 }
 
-// When the lock build button is pressed
-function onLockBuildButtonPressed() {
-    // Tell the server we clicked it
-    GameEvents.SendCustomGameEventToServer('lodReady', {});
-}
-
-// Sets up the hero builder tab
-function setupBuilderTabs() {
-    var mainPanel = $('#pickingPhaseTabs');
-    $.Each(mainPanel.Children(), function(panelTab) {
-        if(panelTab.BHasClass('pickingPhaseTab')) {
-            $.Each(panelTab.Children(), function(tabElement) {
-                var tabLink = tabElement.GetAttributeString('link', '-1');
-
-                if(tabLink != '-1') {
-                    tabElement.SetPanelEvent('onactivate', function() {
-                        showBuilderTab(tabLink);
-
-                        // No skills selected anymore
-                        setSelectedDropAbility();
-
-                        // Focus to nothing
-                        focusNothing();
-                    });
-                }
-            });
-        }
-    });
-
-    var mainContentPanel = $('#pickingPhaseTabsContent');
-    $.Each(mainContentPanel.Children(), function(panelTab) {
-        if(panelTab.BHasClass('pickingPhaseTabContent')) {
-            panelTab.visible = false;
-        }
-    });
-
-    // Show the main tab only
-    showBuilderTab('pickingPhaseMainTab');
-
-    // Default to no selected preview hero
-    setSelectedHelperHero();
-
-    for(var i=1;i<=6; ++i) {
-        (function(con, slotID) {
-            // Hook abilitys that should show info
-            hookSkillInfo(con);
-
-            con.SetDraggable(true);
-
-            // Allow for dropping
-            $.RegisterEventHandler('DragEnter', con, function(panelID, draggedPanel) {
-                // Are we dragging an ability?
-                if(draggedPanel.GetAttributeString('abilityname', '') != '') {
-                    con.AddClass('potential_drop_target');
-                    draggedPanel.SetAttributeInt('activeSlot', slotID);
-                }
-            });
-
-            $.RegisterEventHandler('DragLeave', con, function(panelID, draggedPanel) {
-                $.Schedule(0.1, function() {
-                    con.RemoveClass('potential_drop_target');
-
-                    if(draggedPanel.deleted == null && draggedPanel.GetAttributeInt('activeSlot', -1) == slotID) {
-                        draggedPanel.SetAttributeInt('activeSlot', -1);
-                    }
-                });
-            });
-
-            // TODO: Allow for slot swapping
-            $.RegisterEventHandler('DragStart', con, function(panelID, dragCallbacks) {
-                var abName = con.GetAttributeString('abilityname', '');
-
-                if(abName == null || abName.length <= 0) return false;
-
-                //setSelectedDropAbility(abName, con);
-
-                // Create a temp image to drag around
-                var displayPanel = $.CreatePanel('DOTAAbilityImage', $.GetContextPanel(), 'dragImage');
-                displayPanel.abilityname = abName;
-                dragCallbacks.displayPanel = displayPanel;
-                dragCallbacks.offsetX = 0;
-                dragCallbacks.offsetY = 0;
-                displayPanel.SetAttributeString('abilityname', abName);
-
-                // Select this slot
-                currentSelectedSlot = slotID;
-
-                // Do the highlight
-                highlightDropSlots();
-
-                // Hide skill info
-                $.DispatchEvent('DOTAHideAbilityTooltip');
-                $.DispatchEvent('DOTAHideTitleTextTooltip');
-            });
-
-            $.RegisterEventHandler('DragEnd', con, function(panelId, draggedPanel) {
-                // Delete the draggable panel
-                draggedPanel.deleted = true;
-                draggedPanel.DeleteAsync(0.0);
-
-                var dropSlot = draggedPanel.GetAttributeInt('activeSlot', -1);
-                if(dropSlot != -1 && dropSlot != slotID) {
-                    swapSlots(dropSlot, slotID);
-                }
-
-                // Highlight nothing
-                setSelectedDropAbility();
-            });
-        })($('#lodYourAbility' + i), i);
-    }
-
-    for(var i=1;i<=16; ++i) {
-        hookSkillInfo($('#buildingHelperHeroPreviewSkill' + i));
-        makeSkillSelectable($('#buildingHelperHeroPreviewSkill' + i));
-    }
-
-    // Hook drag and drop stuff for heroes
-    var heroDragEnter = function(panelID, draggedPanel) {
-        // Are we dragging an ability?
-        if(draggedPanel.GetAttributeString('heroName', '') != '') {
-            heroDropCon.AddClass('potential_drop_target');
-            heroDropConBlank.AddClass('potential_drop_target');
-            draggedPanel.SetAttributeInt('canSelectHero', 1);
-        }
-    };
-
-    var heroDragLeave = function(panelID, draggedPanel) {
-        $.Schedule(0.1, function() {
-            heroDropCon.RemoveClass('potential_drop_target');
-            heroDropConBlank.RemoveClass('potential_drop_target');
-
-            if(draggedPanel.deleted == null) {
-                draggedPanel.SetAttributeInt('canSelectHero', 0);
-            }
-        });
-    };
-
-    var heroDropCon = $('#pickingPhaseSelectedHeroImage');
-    $.RegisterEventHandler('DragEnter', heroDropCon, heroDragEnter);
-    $.RegisterEventHandler('DragLeave', heroDropCon, heroDragLeave);
-
-    // Display info about the hero on hover
-    hookHeroInfo(heroDropCon);
-
-    var heroDropConBlank = $('#pickingPhaseSelectedHeroImageNone');
-    $.RegisterEventHandler('DragEnter', heroDropConBlank, heroDragEnter);
-    $.RegisterEventHandler('DragLeave', heroDropConBlank, heroDragLeave);
-
-    $('#pickingPhaseSelectedHeroText').hittest = false;
-
-    // Hook banning
-    //var theSet = '';
-    var hookSet = function(setName) {
-        var enterNumber = 0;
-        var banningArea = $('#pickingPhaseBans');
-
-        var banningDragEnter = function(panelID, draggedPanel) {
-            banningArea.AddClass('potential_drop_target');
-            draggedPanel.SetAttributeInt('banThis', 1);
-
-            // Prevent annoyingness
-            ++enterNumber;
-        };
-
-        var banningDragLeave = function(panelID, draggedPanel) {
-            var myNumber = ++enterNumber;
-
-            $.Schedule(0.1, function() {
-                if(myNumber == enterNumber) {
-                    banningArea.RemoveClass('potential_drop_target');
-
-                    if(draggedPanel.deleted == null) {
-                        draggedPanel.SetAttributeInt('banThis', 0);
-                    }
-                }
-            });
-        };
-
-        $.RegisterEventHandler('DragEnter', $(setName), banningDragEnter);
-        $.RegisterEventHandler('DragLeave', $(setName), banningDragLeave);
-    };
-
-    hookSet('#pickingPhaseBans');
-}
-
-// Builds the hero list
-function buildHeroList() {
-    var strHeroes = [];
-    var agiHeroes = [];
-    var intHeroes = [];
-
-    for(var heroName in heroData) {
-        var info = heroData[heroName];
-
-        switch(info.AttributePrimary) {
-            case 'DOTA_ATTRIBUTE_STRENGTH':
-                strHeroes.push(heroName);
-            break;
-
-            case 'DOTA_ATTRIBUTE_AGILITY':
-                agiHeroes.push(heroName);
-            break;
-
-            case 'DOTA_ATTRIBUTE_INTELLECT':
-                intHeroes.push(heroName);
-            break;
-        }
-    }
-
-    function doInsertHeroes(container, heroList) {
-        // Sort the hero list
-        heroList.sort();
-
-        // Insert it
-        for(var i=0; i<heroList.length; ++i) {
-            (function() {
-                var heroName = heroList[i];
-
-                // Create the panel
-                var newPanel = $.CreatePanel('DOTAHeroImage', container, 'heroSelector_' + heroName);
-                newPanel.SetAttributeString('heroName', heroName);
-                newPanel.heroname = heroName;
-                newPanel.heroimagestyle = 'portrait';
-
-                /*newPanel.SetPanelEvent('onactivate', function() {
-                    // Set the selected helper hero
-                    setSelectedHelperHero(heroName);
-                });*/
-
-                // Make the hero selectable
-                makeHeroSelectable(newPanel);
-
-                // Store it
-                heroPanelMap[heroName] = newPanel;
-            })();
-        }
-    }
-
-    // Reset the hero map
-    heroPanelMap = {};
-
-    // Insert heroes
-    doInsertHeroes($('#strHeroContainer'), strHeroes);
-    doInsertHeroes($('#agiHeroContainer'), agiHeroes);
-    doInsertHeroes($('#intHeroContainer'), intHeroes);
-
-    // Update which heroes are taken
-    showTakenHeroes();
-    updateHeroPreviewFilters();
-    updateRecommendedBuildFilters();
-}
-
 // Build the flags list
 function buildFlagList() {
-    flagData = {};
+    Game.shared.flagData = {};
 
-    for(var abilityName in flagDataInverse) {
-        var flags = flagDataInverse[abilityName];
+    for(var abilityName in Game.shared.flagDataInverse) {
+        var flags = Game.shared.flagDataInverse[abilityName];
 
         for(var flag in flags) {
-            if(flagData[flag] == null) flagData[flag] = {};
+            if(Game.shared.flagData[flag] == null) Game.shared.flagData[flag] = {};
 
-            flagData[flag][abilityName] = flags[flag];
+            Game.shared.flagData[flag][abilityName] = flags[flag];
         }
     }
 }
 
-function setSelectedHelperHero(heroName, dontUnselect) {
-    var previewCon = $('#buildingHelperHeroPreview');
-
-    // Validate hero name
-    if(heroName == null || heroName.length <= 0 || !heroData[heroName]) {
-        previewCon.visible = false;
-        return;
-    }
-
-    // Show the preview
-    previewCon.visible = true;
-
-    // Grab the info
-    var info = heroData[heroName];
-
-    // Update the hero
-    $('#buildingHelperHeroPreviewHero').heroname = heroName;
-    $('#buildingHelperHeroPreviewHeroName').text = $.Localize(heroName);
-
-    // Set this as the selected one
-    currentSelectedHero = heroName;
-
-    for(var i=1; i<=16; ++i) {
-        var abName = info['Ability' + i];
-        var abCon = $('#buildingHelperHeroPreviewSkill' + i);
-
-        // Ensure it is a valid ability, and we have flag data about it
-        if(abName != null && abName != '' && flagDataInverse[abName]) {
-            abCon.visible = true;
-            abCon.abilityname = abName;
-            abCon.SetAttributeString('abilityname', abName);
-        } else {
-            abCon.visible = false;
-        }
-    }
-
-    // Highlight drop slots correctly
-    if(!dontUnselect) {
-        // No abilities selected anymore
-        setSelectedDropAbility();
-    }
-
-    // Update the filters for this hero
-    updateHeroPreviewFilters();
-
-    // Jump to the right tab
-    //showBuilderTab('pickingPhaseHeroTab');
-}
-
-// They try to set a new hero
-function onNewHeroSelected() {
-    // Push data to the server
-    chooseHero(currentSelectedHero);
-
-    // Unselect selected skill
-    setSelectedDropAbility();
-}
-
-// They try to ban a hero
-function onHeroBanButtonPressed() {
-    banHero(currentSelectedHero);
-}
-
-// They tried to set a new primary attribute
-function setPrimaryAttr(newAttr) {
-    choosePrimaryAttr(newAttr);
-}
-
-// Highlights slots for dropping
-function highlightDropSlots() {
-    // If no slot selected, default slots
-    if(currentSelectedSlot == -1) {
-        for(var i=1; i<=6; ++i) {
-            var ab = $('#lodYourAbility' + i);
-
-            ab.SetHasClass('lodSelected', false);
-            ab.SetHasClass('lodSelectedDrop', false);
-        }
-    } else {
-        for(var i=1; i<=6; ++i) {
-            var ab = $('#lodYourAbility' + i);
-
-            if(currentSelectedSlot == i) {
-                ab.SetHasClass('lodSelected', true);
-                ab.SetHasClass('lodSelectedDrop', false);
-            } else {
-                ab.SetHasClass('lodSelected', false);
-                ab.SetHasClass('lodSelectedDrop', true);
-            }
-        }
-    }
-
-    // If no skill is selected, highlight nothing
-    if(currentSelectedSkill == '') return;
-
-    // Count the number of ultimate abiltiies
-    var theCount = 0;
-    var theMax = Game.shared.optionValueList['lodOptionCommonMaxUlts'];
-    var isUlt = isUltimateAbility(currentSelectedSkill);
-    var playerID = Players.GetLocalPlayer();
-    if(!isUlt) {
-        theMax = Game.shared.optionValueList['lodOptionCommonMaxSkills'];
-    }
-    var alreadyHas = false;
-
-    // Check our build
-    var ourBuild = selectedSkills[playerID] || {};
-
-    for(var slotID in ourBuild) {
-        var abilityName = selectedSkills[playerID][slotID];
-
-        if(isUltimateAbility(abilityName) == isUlt) {
-            ++theCount;
-        }
-
-        if(currentSelectedSkill == abilityName) {
-            alreadyHas = true;
-        }
-    }
-
-    var easyAdd = theCount < theMax;
-
-    // Decide which slots can be dropped into
-    for(var i=1; i<=6; ++i) {
-        var ab = $('#lodYourAbility' + i);
-
-        // Do we already have this ability?
-        if(alreadyHas) {
-            ab.SetHasClass('lodSelectedDrop', currentSelectedSkill == ourBuild[i]);
-        } else {
-            ab.SetHasClass('lodSelectedDrop', (easyAdd || (ourBuild[i] != null && isUlt == isUltimateAbility(ourBuild[i]))));
-        }
-    }
-}
-
-// Decides if the given ability is an ult or not
-function isUltimateAbility(abilityName) {
-    return (flagDataInverse[abilityName] || {}).isUlt != null;
-}
-
-// Sets the currently selected ability for dropping
-function setSelectedDropAbility(abName, abcon) {
-    abName = abName || '';
-
-    // Was there a slot selected?
-    if(currentSelectedSlot != -1) {
-        var theSlot = currentSelectedSlot;
-        currentSelectedSlot = -1;
-
-        if(abName.length > 0) {
-            chooseNewAbility(theSlot, abName);
-        }
-        highlightDropSlots();
-        return;
-    }
-
-
-    // Remove the highlight from the old ability icon
-    if(currentSelectedAbCon != null) {
-        currentSelectedAbCon.SetHasClass('lodSelected', false);
-        currentSelectedAbCon = null;
-    }
-
-    if(currentSelectedSkill == abName || abName == '') {
-        // Nothing selected
-        currentSelectedSkill = '';
-
-        // Update the banning skill icon
-        $('#banningButtonContainer').SetHasClass('disableButton', true);
-    } else {
-        // Do a selection
-        currentSelectedSkill = abName;
-        currentSelectedAbCon = abcon;
-
-        // Highlight ability
-        if(abcon != null) {
-            abcon.SetHasClass('lodSelected', true);
-        }
-
-        // Update the banning skill icon
-        $('#lodBanThisSkill').abilityname = abName;
-        $('#banningButtonContainer').SetHasClass('disableButton', false);
-    }
-
-    // Highlight which slots we can drop it into
-    highlightDropSlots();
-}
-
-// They clicked on a skill
-/*function onHeroAbilityClicked(heroAbilityID) {
-    // Focus nothing
-    focusNothing();
-
-    var abcon = $('#buildingHelperHeroPreviewSkill' + heroAbilityID);
-    var ab = abcon.abilityname;
-
-    // Push the event
-    setSelectedDropAbility(ab, abcon);
-}*/
-
-// They click on the banning button
-function onBanButtonPressed() {
-    // Focus nothing
-    focusNothing();
-
-    // Check what action should be performed
-    if(currentSelectedSkill != '') {
-        // They are trying to select a new skill
-        banAbility(currentSelectedSkill);
-
-        // Done
-        return;
-    }
-}
-
-// They clicked on one of their ability icons
-function onYourAbilityIconPressed(slot) {
-    // Focus nothing
-    focusNothing();
-
-    // Check what action should be performed
-    if(currentSelectedSkill != '') {
-        // They are trying to select a new skill
-        chooseNewAbility(slot, currentSelectedSkill);
-
-        // Done
-        return;
-    }
-
-    // allow swapping of skills
-    if(currentSelectedSlot == -1) {
-        // Select this slot
-        currentSelectedSlot = slot;
-
-        // Do the highlight
-        highlightDropSlots();
-    } else {
-        // Attempt to drop the slot
-
-        // Is it a different slot?
-        if(currentSelectedSlot == slot) {
-            // Same slot, just deselect
-            currentSelectedSlot = -1;
-
-            // Do the highlight
-            highlightDropSlots();
-            return;
-        }
-
-        // Different slot, do the swap
-        swapSlots(currentSelectedSlot, slot);
-
-        // Same slot, just deselect
-        currentSelectedSlot = -1;
-
-        // Do the highlight
-        highlightDropSlots();
-    }
-}
-
-function showBuilderTab(tabName) {
-    // Hide all panels
-    var mainPanel = $('#pickingPhaseTabs');
-    $.Each(mainPanel.Children(), function(panelTab) {
-        panelTab.visible = false;
-    });
-
-    var mainContentPanel = $('#pickingPhaseTabsContent');
-    $.Each(mainContentPanel.Children(), function(panelTab) {
-        panelTab.visible = false;
-    });
-
-    // Show our tab
-    var ourTab = $('#' + tabName);
-    if(ourTab != null) ourTab.visible = true;
-
-    // Try to move the hero preview
-    var heroPreview = $('#buildingHelperHeroPreview');
-    var heroPreviewCon = $('#' + tabName + 'HeroPreview');
-    if(heroPreviewCon != null) {
-        heroPreview.SetParent(heroPreviewCon);
-    }
-
-    var ourTabContent = $('#' + tabName + 'Content');
-    if(ourTabContent != null) ourTabContent.visible = true;
-
-    // Process hooks
-    if(onLoadTabHook[tabName]) {
-        onLoadTabHook[tabName](tabName);
-    }
-}
-
-function toggleHeroGrouping() {
-    useSmartGrouping = !useSmartGrouping;
-
-    // Update filters
-    calculateFilters();
-}
-
-function toggleShowBanned() {
-    showBannedSkills = !showBannedSkills;
-
-    // Update filters
-    calculateFilters();
-}
-
-function toggleShowDisallowed() {
-    showDisallowedSkills = !showDisallowedSkills;
-
-    // Update filters
-    calculateFilters();
-}
-
-function toggleShowTaken() {
-    showTakenSkills = !showTakenSkills;
-
-    // Update filters
-    calculateFilters();
-}
-
-function toggleShowDraftSkills() {
-    showNonDraftSkills = !showNonDraftSkills;
-
-    // Update filters
-    calculateFilters();
-}
-
-// Makes the given hero container selectable
-function makeHeroSelectable(heroCon) {
-    heroCon.SetPanelEvent('onactivate', function() {
-        var heroName = heroCon.GetAttributeString('heroName', '');
-        if(heroName == null || heroName.length <= 0) return;
-
-        setSelectedHelperHero(heroName);
-    });
-
-    // Dragging
-    heroCon.SetDraggable(true);
-
-    $.RegisterEventHandler('DragStart', heroCon, function(panelID, dragCallbacks) {
-        var heroName = heroCon.GetAttributeString('heroName', '');
-        if(heroName == null || heroName.length <= 0) return;
-
-        // Create a temp image to drag around
-        var displayPanel = $.CreatePanel('DOTAHeroImage', $.GetContextPanel(), 'dragImage');
-        displayPanel.heroname = heroName;
-        dragCallbacks.displayPanel = displayPanel;
-        dragCallbacks.offsetX = 0;
-        dragCallbacks.offsetY = 0;
-        displayPanel.SetAttributeString('heroName', heroName);
-
-        // Hide skill info
-        $.DispatchEvent('DOTAHideAbilityTooltip');
-        $.DispatchEvent('DOTAHideTitleTextTooltip');
-
-        // Highlight drop cell
-        $('#pickingPhaseSelectedHeroImage').SetHasClass('lodSelectedDrop', true)
-        $('#pickingPhaseSelectedHeroImageNone').SetHasClass('lodSelectedDrop', true)
-
-        // Banning
-        $('#pickingPhaseBans').SetHasClass('lodSelectedDrop', true)
-    });
-
-    $.RegisterEventHandler('DragEnd', heroCon, function(panelId, draggedPanel) {
-        // Delete the draggable panel
-        draggedPanel.deleted = true;
-        draggedPanel.DeleteAsync(0.0);
-
-        // Highlight drop cell
-        $('#pickingPhaseSelectedHeroImage').SetHasClass('lodSelectedDrop', false);
-        $('#pickingPhaseSelectedHeroImageNone').SetHasClass('lodSelectedDrop', false);
-
-        // Banning
-        $('#pickingPhaseBans').SetHasClass('lodSelectedDrop', false)
-
-        var heroName = draggedPanel.GetAttributeString('heroName', '');
-        if(heroName == null || heroName.length <= 0) return;
-
-        // Can we select this as our hero?
-        if(draggedPanel.GetAttributeInt('canSelectHero', 0) == 1) {
-            chooseHero(heroName);
-        }
-
-        // Are we banning a hero?
-        if(draggedPanel.GetAttributeInt('banThis', 0) == 1) {
-            banHero(heroName);
-        }
-    });
-
-    // Hook the hero info display
-    hookHeroInfo(heroCon);
-}
-
-function hookHeroInfo(heroCon) {
-    // Show hero info
-    heroCon.SetPanelEvent('onmouseover', function() {
-        var heroName = heroCon.GetAttributeString('heroName', '');
-        var info = heroData[heroName];
-
-        var displayNameTitle = $.Localize(heroName);
-        var heroStats = generateFormattedHeroStatsString(heroName, info);
-
-        // Show the tip
-        $.DispatchEvent('DOTAShowTitleTextTooltipStyled', heroCon, displayNameTitle, heroStats, "testStyle");
-    });
-
-    // Hide hero info
-    heroCon.SetPanelEvent('onmouseout', function() {
-        $.DispatchEvent('DOTAHideAbilityTooltip');
-        $.DispatchEvent('DOTAHideTitleTextTooltip');
-    });
-}
-
-function makeSkillSelectable(abcon) {
-    abcon.SetPanelEvent('onactivate', function() {
-        var abName = abcon.GetAttributeString('abilityname', '');
-        if(abName == null || abName.length <= 0) return false;
-
-        // Mark it as dropable
-        setSelectedDropAbility(abName, abcon);
-
-        // Find the owning hero
-        var heroOwner = abilityHeroOwner[abName];
-        if(heroOwner != null) {
-            setSelectedHelperHero(heroOwner, true);
-        }
-    });
-
-    // Dragging
-    abcon.SetDraggable(true);
-
-    $.RegisterEventHandler('DragStart', abcon, function(panelID, dragCallbacks) {
-        var abName = abcon.GetAttributeString('abilityname', '');
-        if(abName == null || abName.length <= 0) return false;
-
-        setSelectedDropAbility(abName, abcon);
-
-        // Create a temp image to drag around
-        var displayPanel = $.CreatePanel('DOTAAbilityImage', $.GetContextPanel(), 'dragImage');
-        displayPanel.abilityname = abName;
-        dragCallbacks.displayPanel = displayPanel;
-        dragCallbacks.offsetX = 0;
-        dragCallbacks.offsetY = 0;
-        displayPanel.SetAttributeString('abilityname', abName);
-
-        // Hide skill info
-        $.DispatchEvent('DOTAHideAbilityTooltip');
-        $.DispatchEvent('DOTAHideTitleTextTooltip');
-
-        // Banning
-        $('#pickingPhaseBans').SetHasClass('lodSelectedDrop', true)
-    });
-
-    $.RegisterEventHandler('DragEnd', abcon, function(panelId, draggedPanel) {
-        // Delete the draggable panel
-        draggedPanel.deleted = true;
-        draggedPanel.DeleteAsync(0.0);
-
-        var dropSlot = draggedPanel.GetAttributeInt('activeSlot', -1);
-        if(dropSlot != -1) {
-            var abName = draggedPanel.GetAttributeString('abilityname', '');
-            if(abName != null && abName.length > 0) {
-                chooseNewAbility(dropSlot, abName);
-            }
-        }
-
-        // Highlight nothing
-        setSelectedDropAbility();
-
-        // Are we banning a hero?
-        if(draggedPanel.GetAttributeInt('banThis', 0) == 1) {
-            var abName = draggedPanel.GetAttributeString('abilityname', '');
-            if(abName != null && abName.length > 0) {
-                banAbility(abName);
-            }
-        }
-
-        // Banning
-        $('#pickingPhaseBans').SetHasClass('lodSelectedDrop', false)
-    });
-}
-
-function getHeroFilterInfo(heroName) {
-    var shouldShow = true;
-
-    // Are we using a draft array?
-    if(shouldShow && heroDraft != null) {
-        // Is this hero in our draft array?
-        if(heroDraft[heroName] == null) {
-            shouldShow = false;
-        }
-    }
-
-    // Filter banned heroes
-    if(shouldShow && bannedHeroes[heroName]) {
-        shouldShow = false;
-    }
-
-    return {
-        shouldShow: shouldShow,
-        takenHero: allSelectedHeroes[heroName] != null
-    };
-}
-
-// When the hero tab is shown
-var firstHeroTabCall = true;
-var heroFilterInfo = {};
-function OnHeroTabShown(tabName) {
-    // Only run this code once
-    if(firstHeroTabCall) {
-        var heroSearchText = '';
-
-        calculateHeroFilters = function() {
-            var searchParts = heroSearchText.split(/\s/g);
-
-            for(var heroName in heroPanelMap) {
-                var shouldShow = getHeroFilterInfo(heroName).shouldShow;
-
-                // Filter by melee / ranged
-                if(shouldShow && heroFilterInfo.classType) {
-                    var info = heroData[heroName];
-                    if(info) {
-                        if(info.AttackCapabilities == 'DOTA_UNIT_CAP_MELEE_ATTACK' && heroFilterInfo.classType == 'ranged' || info.AttackCapabilities == 'DOTA_UNIT_CAP_RANGED_ATTACK' && heroFilterInfo.classType == 'melee') {
-                            shouldShow = false;
-                        }
-                    }
-                }
-
-                // Filter by hero name
-                if(shouldShow && heroSearchText.length > 0) {
-                    // Check each part
-                    for(var i=0; i<searchParts.length; ++i) {
-                        if(heroName.indexOf(searchParts[i]) == -1 && $.Localize(heroName).toLowerCase().indexOf(searchParts[i]) == -1) {
-                            shouldShow = false;
-                            break;
-                        }
-                    }
-                }
-
-                var con = heroPanelMap[heroName];
-                con.SetHasClass('should_hide_this_hero', !shouldShow);
-            }
-        }
-
-        // Hook searchbox
-        Game.shared.addInputChangedEvent($('#lodHeroSearchInput'), function(newValue) {
-            // Store the new text
-            heroSearchText = newValue.toLowerCase();
-
-            // Update list of abs
-            calculateHeroFilters();
-        });
-
-        // Calculate hero filters
-        calculateHeroFilters();
-    }
-
-    // No longer the first call
-    firstHeroTabCall = false;
-}
+// STUB: TODO: REPLACE THIS
+function makeHeroSelectable() {};
 
 function onHeroFilterPressed(filterName) {
     switch(filterName) {
@@ -1377,534 +442,7 @@ function onHeroFilterPressed(filterName) {
     $('#heroPickingFiltersClear').visible = heroFilterInfo.classType != null;
 
     // Calculate filters:
-    calculateHeroFilters();
-}
-
-// When the main selection tab is shown
-var firstBuildTabCall = true;
-function OnMainSelectionTabShown() {
-    if(firstBuildTabCall) {
-        // Only do this once
-        firstBuildTabCall = false;
-
-        // The  container to work with
-        var con = $('#pickingPhaseRecommendedBuildContainer');
-
-        for(var i=0; i<recommendedBuilds.length; ++i) {
-            var build = recommendedBuilds[i];
-
-            addRecommendedBuild(
-                con,
-                build.heroName,
-                build.build,
-                build.attr,
-                build.title
-            );
-        }
-    }
-}
-
-// Adds a build to the main selection tab
-var recBuildCounter = 0;
-var recommenedBuildContainerList = [];
-function addRecommendedBuild(con, hero, build, attr, title) {
-    var buildCon = $.CreatePanel('Panel', con, 'recBuild_' + (++recBuildCounter));
-    buildCon.BLoadLayout('file://{resources}/layout/custom_game/recommended_build.xml', false, false);
-    buildCon.setBuildData(makeHeroSelectable, hookSkillInfo, makeSkillSelectable, hero, build, attr, title);
-    buildCon.updateFilters(getSkillFilterInfo, getHeroFilterInfo);
-
-    // Store the container
-    recommenedBuildContainerList.push(buildCon);
-}
-
-// Updates the filters applied to recommended builds
-function updateRecommendedBuildFilters() {
-    // Loop over all recommended builds
-    for(var i=0; i<recommenedBuildContainerList.length; ++i) {
-        // Grab the con
-        var con = recommenedBuildContainerList[i];
-
-        // Push the filter function to the con
-        con.updateFilters(getSkillFilterInfo, getHeroFilterInfo);
-    }
-}
-
-// Updates the filters applied to the hero preview
-function updateHeroPreviewFilters() {
-    // Prepare the filter info
-    prepareFilterInfo();
-
-    // Remove any search text
-    searchParts = [];
-
-    for(var i=1; i<=16; ++i) {
-        var abCon = $('#buildingHelperHeroPreviewSkill' + i);
-
-        // Is it visible?
-        if(abCon.visible) {
-            // Grab ability name
-            var abilityName = abCon.GetAttributeString('abilityname', '');
-
-            // Grab filters
-            var filterInfo = getSkillFilterInfo(abilityName);
-
-            // Apply filters
-            abCon.SetHasClass('disallowedSkill', filterInfo.disallowed);
-            abCon.SetHasClass('bannedSkill', filterInfo.banned);
-            abCon.SetHasClass('takenSkill', filterInfo.taken);
-            abCon.SetHasClass('notDraftable', filterInfo.cantDraft);
-        }
-    }
-
-    // Should we filter the hero image?
-    var heroImageCon = $('#buildingHelperHeroPreviewHero');
-    var heroFilterInfo = getHeroFilterInfo('npc_dota_hero_' + heroImageCon.heroname);
-
-    heroImageCon.SetHasClass('should_hide_this_hero', !heroFilterInfo.shouldShow);
-    heroImageCon.SetHasClass('takenHero', heroFilterInfo.takenHero);
-
-    var heroImageText = $('#buildingHelperHeroPreviewHeroName');
-    heroImageText.SetHasClass('should_hide_this_hero', !heroFilterInfo.shouldShow);
-    heroImageText.SetHasClass('takenHero', heroFilterInfo.takenHero);
-}
-
-// Gets skill filter info
-function getSkillFilterInfo(abilityName) {
-    var shouldShow = true;
-    var disallowed = false;
-    var banned = false;
-    var taken = false;
-    var cantDraft = false;
-
-    var cat = (flagDataInverse[abilityName] || {}).category;
-
-    // Check if the category is banned
-    if(!allowedCategories[cat]) {
-        // Skill is disallowed
-        disallowed = true;
-
-        // If we should show banned skills
-        if(!showDisallowedSkills) {
-            shouldShow = false;
-        }
-    }
-
-    // Check for bans
-    if(bannedAbilities[abilityName]) {
-        // Skill is banned
-        banned = true;
-
-        if(!showBannedSkills) {
-            shouldShow = false;
-        }
-    }
-
-    // Mark taken abilities
-    if(takenAbilities[abilityName]) {
-        if(uniqueSkillsMode == 1 && takenTeamAbilities[abilityName]) {
-            // Team based unique skills
-            // Skill is taken
-            taken = true;
-
-            if(!showTakenSkills) {
-                shouldShow = false;
-            }
-        } else if(uniqueSkillsMode == 2) {
-            // Global unique skills
-            // Skill is taken
-            taken = true;
-
-            if(!showTakenSkills) {
-                shouldShow = false;
-            }
-        }
-    }
-
-    // Check if the tab is active
-    if(shouldShow && activeTabs[cat] == null) {
-        shouldShow = false;
-    }
-
-    // Check if the search category is active
-    if(shouldShow && searchCategory.length > 0) {
-        if(!flagDataInverse[abilityName][searchCategory]) {
-            shouldShow = false;
-        }
-    }
-
-    // Check if hte search text is active
-    if(shouldShow && searchText.length > 0) {
-        var localAbName = $.Localize('DOTA_Tooltip_ability_' + abilityName).toLowerCase();
-        var owningHeroName = abilityHeroOwner[abilityName] || '';
-        var localOwningHeroName = $.Localize(owningHeroName).toLowerCase();
-
-        for(var i=0; i<searchParts.length; ++i) {
-            var prt = searchParts[i];
-            if(abilityName.indexOf(prt) == -1 && localAbName.indexOf(prt) == -1 && owningHeroName.indexOf(prt) == -1 && localOwningHeroName.indexOf(prt) == -1) {
-                shouldShow = false;
-                break;
-            }
-        }
-    }
-
-    // Check draft array
-    if(heroDraft != null) {
-        if(!heroDraft[abilityHeroOwner[abilityName]]) {
-            // Skill cant be drafted
-            cantDraft = true;
-
-            if(!showNonDraftSkills) {
-                shouldShow = false;
-            }
-        }
-    }
-
-    return {
-        shouldShow: shouldShow,
-        disallowed: disallowed,
-        banned: banned,
-        taken: taken,
-        cantDraft: cantDraft
-    };
-}
-
-// Updates some of the filters ready for skill filtering
-function prepareFilterInfo() {
-    // Check on unique skills mode
-    uniqueSkillsMode = Game.shared.optionValueList['lodOptionAdvancedUniqueSkills'] || 0;
-
-    // Grab what to search for
-    searchParts = searchText.split(/\s/g);
-}
-
-// When the skill tab is shown
-var firstSkillTabCall = true;
-var searchText = '';
-var searchCategory = '';
-var activeTabs = {};
-var uniqueSkillsMode = 0;
-var searchParts = [];
-function OnSkillTabShown(tabName) {
-    if(firstSkillTabCall) {
-        // Empty the skills tab
-        var con = $('#pickingPhaseSkillTabContentSkills');
-
-        // Used to provide unique handles
-        var unqiueCounter = 0;
-
-        // A store for all abilities
-        var abilityStore = {};
-
-        // TODO: Clear filters
-
-
-        // Filter processor
-        searchText = '';
-        searchCategory = '';
-
-        activeTabs = {
-            main: true,
-            //wraith: true,
-            //neutral: true,
-            custom: true
-        };
-
-        var heroOwnerBlocks = {};
-        calculateFilters = function() {
-            // Array used to sort abilities
-            var toSort = [];
-
-            // Prepare skill filters
-            prepareFilterInfo();
-
-            // Hide all hero owner blocks
-            for(var heroName in heroOwnerBlocks) {
-                heroOwnerBlocks[heroName].visible = false;
-                heroOwnerBlocks[heroName].SetHasClass('manySkills', false);
-            }
-
-            // Counters for how many skills are in a block
-            var heroBlockCounts = {};
-            var subSorting = {};
-
-            // Loop over all abilties
-            for(var abilityName in abilityStore) {
-                var ab = abilityStore[abilityName];
-
-                if(ab != null) {
-                    var filterInfo = getSkillFilterInfo(abilityName);
-
-                    ab.visible = filterInfo.shouldShow;
-                    ab.SetHasClass('disallowedSkill', filterInfo.disallowed);
-                    ab.SetHasClass('bannedSkill', filterInfo.banned);
-                    ab.SetHasClass('takenSkill', filterInfo.taken);
-                    ab.SetHasClass('notDraftable', filterInfo.cantDraft);
-
-                    if(filterInfo.shouldShow) {
-                        if(useSmartGrouping) {
-                            var theOwner = abilityHeroOwner[abilityName] || abilityCustomGroups[abilityName];
-
-                            if(theOwner != null) {
-                                // Group it
-                                var groupCon = heroOwnerBlocks[theOwner];
-                                if(groupCon == null) {
-                                    groupCon = $.CreatePanel('Panel', con, 'group_container_' + theOwner);
-                                    groupCon.SetHasClass('grouped_skills', true);
-
-                                    // Store it
-                                    heroOwnerBlocks[theOwner] = groupCon;
-                                }
-
-                                // Making the layout much nicer
-                                if(heroBlockCounts[theOwner] == null) {
-                                    heroBlockCounts[theOwner] = 1;
-                                } else {
-                                    ++heroBlockCounts[theOwner];
-
-                                    if(heroBlockCounts[theOwner] == 2) {
-                                        groupCon.SetHasClass('manySkills', true);
-                                    }
-                                }
-
-                                // Set that it is an ulty
-                                if(isUltimateAbility(abilityName)) {
-                                    ab.SetHasClass('ultimateAbility', true);
-                                }
-
-                                abilityStore[abilityName].SetParent(groupCon);
-                                groupCon.visible = true;
-
-                                // Add it to the sort list
-                                toSort.push({
-                                    txt: theOwner,
-                                    con: groupCon,
-                                    grouped: true
-                                });
-
-                                if(subSorting[theOwner] == null) {
-                                    subSorting[theOwner] = [];
-                                }
-
-                                subSorting[theOwner].push({
-                                    txt: abilityName,
-                                    con: ab
-                                });
-                            } else {
-                                toSort.push({
-                                    txt: abilityName,
-                                    con: ab
-                                });
-                            }
-
-                        } else {
-                            toSort.push({
-                                txt: abilityName,
-                                con: ab
-                            });
-
-                            // Ensure correct parent is set
-                            abilityStore[abilityName].SetParent(con);
-                        }
-                    }
-                }
-            }
-
-            // Do the main sort
-            toSort.sort(function(a, b) {
-                var txtA = a.txt;
-                var txtB = b.txt;
-
-                if(a.grouped != b.grouped) {
-                    if(a.grouped) return -1;
-                    return 1;
-                }
-
-                if(txtA < txtB) {
-                    return -1;
-                } else if(txtA > txtB) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            });
-
-            for(var i=1; i<toSort.length; ++i) {
-                var left = toSort[i-1];
-                var right = toSort[i];
-
-                con.MoveChildAfter(right.con, left.con);
-            }
-
-            // Do sub sorts
-            for(var heroName in subSorting) {
-                var sortGroup = subSorting[heroName];
-
-                sortGroup.sort(function(a, b) {
-                    var txtA = a.txt;
-                    var txtB = b.txt;
-
-                    var isUltA = isUltimateAbility(txtA);
-                    var isUltB = isUltimateAbility(txtB);
-
-                    if(isUltA & !isUltB) {
-                        return 1;
-                    }
-
-                    if(!isUltA & isUltB) {
-                        return -1;
-                    }
-
-                    if(txtA < txtB) {
-                        return -1;
-                    } else if(txtA > txtB) {
-                        return 1;
-                    } else {
-                        return 0;
-                    }
-                });
-
-                var subCon = heroOwnerBlocks[heroName];
-                for(var i=1; i<sortGroup.length; ++i) {
-                    var left = sortGroup[i-1];
-                    var right = sortGroup[i];
-
-                    subCon.MoveChildAfter(right.con, left.con);
-                }
-            }
-        }
-
-        // Hook searchbox
-        Game.shared.addInputChangedEvent($('#lodSkillSearchInput'), function(newValue) {
-            // Store the new text
-            searchText = newValue.toLowerCase();
-
-            // Update list of abs
-            calculateFilters();
-        });
-
-        // Add input categories
-        var dropdownCategories = $('#lodSkillCategoryHolder');
-        dropdownCategories.RemoveAllOptions();
-        dropdownCategories.SetPanelEvent('oninputsubmit', function() {
-            // Update the category
-            var sel = dropdownCategories.GetSelected();
-            if(sel != null) {
-                searchCategory = dropdownCategories.GetSelected().GetAttributeString('category', '');
-
-                // Update the visible abilties
-                calculateFilters();
-            }
-        });
-
-        // Add header
-        var categoryHeader = $.CreatePanel('Label', dropdownCategories, 'skillTabCategory' + (++unqiueCounter));
-        categoryHeader.text = $.Localize('lod_cat_none');
-        dropdownCategories.AddOption(categoryHeader);
-        dropdownCategories.SetSelected('skillTabCategory' + unqiueCounter);
-
-        // Add categories
-        for(var category in flagData) {
-            if(category == 'category') continue;
-
-            var dropdownLabel = $.CreatePanel('Label', dropdownCategories, 'skillTabCategory' + (++unqiueCounter));
-            dropdownLabel.text = $.Localize('lod_cat_' + category);
-            dropdownLabel.SetAttributeString('category', category);
-            dropdownCategories.AddOption(dropdownLabel);
-        }
-
-
-        // Start to add skills
-
-        for(var abName in flagDataInverse) {
-            // Create a new scope
-            (function(abName) {
-                // Create the image
-                var abcon = $.CreatePanel('DOTAAbilityImage', con, 'skillTabSkill' + (++unqiueCounter));
-                hookSkillInfo(abcon);
-                abcon.abilityname = abName;
-                abcon.SetAttributeString('abilityname', abName);
-                abcon.SetHasClass('lodMiniAbility', true);
-
-                //abcon.SetHasClass('disallowedSkill', true);
-
-                makeSkillSelectable(abcon);
-
-                // Store a reference to it
-                abilityStore[abName] = abcon;
-            })(abName);
-        }
-
-        /*
-            Add Skill Tab Buttons
-        */
-
-        var tabButtonsContainer = $('#pickingPhaseTabFilterThingo');
-
-        // List of tabs to show
-        var tabList = [
-            'main',
-            'neutral',
-            //'wraith',
-            'custom'
-        ];
-
-        // Used to store tabs to highlight them correctly
-        var storedTabs = {};
-
-        var widthStyle = Math.floor(100 / tabList.length) + '%';
-
-        for(var i=0; i<tabList.length; ++i) {
-            // New script scope!
-            (function() {
-                var tabName = tabList[i];
-                var tabButton = $.CreatePanel('Button', tabButtonsContainer, 'tabButton_' + tabName);
-                tabButton.AddClass('lodSkillTabButton');
-                tabButton.style.width = widthStyle;
-
-                if(activeTabs[tabName]) {
-                    tabButton.AddClass('lodSkillTabActivated');
-                }
-
-                // Add the text
-                var tabLabel = $.CreatePanel('Label', tabButton, 'tabButton_text_' + tabName);
-                tabLabel.text = $.Localize('lodCategory_' + tabName);
-
-                tabButton.SetPanelEvent('onactivate', function() {
-                    // When it is activated!
-
-                    if(GameUI.IsControlDown()) {
-                        if(activeTabs[tabName]) {
-                            delete activeTabs[tabName];
-                        } else {
-                            activeTabs[tabName] = true;
-                        }
-                    } else {
-                        // Reset active tabs
-                        activeTabs = {};
-                        activeTabs[tabName] = true;
-                    }
-
-                    // Fix highlights
-                    for(var theTabName in storedTabs) {
-                        var theTab = storedTabs[theTabName];
-                        theTab.SetHasClass('lodSkillTabActivated', activeTabs[theTabName] == true);
-                    }
-
-                    // Recalculate which skills should be shown
-                    calculateFilters();
-                });
-
-                // Store it
-                storedTabs[tabName] = tabButton;
-            })();
-        }
-
-        // Do initial calculation:
-        calculateFilters();
-    }
-
-    // No longewr the first call
-    firstSkillTabCall = false;
+    pickingPhasePanel.calculateHeroFilters();
 }
 
 // Are we the host?
@@ -1926,66 +464,6 @@ function setOption(optionName, optionValue) {
     GameEvents.SendCustomGameEventToServer('lodOptionSet', {
         k: optionName,
         v: optionValue
-    });
-}
-
-// Updates our selected hero
-function chooseHero(heroName) {
-    GameEvents.SendCustomGameEventToServer('lodChooseHero', {
-        heroName:heroName
-    });
-}
-
-// Tries to ban a hero
-function banHero(heroName) {
-    GameEvents.SendCustomGameEventToServer('lodBan', {
-        heroName:heroName
-    });
-}
-
-// Updates our selected primary attribute
-function choosePrimaryAttr(newAttr) {
-    GameEvents.SendCustomGameEventToServer('lodChooseAttr', {
-        newAttr:newAttr
-    });
-}
-
-// Attempts to ban an ability
-function banAbility(abilityName) {
-    var theSkill = abilityName;
-
-    // No skills are selected anymore
-    setSelectedDropAbility();
-
-    // Push it to the server to validate
-    GameEvents.SendCustomGameEventToServer('lodBan', {
-        abilityName: abilityName
-    });
-}
-
-// Updates our selected abilities
-function chooseNewAbility(slot, abilityName) {
-    var theSkill = abilityName;
-
-    // No skills are selected anymore
-    setSelectedDropAbility();
-
-    // Can't select nothing
-    if(theSkill.length <= 0) return;
-
-    // Push it to the server to validate
-    GameEvents.SendCustomGameEventToServer('lodChooseAbility', {
-        slot: slot,
-        abilityName: abilityName
-    });
-}
-
-// Swaps two slots
-function swapSlots(slot1, slot2) {
-    // Push it to the server to validate
-    GameEvents.SendCustomGameEventToServer('lodSwapSlots', {
-        slot1: slot1,
-        slot2: slot2
     });
 }
 
@@ -2043,7 +521,8 @@ function addPlayerToTeam(playerID, panel, reviewContainer, shouldMakeSmall) {
         newPlayerPanel = $.CreatePanel('Panel', panel, 'teamPlayer' + playerID);
         newPlayerPanel.SetAttributeInt('playerID', playerID);
         newPlayerPanel.BLoadLayout('file://{resources}/layout/custom_game/team_player.xml', false, false);
-        newPlayerPanel.hookStuff(hookSkillInfo, makeSkillSelectable, makeHeroSelectable);
+        newPlayerPanel.setPlayerID(playerID);
+        //newPlayerPanel.hookStuff(Game.shared.hookSkillInfo, makeSkillSelectable, makeHeroSelectable);
     } else {
         newPlayerPanel.SetParent(panel);
         newPlayerPanel.visible = true;
@@ -2052,27 +531,27 @@ function addPlayerToTeam(playerID, panel, reviewContainer, shouldMakeSmall) {
     // Check max slots
     var maxSlots = Game.shared.optionValueList['lodOptionCommonMaxSlots'];
     if(maxSlots != null) {
-        newPlayerPanel.OnGetHeroSlotCount(maxSlots);
+        //newPlayerPanel.OnGetHeroSlotCount(maxSlots);
     }
 
     // Check for hero icon
-    if(selectedHeroes[playerID] != null) {
-        newPlayerPanel.OnGetHeroData(selectedHeroes[playerID]);
+    if(Game.shared.selectedHeroes[playerID] != null) {
+        //newPlayerPanel.OnGetHeroData(Game.shared.selectedHeroes[playerID]);
     }
 
     // Check for skill data
-    if(selectedSkills[playerID] != null) {
-        newPlayerPanel.OnGetHeroBuildData(selectedSkills[playerID]);
+    if(Game.shared.selectedSkills[playerID] != null) {
+        //newPlayerPanel.OnGetHeroBuildData(Game.shared.selectedSkills[playerID]);
     }
 
     // Check for attr data
-    if(selectedAttr[playerID] != null) {
-        newPlayerPanel.OnGetNewAttribute(selectedAttr[playerID]);
+    if(Game.shared.selectedAttr[playerID] != null) {
+        //newPlayerPanel.OnGetNewAttribute(Game.shared.selectedAttr[playerID]);
     }
 
     // Check for ready state
-    if(readyState[playerID] != null) {
-        newPlayerPanel.setReadyState(readyState[playerID]);
+    if(Game.shared.readyState[playerID] != null) {
+        //newPlayerPanel.setReadyState(Game.shared.readyState[playerID]);
     }
 
     // Add this panel to the list of panels we've generated
@@ -2090,7 +569,8 @@ function addPlayerToTeam(playerID, panel, reviewContainer, shouldMakeSmall) {
         newPlayerPanel = $.CreatePanel('Panel', reviewContainer, 'reviewPlayer' + playerID);
         newPlayerPanel.SetAttributeInt('playerID', playerID);
         newPlayerPanel.BLoadLayout('file://{resources}/layout/custom_game/team_player_review.xml', false, false);
-        newPlayerPanel.hookStuff(hookSkillInfo, makeSkillSelectable, setSelectedHelperHero, playerID == Players.GetLocalPlayer());
+        newPlayerPanel.setPlayerID(playerID);
+        //newPlayerPanel.hookStuff(Game.shared.hookSkillInfo, Game.shared.makeSkillSelectable, pickingPhasePanel.setSelectedHelperHero, playerID == Players.GetLocalPlayer());
     } else {
         newPlayerPanel.SetParent(reviewContainer);
         newPlayerPanel.visible = true;
@@ -2101,31 +581,31 @@ function addPlayerToTeam(playerID, panel, reviewContainer, shouldMakeSmall) {
     // Check max slots
     var maxSlots = Game.shared.optionValueList['lodOptionCommonMaxSlots'];
     if(maxSlots != null) {
-        newPlayerPanel.OnGetHeroSlotCount(maxSlots);
+        //newPlayerPanel.OnGetHeroSlotCount(maxSlots);
     }
 
     // Check for hero icon
-    if(selectedHeroes[playerID] != null) {
-        newPlayerPanel.OnGetHeroData(selectedHeroes[playerID]);
+    /*if(Game.shared.selectedHeroes[playerID] != null) {
+        //newPlayerPanel.OnGetHeroData(Game.shared.selectedHeroes[playerID]);
 
-        if(currentPhase == PHASE_REVIEW) {
+        if(currentPhase == Game.shared.PHASE_REVIEW) {
             newPlayerPanel.OnReviewPhaseStart();
         }
-    }
+    }*/
 
     // Check for skill data
-    if(selectedSkills[playerID] != null) {
-        newPlayerPanel.OnGetHeroBuildData(selectedSkills[playerID]);
+    if(Game.shared.selectedSkills[playerID] != null) {
+        //newPlayerPanel.OnGetHeroBuildData(Game.shared.selectedSkills[playerID]);
     }
 
     // Check for attr data
-    if(selectedAttr[playerID] != null) {
-        newPlayerPanel.OnGetNewAttribute(selectedAttr[playerID]);
+    if(Game.shared.selectedAttr[playerID] != null) {
+        //newPlayerPanel.OnGetNewAttribute(Game.shared.selectedAttr[playerID]);
     }
 
     // Check for ready state
-    if(readyState[playerID] != null) {
-        newPlayerPanel.setReadyState(readyState[playerID]);
+    if(Game.shared.readyState[playerID] != null) {
+        //newPlayerPanel.setReadyState(Game.shared.readyState[playerID]);
     }
 
     // Add this panel to the list of panels we've generated
@@ -2583,108 +1063,6 @@ function OnTeamPlayerListChanged() {
 }
 
 //--------------------------------------------------------------------------------------------------
-//Generate formatted string of Hero stats from sent
-//--------------------------------------------------------------------------------------------------
-function heroStatsLine(lineName, value, color, color2) {
-    // Ensure we have a color
-    if(color == null) color = 'FFFFFF';
-    if(color2 == null) color2 = '7C7C7C';
-
-    // Create the line
-    return '<font color=\'#' + color + '\'>' + $.Localize(lineName) + ':</font> <font color=\'#' + color2 + '\'>' + value + '</font><br>';
-}
-
-// Converts a string into a number with a certain number of decimal places
-function stringToDecimalPlaces(numberString, places) {
-    if(places == null) places = 2;
-    return parseFloat(numberString).toFixed(places);
-}
-
-function generateFormattedHeroStatsString(heroName, info) {
-    // Will contain hero stats
-    var heroStats = '';
-
-    // Seperator used to seperate sections
-    var seperator = '<font color=\'#FFFFFF\'>_____________________________________</font><br>';
-
-    if(info != null) {
-        // Calculate how many total stats we have
-        var startingAttributes = info.AttributeBaseStrength + info.AttributeBaseAgility + info.AttributeBaseIntelligence;
-        var attributesPerLevel = stringToDecimalPlaces(info.AttributeStrengthGain + info.AttributeAgilityGain + info.AttributeIntelligenceGain);
-
-        // Pick the colors for primary attribute
-        var strColor = info.AttributePrimary == 'DOTA_ATTRIBUTE_STRENGTH' ? 'FF3939' : 'FFFFFF';
-        var agiColor = info.AttributePrimary == 'DOTA_ATTRIBUTE_AGILITY' ? 'FF3939' : 'FFFFFF';
-        var intColor = info.AttributePrimary == 'DOTA_ATTRIBUTE_INTELLECT' ? 'FF3939' : 'FFFFFF';
-
-        // Calculate our stat gain
-        var strGain = stringToDecimalPlaces(info.AttributeStrengthGain);
-        var agiGain = stringToDecimalPlaces(info.AttributeAgilityGain);
-        var intGain = stringToDecimalPlaces(info.AttributeIntelligenceGain);
-
-        // Essentials
-        heroStats += seperator;
-    	heroStats += heroStatsLine('heroStats_movementSpeed', info.MovementSpeed);
-    	heroStats += heroStatsLine('heroStats_attackRange', info.AttackRange);
-    	heroStats += heroStatsLine('heroStats_armor', info.ArmorPhysical);
-        heroStats += heroStatsLine('heroStats_damage', info.AttackDamageMin + '-' + info.AttackDamageMax);
-
-        // Attribute Stats
-        heroStats += seperator;
-        heroStats += heroStatsLine('heroStats_strength', info.AttributeBaseStrength + ' + ' + strGain, strColor);
-        heroStats += heroStatsLine('heroStats_agility', info.AttributeBaseAgility + ' + ' + agiGain, agiColor);
-        heroStats += heroStatsLine('heroStats_intelligence', info.AttributeBaseIntelligence + ' + ' + intGain, intColor);
-        heroStats += '<br>';
-
-        heroStats += heroStatsLine('heroStats_attributes_starting', startingAttributes, 'F9891A');
-        heroStats += heroStatsLine('heroStats_attributes_perLevel', attributesPerLevel, 'F9891A');
-
-        // Advanced
-        heroStats += seperator;
-    	heroStats += heroStatsLine('heroStats_attackRate', stringToDecimalPlaces(info.AttackRate));
-    	heroStats += heroStatsLine('heroStats_attackAnimationPoint', stringToDecimalPlaces(info.AttackAnimationPoint));
-    	heroStats += heroStatsLine('heroStats_turnrate', stringToDecimalPlaces(info.MovementTurnRate));
-
-    	if(stringToDecimalPlaces(info.StatusHealthRegen) != 0.25) {
-            heroStats += heroStatsLine('heroStats_baseHealthRegen', stringToDecimalPlaces(info.StatusHealthRegen));
-        }
-
-        if(info.MagicalResistance != 25) {
-            heroStats += heroStatsLine('heroStats_magicalResistance', info.MagicalResistance);
-        }
-
-    	if(stringToDecimalPlaces(info.StatusManaRegen) != 0.01) {
-            heroStats += heroStatsLine('heroStats_baseManaRegen', stringToDecimalPlaces(info.StatusManaRegen));
-        }
-
-    	if(info.ProjectileSpeed != 900 && info.ProjectileSpeed != 0) {
-            heroStats += heroStatsLine('heroStats_projectileSpeed', info.ProjectileSpeed);
-        }
-
-    	if(info.VisionDaytimeRange != 1800) {
-            heroStats += heroStatsLine('heroStats_visionDay', info.VisionDaytimeRange);
-        }
-
-        if(info.VisionNighttimeRange != 800) {
-            heroStats += heroStatsLine('heroStats_visionNight', info.VisionNighttimeRange);
-        }
-
-    	if(info.RingRadius != 70) {
-            heroStats += heroStatsLine('heroStats_ringRadius', info.RingRadius);
-        }
-    }
-
-    // Unique Mechanics
-    var heroMechanic = $.Localize("unique_mechanic_" + heroName.substring(14));
-    if(heroMechanic != "unique_mechanic_" + heroName.substring(14)) {
-        heroStats += '<br>';
-        heroStats += heroStatsLine('heroStats_uniqueMechanic', heroMechanic, '23FF27', '70EA72');
-    }
-
-    return heroStats;
-}
-
-//--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
 function OnPlayerSelectedTeam( nPlayerId, nTeamId, bSuccess ) {
     var playerInfo = Game.GetLocalPlayerInfo();
@@ -2701,6 +1079,19 @@ function OnPlayerSelectedTeam( nPlayerId, nTeamId, bSuccess ) {
     }
 }
 
+// Update the CSS on a panel to tell what phase we are in
+function updatePhaseCSS(panel) {
+    panel.SetHasClass('phase_loading', currentPhase == Game.shared.PHASE_LOADING);
+    panel.SetHasClass('phase_option_selection', currentPhase == Game.shared.PHASE_OPTION_SELECTION);
+    panel.SetHasClass('phase_option_voting', currentPhase == Game.shared.PHASE_OPTION_VOTING);
+    panel.SetHasClass('phase_banning', currentPhase == Game.shared.PHASE_BANNING);
+    panel.SetHasClass('phase_selection', currentPhase == Game.shared.PHASE_SELECTION);
+    panel.SetHasClass('phase_all_random', currentPhase == Game.shared.PHASE_RANDOM_SELECTION);
+    panel.SetHasClass('phase_drafting', currentPhase == Game.shared.PHASE_DRAFTING);
+    panel.SetHasClass('phase_review', currentPhase == Game.shared.PHASE_REVIEW);
+    panel.SetHasClass('phase_ingame', currentPhase == Game.shared.PHASE_INGAME);
+}
+
 // A phase was changed
 var seenPopupMessages = {};
 function OnPhaseChanged(table_name, key, data) {
@@ -2708,24 +1099,24 @@ function OnPhaseChanged(table_name, key, data) {
         case 'phase':
             // Update the current phase
             currentPhase = data.v;
+            Game.shared.currentPhase = data.v;
+
+            // Run the trigger
+            Game.shared.events.trigger('phaseChanged', {
+                newPhase: currentPhase
+            });
+
 
             // Update phase classes
-            var masterRoot = $.GetContextPanel();
-            masterRoot.SetHasClass('phase_loading', currentPhase == PHASE_LOADING);
-            masterRoot.SetHasClass('phase_option_selection', currentPhase == PHASE_OPTION_SELECTION);
-            masterRoot.SetHasClass('phase_option_voting', currentPhase == PHASE_OPTION_VOTING);
-            masterRoot.SetHasClass('phase_banning', currentPhase == PHASE_BANNING);
-            masterRoot.SetHasClass('phase_selection', currentPhase == PHASE_SELECTION);
-            masterRoot.SetHasClass('phase_all_random', currentPhase == PHASE_RANDOM_SELECTION);
-            masterRoot.SetHasClass('phase_drafting', currentPhase == PHASE_DRAFTING);
-            masterRoot.SetHasClass('phase_review', currentPhase == PHASE_REVIEW);
-            masterRoot.SetHasClass('phase_ingame', currentPhase == PHASE_INGAME);
+            updatePhaseCSS($.GetContextPanel());
+            updatePhaseCSS(pickingPhasePanel);
+
 
             // Progrss to the new phase
             SetSelectedPhase(currentPhase, true);
 
             // Message for hosters
-            if(currentPhase == PHASE_OPTION_SELECTION) {
+            if(currentPhase == Game.shared.PHASE_OPTION_SELECTION) {
                 // Should we show the host message popup?
                 if(!seenPopupMessages.hostWarning) {
                     seenPopupMessages.hostWarning = true;
@@ -2738,7 +1129,7 @@ function OnPhaseChanged(table_name, key, data) {
             }
 
             // Message voting
-            /*if(currentPhase == PHASE_OPTION_VOTING) {
+            /*if(currentPhase == Game.shared.PHASE_OPTION_VOTING) {
                 // Should we show the host message popup?
                 if(!seenPopupMessages.optionVoting) {
                     seenPopupMessages.optionVoting = true;
@@ -2747,7 +1138,7 @@ function OnPhaseChanged(table_name, key, data) {
             }*/
 
             // Message for banning phase
-            if(currentPhase == PHASE_BANNING) {
+            if(currentPhase == Game.shared.PHASE_BANNING) {
                 // Should we show the host message popup?
                 if(!seenPopupMessages.skillBanningInfo) {
                     seenPopupMessages.skillBanningInfo = true;
@@ -2756,7 +1147,7 @@ function OnPhaseChanged(table_name, key, data) {
             }
 
             // Message for players selecting skills
-            if(currentPhase == PHASE_SELECTION) {
+            if(currentPhase == Game.shared.PHASE_SELECTION) {
                 // Should we show the host message popup?
                 if(!seenPopupMessages.skillDraftingInfo) {
                     seenPopupMessages.skillDraftingInfo = true;
@@ -2765,7 +1156,7 @@ function OnPhaseChanged(table_name, key, data) {
             }
 
             // Message for players selecting skills
-            if(currentPhase == PHASE_REVIEW) {
+            if(currentPhase == Game.shared.PHASE_REVIEW) {
                 // Should we show the host message popup?
                 if(!seenPopupMessages.skillReviewInfo) {
                     seenPopupMessages.skillReviewInfo = true;
@@ -2774,9 +1165,12 @@ function OnPhaseChanged(table_name, key, data) {
 
                 // Load all hero images
                 for(var playerID in activeReviewPanels) {
-                    activeReviewPanels[playerID].OnReviewPhaseStart();
+                    //activeReviewPanels[playerID].OnReviewPhaseStart();
                 }
             }
+
+            // Push the current phase info into the panel
+
         break;
 
         case 'endOfTimer':
@@ -2867,11 +1261,12 @@ function OnOptionChanged(table_name, key, data) {
     // Check for allowed categories changing
     //if(key == 'lodOptionAdvancedHeroAbilities' || key == 'lodOptionAdvancedNeutralAbilities' || key == 'lodOptionAdvancedNeutralWraithNight' || key == 'lodOptionAdvancedOPAbilities') {
     if(key == 'lodOptionAdvancedHeroAbilities' || key == 'lodOptionAdvancedNeutralAbilities' || key == 'lodOptionAdvancedOPAbilities') {
-        onAllowedCategoriesChanged();
+        allowedCategoriesChanged();
     }
 
     // Check if it's the number of slots allowed
     if(key == 'lodOptionCommonMaxSkills' || key == 'lodOptionCommonMaxSlots' || key == 'lodOptionCommonMaxUlts') {
+        Game.shared.events.trigger('maxSlotsChanged');
         onMaxSlotsChanged();
     }
 
@@ -2882,9 +1277,9 @@ function OnOptionChanged(table_name, key, data) {
 
     // Check for unique abilities changing
     if(key == 'lodOptionAdvancedUniqueSkills') {
-        calculateFilters();
-        updateHeroPreviewFilters();
-        updateRecommendedBuildFilters();
+        pickingPhasePanel.calculateFilters();
+        pickingPhasePanel.updateHeroPreviewFilters();
+        pickingPhasePanel.updateRecommendedBuildFilters();
     }
 
     if(key == 'lodOptionAdvancedUniqueSkills') {
@@ -2960,7 +1355,8 @@ function recalculateBanLimits() {
     txt = txt.replace(/\{heroBansLeft\}/g, heroBansLeft);
     txt = txt.replace(/\{abilityBansLeft\}/g, abilityBansLeft);
 
-    $('#lodBanLimits').text = txt;
+    // Push the text
+    pickingPhasePanel.setMaxBans(txt);
 }
 
 // Recalculates what teams should be hidden
@@ -3033,7 +1429,7 @@ function onMaxSlotsChanged() {
     // Ensure all variables are defined
     if(maxSlots == null || maxSkills == null || maxUlts == null) return;
 
-    for(var i=1; i<=6; ++i) {
+    /*for(var i=1; i<=6; ++i) {
         var con = $('#lodYourAbility' + i);
 
         if(i <= maxSlots) {
@@ -3041,15 +1437,15 @@ function onMaxSlotsChanged() {
         } else {
             con.visible = false;
         }
-    }
+    }*/
 
     // Push it
     for(var playerID in activePlayerPanels) {
-        activePlayerPanels[playerID].OnGetHeroSlotCount(maxSlots);
+        //activePlayerPanels[playerID].OnGetHeroSlotCount(maxSlots);
     }
 
     for(var playerID in activeReviewPanels) {
-        activeReviewPanels[playerID].OnGetHeroSlotCount(maxSlots);
+        //activeReviewPanels[playerID].OnGetHeroSlotCount(maxSlots);
     }
 
     // Do the highlight on the option voting
@@ -3060,34 +1456,34 @@ function onMaxSlotsChanged() {
     $('#optionVotingSlotAnswer' + maxSlots).AddClass('optionSlotsCurrentlySelected');
 }
 
-function onAllowedCategoriesChanged() {
+function allowedCategoriesChanged() {
     // Reset the allowed categories
-    allowedCategories = {};
+    Game.shared.allowedCategories = {};
 
     if(Game.shared.optionValueList['lodOptionAdvancedHeroAbilities'] == 1) {
-        allowedCategories['main'] = true;
+        Game.shared.allowedCategories['main'] = true;
     }
 
     if(Game.shared.optionValueList['lodOptionAdvancedNeutralAbilities'] == 1) {
-        allowedCategories['neutral'] = true;
+        Game.shared.allowedCategories['neutral'] = true;
     }
 
     //if(Game.shared.optionValueList['lodOptionAdvancedNeutralWraithNight'] == 1) {
-    //    allowedCategories['wraith'] = true;
+    //    Game.shared.allowedCategories['wraith'] = true;
     //}
 
     if(Game.shared.optionValueList['lodOptionAdvancedCustomSkills'] == 1) {
-        allowedCategories['custom'] = true;
+        Game.shared.allowedCategories['custom'] = true;
     }
 
     if(Game.shared.optionValueList['lodOptionAdvancedOPAbilities'] == 1) {
-        allowedCategories['OP'] = true;
+        Game.shared.allowedCategories['OP'] = true;
     }
 
     // Update the filters
-    calculateFilters();
-    updateHeroPreviewFilters();
-    updateRecommendedBuildFilters();
+    pickingPhasePanel.calculateFilters();
+    pickingPhasePanel.updateHeroPreviewFilters();
+    pickingPhasePanel.updateRecommendedBuildFilters();
 }
 
 // Changes which phase the player currently has selected
@@ -3104,14 +1500,19 @@ function SetSelectedPhase(newPhase, noSound) {
     selectedPhase = newPhase;
 
     // Update CSS
-    var masterRoot = $.GetContextPanel();
-    masterRoot.SetHasClass('phase_option_selection_selected', selectedPhase == PHASE_OPTION_SELECTION);
-    masterRoot.SetHasClass('phase_option_voting_selected', selectedPhase == PHASE_OPTION_VOTING);
-    masterRoot.SetHasClass('phase_banning_selected', selectedPhase == PHASE_BANNING);
-    masterRoot.SetHasClass('phase_selection_selected', selectedPhase == PHASE_SELECTION);
-    masterRoot.SetHasClass('phase_all_random_selected', selectedPhase == PHASE_RANDOM_SELECTION);
-    masterRoot.SetHasClass('phase_drafting_selected', selectedPhase == PHASE_DRAFTING);
-    masterRoot.SetHasClass('phase_review_selected', selectedPhase == PHASE_REVIEW);
+    updateSelectedCSS($.GetContextPanel());
+    updateSelectedCSS(pickingPhasePanel);
+
+}
+
+function updateSelectedCSS(panel) {
+    panel.SetHasClass('phase_option_selection_selected', selectedPhase == Game.shared.PHASE_OPTION_SELECTION);
+    panel.SetHasClass('phase_option_voting_selected', selectedPhase == Game.shared.PHASE_OPTION_VOTING);
+    panel.SetHasClass('phase_banning_selected', selectedPhase == Game.shared.PHASE_BANNING);
+    panel.SetHasClass('phase_selection_selected', selectedPhase == Game.shared.PHASE_SELECTION);
+    panel.SetHasClass('phase_all_random_selected', selectedPhase == Game.shared.PHASE_RANDOM_SELECTION);
+    panel.SetHasClass('phase_drafting_selected', selectedPhase == Game.shared.PHASE_DRAFTING);
+    panel.SetHasClass('phase_review_selected', selectedPhase == Game.shared.PHASE_REVIEW);
 }
 
 // Return X:XX time (M:SS)
@@ -3172,27 +1573,27 @@ function UpdateTimer() {
 
     // Phase specific stuff
     switch(currentPhase) {
-        case PHASE_OPTION_SELECTION:
+        case Game.shared.PHASE_OPTION_SELECTION:
             placeInto = $('#lodOptionSelectionTimeRemaining');
         break;
 
-        case PHASE_OPTION_VOTING:
+        case Game.shared.PHASE_OPTION_VOTING:
             placeInto = $('#lodOptionVotingTimeRemaining');
         break;
 
-        case PHASE_BANNING:
+        case Game.shared.PHASE_BANNING:
             placeInto = $('#lodBanningTimeRemaining');
         break;
 
-        case PHASE_SELECTION:
+        case Game.shared.PHASE_SELECTION:
             placeInto = $('#lodSelectionTimeRemaining');
         break;
 
-        case PHASE_RANDOM_SELECTION:
+        case Game.shared.PHASE_RANDOM_SELECTION:
             placeInto = $('#lodRandomSelectionTimeRemaining');
         break;
 
-        case PHASE_REVIEW:
+        case Game.shared.PHASE_REVIEW:
             placeInto = $('#lodReviewTimeRemaining');
         break;
     }
@@ -3220,7 +1621,7 @@ function UpdateTimer() {
             // Set how long is left
             theTimerText = getFancyTime(timeLeft);
 
-            if(timeLeft <= 30 && !pickedAHero && currentPhase == PHASE_SELECTION) {
+            if(timeLeft <= 30 && !pickedAHero && currentPhase == Game.shared.PHASE_SELECTION) {
                 theTimerText += '\n' + $.Localize('lodPickAHero');
             }
 
@@ -3271,7 +1672,7 @@ function UpdateTimer() {
         $('#lodTimerWarningLabel').text = theTimerText;
 
         // Review override
-        if(currentPhase == PHASE_REVIEW && waitingForPrecache) {
+        if(currentPhase == Game.shared.PHASE_REVIEW && waitingForPrecache) {
             $('#lodTimerWarningLabel').text = $.Localize('lodPrecaching');
             $('#lodTimerWarningLabel').SetHasClass('showLodWarningTimer', true);
         }
@@ -3303,7 +1704,7 @@ function castVote(optionName, optionValue) {
 // Player casts a vote
 function onPlayerCastVote(category, choice) {
     // No voting unless it is the voting phase
-    if(currentPhase != PHASE_OPTION_VOTING) return;
+    if(currentPhase != Game.shared.PHASE_OPTION_VOTING) return;
 
     switch(category) {
         case 'slots':
@@ -3401,6 +1802,30 @@ function onImportOptionsOpenPressed() {
     $('#optionImporter').visible = true;
 }
 
+/*
+    PICKING PHASE STUFF
+*/
+
+function setupPickingPhase() {
+    // Load in the panel
+    pickingPhasePanel = $.CreatePanel('Panel', $('#pickingPhase'), '');
+    pickingPhasePanel.BLoadLayout('file://{resources}/layout/custom_game/shared/hero_builder/hero_builder_main.xml', false, false);
+}
+
+/*
+    Review Phase Stuff
+*/
+
+// When the lock build button is pressed
+function onLockBuildButtonPressed() {
+    // Tell the server we clicked it
+    GameEvents.SendCustomGameEventToServer('lodReady', {});
+}
+
+/*
+    INIT EVERYTHING
+*/
+
 //--------------------------------------------------------------------------------------------------
 // Entry point called when the team select panel is created
 //--------------------------------------------------------------------------------------------------
@@ -3455,6 +1880,9 @@ function onImportOptionsOpenPressed() {
     // Automatically assign players to teams.
     Game.AutoAssignPlayersToTeams();
 
+    // Sets up the picking phase
+    setupPickingPhase();
+
     // Start updating the timer, this function will schedule itself to be called periodically
     UpdateTimer();
 
@@ -3471,8 +1899,8 @@ function onImportOptionsOpenPressed() {
     Game.shared.hookAndFire('phase_pregame', OnPhaseChanged);
     Game.shared.hookAndFire('options', OnOptionChanged);
     Game.shared.hookAndFire('heroes', OnHeroDataChanged);
-    Game.shared.hookAndFire('flags', OnFlagDataChanged);
-    Game.shared.hookAndFire('selected_heroes', OnSelectedHeroesChanged);
+    Game.shared.hookAndFire('flags', OnflagDataChanged);
+    //Game.shared.hookAndFire('selected_heroes', OnSelectedHeroesChanged);
     Game.shared.hookAndFire('selected_attr', OnSelectedAttrChanged);
     Game.shared.hookAndFire('selected_skills', OnSelectedSkillsChanged);
     Game.shared.hookAndFire('banned', OnSkillBanned);
@@ -3481,30 +1909,26 @@ function onImportOptionsOpenPressed() {
     //Game.shared.hookAndFire('selected_random_builds', OnSelectedRandomBuildChanged);
     Game.shared.hookAndFire('draft_array', OnGetDraftArray);
 
-    // Listen for notifications
-    GameEvents.Subscribe('lodNotification', function(data) {
-        Game.shared.addNotification($('#lodNotificationArea'), data);
-    });
+    // Hook callbacks
+    Game.shared.events.on('heroChanged', onSelectedHeroChanged);
 
-    // Hook tab changes
-    hookTabChange('pickingPhaseHeroTab', OnHeroTabShown);
-    hookTabChange('pickingPhaseSkillTab', OnSkillTabShown);
-    hookTabChange('pickingPhaseMainTab', OnMainSelectionTabShown);
+    // Register for notifications
+    Game.shared.registerNotifications($('#lodNotificationArea'));
 
     // Setup the tabs
-    setupBuilderTabs();
+    //setupBuilderTabs();
 
     // Make input boxes nicer to use
-    $('#mainSelectionRoot').SetPanelEvent('onactivate', focusNothing);
+    $('#mainSelectionRoot').SetPanelEvent('onactivate', Game.shared.focusNothing);
 
     // Toggle the show taken abilities button to be on
-    $('#lodToggleButton').checked = true;
+    /*$('#lodToggleButton').checked = true;
 
     // Toggle the hero grouping button
     $('#buttonHeroGrouping').checked = true;
 
     // Show banned abilities by default
-    $('#buttonShowBanned').checked = true;
+    $('#buttonShowBanned').checked = true;*/
 
     // Disable clicking on the warning timer
     $('#lodTimerWarning').hittest = false;

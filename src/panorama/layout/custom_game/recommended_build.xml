@@ -1,6 +1,7 @@
 <root>
     <styles>
-        <include src="file://{resources}/styles/custom_game/game_setup.css" />
+        <include src="file://{resources}/styles/custom_game/shared/hero_builder.css" />
+        <include src="file://{resources}/styles/custom_game/shared/shared.css" />
     </styles>
     <scripts>
         <include src="file://{resources}/scripts/custom_game/recommended_build.js" />
