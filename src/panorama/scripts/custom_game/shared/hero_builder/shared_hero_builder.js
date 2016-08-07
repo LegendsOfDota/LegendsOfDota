@@ -271,9 +271,8 @@ Game.shared.makeHeroSelectable = function(heroCon) {
         var heroName = heroCon.GetAttributeString('heroName', '');
         if(heroName == null || heroName.length <= 0) return;
 
-
         Game.shared.events.trigger('clickHero', {
-            heroName: heroOwner,
+            heroName: heroName,
             dontUnselect: true
         });
     });

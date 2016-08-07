@@ -132,6 +132,15 @@
     height: 48px;
 }
 
+#buildingHelperHeroPreviewHeroBan {
+    horizontal-align: center;
+    visibility: collapse;
+}
+
+.phase_banning_selected #buildingHelperHeroPreviewHeroBan {
+    visibility: visible;
+}
+
 .addMarginBelow {
     margin-bottom: 8px;
 }
@@ -200,10 +209,6 @@
 
 .no_hero_selected #playerHeroImage {
     visibility: collapse;
-}
-
-.no_hero_selected #playerNoHeroSelected {
-    visibility: visible;
 }
 
 #pickingPhaseSelectedHeroImage {

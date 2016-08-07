@@ -27,9 +27,9 @@ var calculateFilters = function(){};
 var calculateHeroFilters = function(){};
 
 // Called when the current phase changed
-function onPhaseChanged() {
+/*function onPhaseChanged() {
 
-}
+}*/
 
 // Hooks a tab change
 function hookTabChange(tabName, callback) {
@@ -216,6 +216,9 @@ function setupBuilderTabs() {
     };
 
     hookSet('#pickingPhaseBans');
+
+    // Make the selection helper hero selectable
+    Game.shared.makeHeroSelectable($('#buildingHelperHeroPreviewHero'));
 }
 
 function showBuilderTab(tabName) {
@@ -280,7 +283,7 @@ function setSelectedHelperHero(heroName, dontUnselect) {
     var previewCon = $('#buildingHelperHeroPreview');
 
     // Validate hero name
-    if(heroName == null || heroName.length <= 0 || !heroData[heroName]) {
+    if(heroName == null || heroName.length <= 0 || !Game.shared.heroData[heroName]) {
         previewCon.visible = false;
         return;
     }
@@ -289,10 +292,12 @@ function setSelectedHelperHero(heroName, dontUnselect) {
     previewCon.visible = true;
 
     // Grab the info
-    var info = heroData[heroName];
+    var info = Game.shared.heroData[heroName];
 
     // Update the hero
-    $('#buildingHelperHeroPreviewHero').heroname = heroName;
+    var heroImageCon = $('#buildingHelperHeroPreviewHero');
+    heroImageCon.SetAttributeString('heroName', heroName);
+    heroImageCon.heroname = heroName;
     $('#buildingHelperHeroPreviewHeroName').text = $.Localize(heroName);
 
     // Set this as the selected one
@@ -479,7 +484,7 @@ function updateHeroPreviewFilters() {
     // Remove any search text
     searchParts = [];
 
-    /*for(var i=1; i<=16; ++i) {
+    for(var i=1; i<=16; ++i) {
         var abCon = $('#buildingHelperHeroPreviewSkill' + i);
 
         // Is it visible?
@@ -507,7 +512,7 @@ function updateHeroPreviewFilters() {
 
     var heroImageText = $('#buildingHelperHeroPreviewHeroName');
     heroImageText.SetHasClass('should_hide_this_hero', !heroFilterInfo.shouldShow);
-    heroImageText.SetHasClass('takenHero', heroFilterInfo.takenHero);*/
+    heroImageText.SetHasClass('takenHero', heroFilterInfo.takenHero);
 }
 
 // Updates the filters applied to recommended builds
@@ -648,13 +653,19 @@ function onSelectedHeroChanged() {
     var heroName = Game.shared.selectedHeroes[playerID];
 
     var heroCon = $('#pickingPhaseSelectedHeroImage');
-    heroCon.SetAttributeString('heroName', heroName);
-    heroCon.heroname = heroName;
 
-    $('#pickingPhaseSelectedHeroText').text = $.Localize(heroName);
+    if(heroName == null) {
+        // No hero yet
+        $('#pickingPhaseSelectedHeroImageCon').SetHasClass('no_hero_selected', true);
+    } else {
+        heroCon.SetAttributeString('heroName', heroName);
+        heroCon.heroname = heroName;
 
-    // Set it so no hero is selected
-    $('#pickingPhaseSelectedHeroImageCon').SetHasClass('no_hero_selected', false);
+        $('#pickingPhaseSelectedHeroText').text = $.Localize(heroName);
+
+        // Set it so no hero is selected
+        $('#pickingPhaseSelectedHeroImageCon').SetHasClass('no_hero_selected', false);
+    }
 }
 
 // Sets the currently selected ability for dropping
@@ -1256,7 +1267,7 @@ function onNewHeroSelected() {
     Game.shared.chooseHero(currentSelectedHero);
 
     // Unselect selected skill
-    pickingPhasePanel.setSelectedDropAbility();
+    setSelectedDropAbility();
 }
 
 // They try to ban a hero
@@ -1395,6 +1406,21 @@ function onDraftArrayUpdated() {
     $('#toggleShowDraftAblilities').visible = true;
 }
 
+// When the max number of slots changes
+function onMaxSlotsChanged() {
+    var maxSlots = Game.shared.optionValueList['lodOptionCommonMaxSlots'];
+
+    for(var i=1; i<=6; ++i) {
+        var con = $('#lodYourAbility' + i);
+
+        if(i <= maxSlots) {
+            con.visible = true;
+        } else {
+            con.visible = false;
+        }
+    }
+}
+
 /*
     INIT EVERYTHING
 */
@@ -1405,7 +1431,7 @@ function onDraftArrayUpdated() {
     var masterRoot = $.GetContextPanel();
 
     // Define exports
-    masterRoot.onPhaseChanged = onPhaseChanged;
+    //masterRoot.onPhaseChanged = onPhaseChanged;
     masterRoot.setMaxBans = setMaxBans;
     masterRoot.updateHeroPreviewFilters = updateHeroPreviewFilters;
     masterRoot.updateRecommendedBuildFilters = updateRecommendedBuildFilters;
@@ -1428,6 +1454,7 @@ function onDraftArrayUpdated() {
     Game.shared.events.on('clickNoAbility', onNoAbilityClicked);
     Game.shared.events.on('clickHero', onHeroClicked);
     Game.shared.events.on('draftArrayUpdated', onDraftArrayUpdated);
+    Game.shared.events.on('maxSlotsChanged', onMaxSlotsChanged);
 
     Game.shared.events.on('dragAbilityStart', onDragAbilityStart);
     Game.shared.events.on('dragAbilityEnd', onDragAbilityEnd);

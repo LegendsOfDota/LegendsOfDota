@@ -119,3 +119,11 @@
 .potential_drop_target {
     opacity: 0.1;
 }
+
+#playerNoHeroSelected {
+    visibility: collapse;
+}
+
+.no_hero_selected #playerNoHeroSelected {
+    visibility: visible;
+}

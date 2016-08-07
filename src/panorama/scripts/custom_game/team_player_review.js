@@ -274,6 +274,7 @@ function setPlayerID(playerID) {
         updateBuildData();
         updateSelectedAttribute();
         onReviewPhaseStart();
+        onMaxSlotsChanged();
     }
 }
 

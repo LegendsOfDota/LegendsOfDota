@@ -388,9 +388,9 @@
     visibility: collapse;
 }*/
 
-#playerNoHeroSelected {
+/*#playerNoHeroSelected {
     visibility: collapse;
-}
+}*/
 
 /*.no_hero_selected #playerNoHeroSelected {
     visibility: visible;
@@ -1457,14 +1457,14 @@
     visibility: visible;
 }*/
 
-#buildingHelperHeroPreviewHeroBan {
+/*#buildingHelperHeroPreviewHeroBan {
     horizontal-align: center;
     visibility: collapse;
 }
 
 .phase_banning_selected #buildingHelperHeroPreviewHeroBan {
     visibility: visible;
-}
+}*/
 
 /*#buildingHelperHeroPreviewHeroContainer DOTAHeroImage {
     width: 128px;

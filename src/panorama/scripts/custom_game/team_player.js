@@ -60,15 +60,20 @@ function onSelectedHeroChanged(data) {
 function updatedSelectedHero() {
     var heroName = Game.shared.selectedHeroes[ourPlayerID];
 
+    // Show the actual hero icon
+    var mainPanel = $.GetContextPanel();
+
     if(heroName != null) {
         // Show the actual hero icon
-        var mainPanel = $.GetContextPanel();
         mainPanel.SetHasClass('no_hero_selected', false);
 
         // Put the hero image in place
         var heroCon = $('#playerHeroImage');
         heroCon.heroname = heroName;
         heroCon.SetAttributeString('heroName', heroName);
+    } else {
+        // Show the "no hero" icon
+        mainPanel.SetHasClass('no_hero_selected', true);
     }
 }
 
@@ -155,7 +160,7 @@ function setPlayerID(playerID) {
     updatedSelectedHero();
     updateBuildData();
     updateSelectedAttribute();
-
+    onMaxSlotsChanged();
 }
 
 // When this panel loads

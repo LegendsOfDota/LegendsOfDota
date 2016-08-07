@@ -495,9 +495,6 @@ function addUnassignedPlayer(playerID) {
     if(activeReviewPanels[playerID] != null) {
         activeReviewPanels[playerID].visible = false;
     }
-
-    // Add this panel to the list of panels we've generated
-    //allPlayerPanels.push(newPlayerPanel);
 }
 
 // Adds a player to a team
@@ -522,40 +519,12 @@ function addPlayerToTeam(playerID, panel, reviewContainer, shouldMakeSmall) {
         newPlayerPanel.SetAttributeInt('playerID', playerID);
         newPlayerPanel.BLoadLayout('file://{resources}/layout/custom_game/team_player.xml', false, false);
         newPlayerPanel.setPlayerID(playerID);
-        //newPlayerPanel.hookStuff(Game.shared.hookSkillInfo, makeSkillSelectable, makeHeroSelectable);
     } else {
         newPlayerPanel.SetParent(panel);
         newPlayerPanel.visible = true;
     }
 
-    // Check max slots
-    var maxSlots = Game.shared.optionValueList['lodOptionCommonMaxSlots'];
-    if(maxSlots != null) {
-        //newPlayerPanel.OnGetHeroSlotCount(maxSlots);
-    }
-
-    // Check for hero icon
-    if(Game.shared.selectedHeroes[playerID] != null) {
-        //newPlayerPanel.OnGetHeroData(Game.shared.selectedHeroes[playerID]);
-    }
-
-    // Check for skill data
-    if(Game.shared.selectedSkills[playerID] != null) {
-        //newPlayerPanel.OnGetHeroBuildData(Game.shared.selectedSkills[playerID]);
-    }
-
-    // Check for attr data
-    if(Game.shared.selectedAttr[playerID] != null) {
-        //newPlayerPanel.OnGetNewAttribute(Game.shared.selectedAttr[playerID]);
-    }
-
-    // Check for ready state
-    if(Game.shared.readyState[playerID] != null) {
-        //newPlayerPanel.setReadyState(Game.shared.readyState[playerID]);
-    }
-
     // Add this panel to the list of panels we've generated
-    //allPlayerPanels.push(newPlayerPanel);
     activePlayerPanels[playerID] = newPlayerPanel;
 
     /*
@@ -570,7 +539,6 @@ function addPlayerToTeam(playerID, panel, reviewContainer, shouldMakeSmall) {
         newPlayerPanel.SetAttributeInt('playerID', playerID);
         newPlayerPanel.BLoadLayout('file://{resources}/layout/custom_game/team_player_review.xml', false, false);
         newPlayerPanel.setPlayerID(playerID);
-        //newPlayerPanel.hookStuff(Game.shared.hookSkillInfo, Game.shared.makeSkillSelectable, pickingPhasePanel.setSelectedHelperHero, playerID == Players.GetLocalPlayer());
     } else {
         newPlayerPanel.SetParent(reviewContainer);
         newPlayerPanel.visible = true;
@@ -578,38 +546,7 @@ function addPlayerToTeam(playerID, panel, reviewContainer, shouldMakeSmall) {
 
     newPlayerPanel.setShouldBeSmall(shouldMakeSmall);
 
-    // Check max slots
-    var maxSlots = Game.shared.optionValueList['lodOptionCommonMaxSlots'];
-    if(maxSlots != null) {
-        //newPlayerPanel.OnGetHeroSlotCount(maxSlots);
-    }
-
-    // Check for hero icon
-    /*if(Game.shared.selectedHeroes[playerID] != null) {
-        //newPlayerPanel.OnGetHeroData(Game.shared.selectedHeroes[playerID]);
-
-        if(currentPhase == Game.shared.PHASE_REVIEW) {
-            newPlayerPanel.OnReviewPhaseStart();
-        }
-    }*/
-
-    // Check for skill data
-    if(Game.shared.selectedSkills[playerID] != null) {
-        //newPlayerPanel.OnGetHeroBuildData(Game.shared.selectedSkills[playerID]);
-    }
-
-    // Check for attr data
-    if(Game.shared.selectedAttr[playerID] != null) {
-        //newPlayerPanel.OnGetNewAttribute(Game.shared.selectedAttr[playerID]);
-    }
-
-    // Check for ready state
-    if(Game.shared.readyState[playerID] != null) {
-        //newPlayerPanel.setReadyState(Game.shared.readyState[playerID]);
-    }
-
     // Add this panel to the list of panels we've generated
-    //allPlayerPanels.push(newPlayerPanel);
     activeReviewPanels[playerID] = newPlayerPanel;
 }
 
@@ -1429,25 +1366,6 @@ function onMaxSlotsChanged() {
     // Ensure all variables are defined
     if(maxSlots == null || maxSkills == null || maxUlts == null) return;
 
-    /*for(var i=1; i<=6; ++i) {
-        var con = $('#lodYourAbility' + i);
-
-        if(i <= maxSlots) {
-            con.visible = true;
-        } else {
-            con.visible = false;
-        }
-    }*/
-
-    // Push it
-    for(var playerID in activePlayerPanels) {
-        //activePlayerPanels[playerID].OnGetHeroSlotCount(maxSlots);
-    }
-
-    for(var playerID in activeReviewPanels) {
-        //activeReviewPanels[playerID].OnGetHeroSlotCount(maxSlots);
-    }
-
     // Do the highlight on the option voting
     for(var i=4; i<=6; ++i) {
         $('#optionVotingSlotAnswer' + i).RemoveClass('optionSlotsCurrentlySelected');
@@ -1467,10 +1385,6 @@ function allowedCategoriesChanged() {
     if(Game.shared.optionValueList['lodOptionAdvancedNeutralAbilities'] == 1) {
         Game.shared.allowedCategories['neutral'] = true;
     }
-
-    //if(Game.shared.optionValueList['lodOptionAdvancedNeutralWraithNight'] == 1) {
-    //    Game.shared.allowedCategories['wraith'] = true;
-    //}
 
     if(Game.shared.optionValueList['lodOptionAdvancedCustomSkills'] == 1) {
         Game.shared.allowedCategories['custom'] = true;
