@@ -12,7 +12,7 @@
     	<Panel id="lodNotificationArea" />
 
     	<Panel class="votingTopMenu">
-    		<Button class="niceButton" onactivate="onBtnOpenVoteSystemPressed()" hittest="true">
+    		<Button id="btnOpenVoteMenu" class="niceButton" onactivate="onBtnOpenVoteSystemPressed()" hittest="true">
                 <Label text="openVoteSystem" />
             </Button>
     	</Panel>

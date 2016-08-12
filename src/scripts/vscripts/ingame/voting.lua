@@ -42,9 +42,20 @@ end
 
 -- Called when a player tries to create a vote
 function lodVoting:onPlyVoteCreate(eventSourceIndex, args)
-	-- Grab data
+    -- Grab data
     local playerID = args.PlayerID
     local ply = PlayerResource:GetPlayer(playerID)
+    
+    -- Set the vote counting mode
+    local voteMode = OptionManager:GetOption('votingMode')
+    if voteMode == 0 then
+        -- Tell the player it is disabled
+        notifications:send(ply, {
+            sort = 'lodDanger',
+            text = 'votingErrorVotingDisabled'
+        })
+        return
+    end
 
     -- Is there an active vote already?
     if self.activeVote then
@@ -102,7 +113,7 @@ function lodVoting:onPlyVoteCreate(eventSourceIndex, args)
     	voteDuration = maxVoteDuration,
     	endTime = Time() + maxVoteDuration,
     	playerID = playerID,
-    	voteMode = constants.VOTE_COUNT_MODE_FAIR
+    	voteMode = voteMode
 	}
 
 	-- Check vote info
@@ -638,6 +649,9 @@ function lodVoting:getVotesRequired()
         if votesRequiredToPass > totalVotesSoFar then
             votesRequiredToPass = totalVotesSoFar
         end
+    elseif self.activeVoteInfo.voteMode == constants.VOTE_COUNT_MODE_EVERYONE then
+        votesRequiredIfEveryoneVotes = totalPeople
+        votesRequiredToPass = totalVotesSoFar
     end
 
     -- Work out how many "no" votes are needed for this vote to fail

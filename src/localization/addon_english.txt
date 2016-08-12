@@ -231,6 +231,12 @@
     "lodOptionGameSpeedRespawnTime30Second"         "30 Second Respawn"
     "lodOptionGameSpeedRespawnTime60Second"         "60 Second Respawn"
 
+    "lodOptionDesGameSpeedVoting"                   "Voting"
+    "lodOptionAboutGameSpeedVoting"                 "Turn voting on or off, change the amount of votes required for a vote to pass.<br><br>Off - Voting will be disabled completely.<br>Eveyone must vote yes - If a single person votes no, the vote will fail.<br>50% + 1 - Of all the people who votes, at least 50% of the people plus an additional one must vote yes for a vote to pass."
+    "lodOptionVotingOff"                            "Off"
+    "lodOptionVotingEveryone"                       "Everyone must vote yes"
+    "lodOptionVotingFifty"                          "50% + 1"
+
     "acceptHosting"                                 "Ok, I understand"
     "lodHostingMessage"                             "You are the host, you are required to select the options for this match. All options will be recoreded and you may be banned from selecting options if you continue to troll other players.\n\nLock the teams using the buttons at the top center of the screen, and lock the options by pressing the button in the bottom right hand corner."
     "lodPickingMessage"                             "This is the drafting phase, you need to select a HERO and ABILITIES. Once you have selected both, press the lock build button to proceed. You may unlock your build at any stage, however, you will not be able to change your build while it is locked."
@@ -586,6 +592,7 @@
     "votingErrorCooldown"                           "Please wait {cooldownLeft} second(s) before attempting to create another vote."
     "votingErrorVoteInvalid"                        "There was an error creating your vote: {error}"
     "votingMessageVoteCreated"                      "The vote was successfully created!"
+    "votingErrorVotingDisabled"                     "Voting is disabled."
 
     "voteErrorInvalidData"                          "One of the value(s) you entered was invalid."
     "voteErrorNotInMatch"                           "This vote can only be created once everyone has spawned."

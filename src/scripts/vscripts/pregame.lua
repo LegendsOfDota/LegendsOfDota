@@ -1671,6 +1671,14 @@ function Pregame:initOptionSelector()
             return value == 0 or value == 1
         end,
 
+        -- Game Speed - Voting
+        lodOptionGameSpeedVoting = function(value)
+            -- Ensure gamemode is set to custom
+            if self.optionStore['lodOptionGamemode'] ~= -1 then return false end
+
+            return value == 0 or value == 1 or value == 2
+        end,
+
         -- Bots -- Desired number of radiant players
         lodOptionBotsRadiant = function(value)
             -- Ensure gamemode is set to custom
@@ -1882,6 +1890,9 @@ function Pregame:initOptionSelector()
 
                 -- Start with a free courier
                 self:setOption('lodOptionGameSpeedFreeCourier', 1, true)
+
+                -- Voting starts at everyone required
+                self:setOption('lodOptionGameSpeedVoting', 1, true)
 
                 -- Set bot options
                 self:setOption('lodOptionBotsRadiant', 5, true)
@@ -2385,7 +2396,13 @@ function Pregame:processOptions()
         OptionManager:SetOption('respawnModifierPercentage', this.optionStore['lodOptionGameSpeedRespawnTimePercentage'])
 	    OptionManager:SetOption('respawnModifierConstant', this.optionStore['lodOptionGameSpeedRespawnTimeConstant'])
 	    OptionManager:SetOption('freeScepter', this.optionStore['lodOptionGameSpeedUpgradedUlts'] == 1)
-	    OptionManager:SetOption('freeCourier', this.optionStore['lodOptionGameSpeedFreeCourier'] == 1)
+        OptionManager:SetOption('freeCourier', this.optionStore['lodOptionGameSpeedFreeCourier'] == 1)
+
+	    OptionManager:SetOption('votingMode', this.optionStore['lodOptionGameSpeedVoting'])
+
+        if this.optionStore['lodOptionGameSpeedVoting'] == 0 then
+            network:disableVoting()
+        end
 
 	    -- Enforce max level
 	    if OptionManager:GetOption('startingLevel') > OptionManager:GetOption('maxHeroLevel') then
@@ -2474,6 +2491,13 @@ function Pregame:processOptions()
 	    else
 	    	-- We are using option selection
 	    	if this.optionStore['lodOptionGamemode'] == -1 then
+                local votingText = 'Disabled'
+                if this.optionStore['lodOptionGameSpeedVoting'] == 1 then
+                    votingText = 'Everyone must vote yes.'
+                elseif this.optionStore['lodOptionGameSpeedVoting'] == 2 then
+                    votingText = '50% + 1'
+                end
+
 	    		-- Players can pick all options, store all options
 			    statCollection:setFlags({
 			        ['Preset Gamemode'] = this.optionStore['lodOptionGamemode'],
@@ -2499,7 +2523,8 @@ function Pregame:processOptions()
 			        ['Buyback Cooldown'] = this.optionStore['lodOptionGameSpeedBuybackCooldown'],
 			        ['Towers Per Lane'] = this.optionStore['lodOptionGameSpeedTowersPerLane'],
 			        ['Start With Upgraded Ults'] = this.optionStore['lodOptionGameSpeedUpgradedUlts'],
-			        ['Start With Free Courier'] = this.optionStore['lodOptionGameSpeedFreeCourier'],
+                    ['Start With Free Courier'] = this.optionStore['lodOptionGameSpeedFreeCourier'],
+			        ['Voting'] = votingText,
 			        ['Allow Hero Abilities'] = this.optionStore['lodOptionAdvancedHeroAbilities'],
 			        ['Allow Neutral Abilities'] = this.optionStore['lodOptionAdvancedNeutralAbilities'],
                     ['Allow Wraith Night Skills'] = this.optionStore['lodOptionAdvancedNeutralWraithNight'],

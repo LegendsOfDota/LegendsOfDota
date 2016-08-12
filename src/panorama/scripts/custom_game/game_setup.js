@@ -699,13 +699,19 @@ function buildOptionsCategories() {
     }
 }
 
+function localSetTeamsLocked(locked) {
+    Game.SetTeamSelectionLocked(locked);
+    $('#mainSelectionRoot').SetHasClass('teams_locked', locked);
+    $('#mainSelectionRoot').SetHasClass('teams_unlocked', !locked);
+}
+
 // Player presses auto assign
 function onAutoAssignPressed() {
     // Auto assign teams
     Game.AutoAssignPlayersToTeams();
 
     // Lock teams
-    Game.SetTeamSelectionLocked(true);
+    localSetTeamsLocked(true);
 }
 
 // Player presses shuffle
@@ -721,13 +727,13 @@ function onLockPressed() {
         return;
 
     // Lock the team selection so that no more team changes can be made
-    Game.SetTeamSelectionLocked(true);
+    localSetTeamsLocked(true);
 }
 
 // Player presses unlock teams
 function onUnlockPressed() {
     // Unlock Teams
-    Game.SetTeamSelectionLocked(false);
+    localSetTeamsLocked(false);
 }
 
 // Lock options pressed

@@ -233,6 +233,11 @@ function OnGetIngameData(table_name, key, data) {
 		OnGetVoteData(table_name, key, data);
 		return;
 	}
+
+	if(key == 'votingDisable') {
+		// Voting disabled :(
+		$('#btnOpenVoteMenu').visible = false;
+	}
 }
 
 function setVoteExpireTime(endOfLife) {

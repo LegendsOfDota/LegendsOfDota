@@ -164,6 +164,26 @@ var allOptions = {
                 step: 1,
                 default: 20
             },
+            {
+                name: 'lodOptionGameSpeedVoting',
+                des: 'lodOptionDesGameSpeedVoting',
+                about: 'lodOptionAboutGameSpeedVoting',
+                sort: 'dropdown',
+                values: [
+                    {
+                        text: 'lodOptionVotingOff',
+                        value: 0
+                    },
+                    {
+                        text: 'lodOptionVotingEveryone',
+                        value: 1
+                    },
+                    {
+                        text: 'lodOptionVotingFifty',
+                        value: 2
+                    },
+                ]
+            },
         ]
     },
 

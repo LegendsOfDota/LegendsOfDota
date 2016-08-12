@@ -12,7 +12,8 @@ Constants.PHASE_REVIEW = 8              -- Review Phase
 Constants.PHASE_INGAME = 9              -- Game has started
 
 -- Voting stuff
-Constants.VOTE_COUNT_MODE_FAIR = 1           -- 50% + 1 to pass a vote
+Constants.VOTE_COUNT_MODE_EVERYONE = 1       -- Everyone must vote yes (who votes)
+Constants.VOTE_COUNT_MODE_FAIR = 2           -- 50% + 1 to pass a vote
 
 -- EXP Needed for each level
 Constants.XP_PER_LEVEL_TABLE = {

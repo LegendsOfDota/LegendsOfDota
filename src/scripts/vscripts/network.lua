@@ -195,5 +195,10 @@ function Network:updateVoteInfo(voteInfo)
     CustomNetTables:SetTableValue('phase_ingame', 'vote', voteInfo)
 end
 
+-- Disable voting
+function Network:disableVoting(voteInfo)
+    CustomNetTables:SetTableValue('phase_ingame', 'votingDisable', {})
+end
+
 -- Return an instance of it
 return Network()

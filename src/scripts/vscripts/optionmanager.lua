@@ -136,6 +136,9 @@ OptionManager:SetOption('loadSurvival', false)
 -- Free courier
 OptionManager:SetOption('freeCourier', 2)
 
+-- Voting
+OptionManager:SetOption('votingMode', 1)
+
 -- Number of towers in the middle of a lane
 OptionManager:SetOption('middleTowers', 1)
 
