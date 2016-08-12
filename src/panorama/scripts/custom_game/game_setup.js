@@ -32,10 +32,6 @@ var lastOptionValues = {};
 // Map of optionName -> callback for value change
 var optionFieldMap = {};
 
-// Keeping track of bans
-var currentHeroBans = 0;
-var currentAbilityBans = 0;
-
 // We have not picked a hero
 var pickedAHero = false;
 
@@ -44,9 +40,6 @@ var waitingForPrecache = true;
 
 // Are we a premium player?
 var isPremiumPlayer = false;
-
-// The picking phase panel
-var pickingPhasePanel;
 
 // Focuses on nothing
 Game.shared.focusNothing = function() {
@@ -68,7 +61,7 @@ function OnHeroDataChanged(table_name, key, data) {
     var myHookNumber = ++dataHooks.OnHeroDataChanged;
     $.Schedule(1, function() {
         if(dataHooks.OnHeroDataChanged == myHookNumber) {
-            pickingPhasePanel.buildHeroList();
+            Game.shared.events.trigger('heroDataChanged');
         }
     });
 }
@@ -103,33 +96,12 @@ function OnflagDataChanged(table_name, key, data) {
 function onSelectedHeroChanged(data) {
     // Grab data
     var playerID = data.playerID;
-    //var heroName = data.heroName;
 
     // Was it an update on our local player?
     if(playerID == Players.GetLocalPlayer()) {
-        // Update our hero icon and text
-        //pickingPhasePanel.onSelectedHeroChanged();
-
         // We have now picked a hero
         pickedAHero = true;
     }
-
-    // Shows which heroes have been taken
-    //pickingPhasePanel.showTakenHeroes();
-    //pickingPhasePanel.updateHeroPreviewFilters();
-    //pickingPhasePanel.updateRecommendedBuildFilters();
-
-    //if(activePlayerPanels[playerID]) {
-    //    activePlayerPanels[playerID].OnGetHeroData(heroName);
-    //}
-
-    //if(activeReviewPanels[playerID]) {
-    //    activeReviewPanels[playerID].OnGetHeroData(heroName);
-//
-//        if(currentPhase == Game.shared.PHASE_REVIEW) {
-//            activeReviewPanels[playerID].OnReviewPhaseStart();
-//        }
-//    }
 }
 
 // Selected primary attribute changes
@@ -146,21 +118,6 @@ function OnSelectedAttrChanged(table_name, key, data) {
         playerID: playerID,
         newAttr: newAttr
     });
-
-    // Was it an update on our local player?
-    if(playerID == Players.GetLocalPlayer()) {
-        // Update which attribute is selected
-        //pickingPhasePanel.onHeroAttributeChanged();
-    }
-
-    // Push the attribute
-    if(activePlayerPanels[playerID]) {
-        //activePlayerPanels[playerID].OnGetNewAttribute(newAttr);
-    }
-
-    if(activeReviewPanels[playerID]) {
-        //activeReviewPanels[playerID].OnGetNewAttribute(newAttr);
-    }
 }
 
 // Selected abilities has changed
@@ -179,19 +136,6 @@ function OnSelectedSkillsChanged(table_name, key, data) {
     // Grab max slots
     var maxSlots = Game.shared.optionValueList['lodOptionCommonMaxSlots'] || 6;
     var defaultSkill = 'life_stealer_empty_1';
-
-    if(playerID == Players.GetLocalPlayer()) {
-        //pickingPhasePanel.onHeroBuildUpdated();
-    }
-
-    // Push the build
-    if(activePlayerPanels[playerID]) {
-        //activePlayerPanels[playerID].OnGetHeroBuildData(data.skills);
-    }
-
-    if(activeReviewPanels[playerID]) {
-        //activeReviewPanels[playerID].OnGetHeroBuildData(data.skills);
-    }
 
     // Update which skills are taken
     updateTakenSkills();
@@ -224,9 +168,7 @@ function updateTakenSkills() {
     }
 
     // Rebuild the visible skills
-    pickingPhasePanel.calculateFilters();
-    pickingPhasePanel.updateHeroPreviewFilters();
-    pickingPhasePanel.updateRecommendedBuildFilters();
+    Game.shared.events.trigger('takenSkillsChanged');
 }
 
 // A ban was sent through
@@ -240,9 +182,9 @@ function OnSkillBanned(table_name, key, data) {
         Game.shared.bannedHeroes[heroName] = true;
 
         // Recalculate filters
-        pickingPhasePanel.calculateHeroFilters();
-        pickingPhasePanel.updateHeroPreviewFilters();
-        pickingPhasePanel.updateRecommendedBuildFilters();
+        Game.shared.events.trigger('heroBanned', {
+            heroName: heroName
+        });
     }
 
     if(abilityName != null) {
@@ -250,9 +192,9 @@ function OnSkillBanned(table_name, key, data) {
         Game.shared.bannedAbilities[abilityName] = true;
 
         // Recalculate filters
-        pickingPhasePanel.calculateFilters();
-        pickingPhasePanel.updateHeroPreviewFilters();
-        pickingPhasePanel.updateRecommendedBuildFilters();
+        Game.shared.events.trigger('abilityBanned', {
+            abilityName: abilityName
+        });
     }
 
     if(data.playerID != null) {
@@ -261,8 +203,8 @@ function OnSkillBanned(table_name, key, data) {
             // Our banning info
 
             // Store new values
-            currentHeroBans = data.currentHeroBans;
-            currentAbilityBans = data.currentAbilityBans;
+            Game.shared.currentHeroBans = data.currentHeroBans;
+            Game.shared.currentAbilityBans = data.currentAbilityBans;
 
             // Recalculate
             recalculateBanLimits();
@@ -295,7 +237,6 @@ function OnGetReadyState(table_name, key, data) {
             var playerIsReady = data[playerID] == 1;
 
             // Push the data, push it real, good
-            //pickingPhasePanel.setReadyState(playerIsReady);
             $('#allRandomLockButton').visible = !playerIsReady;
             $('#reviewReadyButton').visible = !playerIsReady;
         }
@@ -370,12 +311,6 @@ function OnGetDraftArray(table_name, key, data) {
     Game.shared.heroDraft = draftArray.heroDraft;
     Game.shared.abilityDraft = draftArray.abilityDraft;
 
-    // Run the calculations
-    pickingPhasePanel.calculateFilters();
-    pickingPhasePanel.calculateHeroFilters();
-    pickingPhasePanel.updateHeroPreviewFilters();
-    pickingPhasePanel.updateRecommendedBuildFilters();
-
     // The draft array was updated
     Game.shared.events.trigger('draftArrayUpdated');
 }
@@ -403,17 +338,10 @@ function buildFlagList() {
     }
 }
 
-// Are we the host?
-function isHost() {
-    var playerInfo = Game.GetLocalPlayerInfo();
-    if (!playerInfo) return false;
-    return playerInfo.player_has_host_privileges;
-}
-
 // Sets an option to a value
 function setOption(optionName, optionValue) {
     // Ensure we are the host
-    if(!isHost()) return;
+    if(!Game.shared.isHost()) return;
 
     // Don't send an update twice!
     if(lastOptionValues[optionName] && lastOptionValues[optionName] == optionValue) return;
@@ -759,7 +687,7 @@ function buildOptionsCategories() {
                 optionCategory.SetHasClass('activeMenu', true);
 
                 // If we are the host, tell the server which menu we are looking at
-                if(isHost()) {
+                if(Game.shared.isHost()) {
                     GameEvents.SendCustomGameEventToServer('lodOptionsMenu', {v: optionLabelText});
                 }
             }
@@ -974,19 +902,6 @@ function OnPlayerSelectedTeam( nPlayerId, nTeamId, bSuccess ) {
     }
 }
 
-// Update the CSS on a panel to tell what phase we are in
-function updatePhaseCSS(panel) {
-    panel.SetHasClass('phase_loading', currentPhase == Game.shared.PHASE_LOADING);
-    panel.SetHasClass('phase_option_selection', currentPhase == Game.shared.PHASE_OPTION_SELECTION);
-    panel.SetHasClass('phase_option_voting', currentPhase == Game.shared.PHASE_OPTION_VOTING);
-    panel.SetHasClass('phase_banning', currentPhase == Game.shared.PHASE_BANNING);
-    panel.SetHasClass('phase_selection', currentPhase == Game.shared.PHASE_SELECTION);
-    panel.SetHasClass('phase_all_random', currentPhase == Game.shared.PHASE_RANDOM_SELECTION);
-    panel.SetHasClass('phase_drafting', currentPhase == Game.shared.PHASE_DRAFTING);
-    panel.SetHasClass('phase_review', currentPhase == Game.shared.PHASE_REVIEW);
-    panel.SetHasClass('phase_ingame', currentPhase == Game.shared.PHASE_INGAME);
-}
-
 // A phase was changed
 var seenPopupMessages = {};
 function OnPhaseChanged(table_name, key, data) {
@@ -1001,11 +916,8 @@ function OnPhaseChanged(table_name, key, data) {
                 newPhase: currentPhase
             });
 
-
             // Update phase classes
-            updatePhaseCSS($.GetContextPanel());
-            updatePhaseCSS(pickingPhasePanel);
-
+            Game.shared.updatePhaseCSS($.GetContextPanel());
 
             // Progrss to the new phase
             SetSelectedPhase(currentPhase, true);
@@ -1015,7 +927,7 @@ function OnPhaseChanged(table_name, key, data) {
                 // Should we show the host message popup?
                 if(!seenPopupMessages.hostWarning) {
                     seenPopupMessages.hostWarning = true;
-                    if(isHost()) {
+                    if(Game.shared.isHost()) {
                         showPopupMessage('lodHostingMessage');
                     } else {
                         showPopupMessage('lodHostingNoobMessage');
@@ -1157,6 +1069,7 @@ function OnOptionChanged(table_name, key, data) {
     //if(key == 'lodOptionAdvancedHeroAbilities' || key == 'lodOptionAdvancedNeutralAbilities' || key == 'lodOptionAdvancedNeutralWraithNight' || key == 'lodOptionAdvancedOPAbilities') {
     if(key == 'lodOptionAdvancedHeroAbilities' || key == 'lodOptionAdvancedNeutralAbilities' || key == 'lodOptionAdvancedOPAbilities') {
         allowedCategoriesChanged();
+        Game.shared.events.trigger('allowedCategoriesChanged');
     }
 
     // Check if it's the number of slots allowed
@@ -1172,9 +1085,7 @@ function OnOptionChanged(table_name, key, data) {
 
     // Check for unique abilities changing
     if(key == 'lodOptionAdvancedUniqueSkills') {
-        pickingPhasePanel.calculateFilters();
-        pickingPhasePanel.updateHeroPreviewFilters();
-        pickingPhasePanel.updateRecommendedBuildFilters();
+        Game.shared.events.trigger('uniqueSkillsModeChanged');
     }
 
     if(key == 'lodOptionAdvancedUniqueSkills') {
@@ -1202,56 +1113,12 @@ function recalculateBanLimits() {
     var maxAbilityBans = Game.shared.optionValueList['lodOptionBanningMaxBans'] || 0;
     var hostBanning = Game.shared.optionValueList['lodOptionBanningHostBanning'] || 0;
 
-    // Is host banning enabled, and we are the host?
-    if(hostBanning && isHost()) {
-        $('#lodBanLimits').text = $.Localize('hostBanningPanelText');
-        return;
-    }
-
-    var heroBansLeft = maxHeroBans - currentHeroBans;
-    var abilityBansLeft = maxAbilityBans - currentAbilityBans;
-
-    var txt = '';
-    var txtMainLeft = $.Localize('lodYouCanBan');
-    var txtHero = '';
-    var txtAb = '';
-
-    if(heroBansLeft > 0) {
-        if(heroBansLeft > 1) {
-            txtHero = $.Localize('lodUptoHeroes');
-        } else {
-            txtHero = $.Localize('lodUptoOneHero');
-        }
-    }
-
-    if(abilityBansLeft > 0) {
-        if(abilityBansLeft > 1) {
-            txtAb = $.Localize('lodUptoAbilities');
-        } else {
-            txtAb = $.Localize('lodUptoAbility');
-        }
-    }
-
-    if(heroBansLeft > 0) {
-        txt = txtMainLeft + txtHero;
-
-        if(abilityBansLeft > 0) {
-            txt += $.Localize('lodBanAnd') + txtAb;
-        }
-    } else if(abilityBansLeft) {
-        txt = txtMainLeft + txtAb;
-    } else {
-        txt = $.Localize('lodNoMoreBans');
-    }
-
-    // Add full stop
-    txt += '.';
-
-    txt = txt.replace(/\{heroBansLeft\}/g, heroBansLeft);
-    txt = txt.replace(/\{abilityBansLeft\}/g, abilityBansLeft);
-
     // Push the text
-    pickingPhasePanel.setMaxBans(txt);
+    Game.shared.events.trigger('maxBansChanged', {
+        maxHeroBans: maxHeroBans,
+        maxAbilityBans: maxAbilityBans,
+        hostBanning: hostBanning
+    });
 }
 
 // Recalculates what teams should be hidden
@@ -1351,11 +1218,6 @@ function allowedCategoriesChanged() {
     if(Game.shared.optionValueList['lodOptionAdvancedOPAbilities'] == 1) {
         Game.shared.allowedCategories['OP'] = true;
     }
-
-    // Update the filters
-    pickingPhasePanel.calculateFilters();
-    pickingPhasePanel.updateHeroPreviewFilters();
-    pickingPhasePanel.updateRecommendedBuildFilters();
 }
 
 // Changes which phase the player currently has selected
@@ -1370,21 +1232,15 @@ function SetSelectedPhase(newPhase, noSound) {
 
     // Set the phase
     selectedPhase = newPhase;
+    Game.shared.selectedPhase = newPhase;
 
     // Update CSS
-    updateSelectedCSS($.GetContextPanel());
-    updateSelectedCSS(pickingPhasePanel);
+    Game.shared.updateSelectedCSS($.GetContextPanel());
 
-}
-
-function updateSelectedCSS(panel) {
-    panel.SetHasClass('phase_option_selection_selected', selectedPhase == Game.shared.PHASE_OPTION_SELECTION);
-    panel.SetHasClass('phase_option_voting_selected', selectedPhase == Game.shared.PHASE_OPTION_VOTING);
-    panel.SetHasClass('phase_banning_selected', selectedPhase == Game.shared.PHASE_BANNING);
-    panel.SetHasClass('phase_selection_selected', selectedPhase == Game.shared.PHASE_SELECTION);
-    panel.SetHasClass('phase_all_random_selected', selectedPhase == Game.shared.PHASE_RANDOM_SELECTION);
-    panel.SetHasClass('phase_drafting_selected', selectedPhase == Game.shared.PHASE_DRAFTING);
-    panel.SetHasClass('phase_review_selected', selectedPhase == Game.shared.PHASE_REVIEW);
+    // Fire the event
+    Game.shared.events.trigger('selectedPhaseChanged', {
+        newPhase: selectedPhase
+    });
 }
 
 // Return X:XX time (M:SS)
@@ -1680,7 +1536,7 @@ function onImportOptionsOpenPressed() {
 
 function setupPickingPhase() {
     // Load in the panel
-    pickingPhasePanel = $.CreatePanel('Panel', $('#pickingPhase'), '');
+    var pickingPhasePanel = $.CreatePanel('Panel', $('#pickingPhase'), '');
     pickingPhasePanel.BLoadLayout('file://{resources}/layout/custom_game/shared/hero_builder/hero_builder_main.xml', false, false);
 }
 

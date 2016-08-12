@@ -23,6 +23,9 @@ Game.shared.selectedAttr = {};
 Game.shared.selectedSkills = {};
 Game.shared.readyState = {};
 
+// Bans
+Game.shared.currentHeroBans = 0;
+Game.shared.currentAbilityBans = 0;
 
 // Hero data
 Game.shared.heroData = {};

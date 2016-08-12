@@ -105,6 +105,37 @@ Game.shared.addNotification = function(options) {
     });
 }
 
+// Are we the host?
+Game.shared.isHost = function() {
+    var playerInfo = Game.GetLocalPlayerInfo();
+    if (!playerInfo) return false;
+    return playerInfo.player_has_host_privileges;
+}
+
+// Update the CSS on a panel to tell what phase we are in
+Game.shared.updatePhaseCSS = function(panel) {
+    panel.SetHasClass('phase_loading', Game.shared.currentPhase == Game.shared.PHASE_LOADING);
+    panel.SetHasClass('phase_option_selection', Game.shared.currentPhase == Game.shared.PHASE_OPTION_SELECTION);
+    panel.SetHasClass('phase_option_voting', Game.shared.currentPhase == Game.shared.PHASE_OPTION_VOTING);
+    panel.SetHasClass('phase_banning', Game.shared.currentPhase == Game.shared.PHASE_BANNING);
+    panel.SetHasClass('phase_selection', Game.shared.currentPhase == Game.shared.PHASE_SELECTION);
+    panel.SetHasClass('phase_all_random', Game.shared.currentPhase == Game.shared.PHASE_RANDOM_SELECTION);
+    panel.SetHasClass('phase_drafting', Game.shared.currentPhase == Game.shared.PHASE_DRAFTING);
+    panel.SetHasClass('phase_review', Game.shared.currentPhase == Game.shared.PHASE_REVIEW);
+    panel.SetHasClass('phase_ingame', Game.shared.currentPhase == Game.shared.PHASE_INGAME);
+}
+
+// Updates the CSS on a panel to tell what phase is selected
+Game.shared.updateSelectedCSS = function(panel) {
+    panel.SetHasClass('phase_option_selection_selected', Game.shared.selectedPhase == Game.shared.PHASE_OPTION_SELECTION);
+    panel.SetHasClass('phase_option_voting_selected', Game.shared.selectedPhase == Game.shared.PHASE_OPTION_VOTING);
+    panel.SetHasClass('phase_banning_selected', Game.shared.selectedPhase == Game.shared.PHASE_BANNING);
+    panel.SetHasClass('phase_selection_selected', Game.shared.selectedPhase == Game.shared.PHASE_SELECTION);
+    panel.SetHasClass('phase_all_random_selected', Game.shared.selectedPhase == Game.shared.PHASE_RANDOM_SELECTION);
+    panel.SetHasClass('phase_drafting_selected', Game.shared.selectedPhase == Game.shared.PHASE_DRAFTING);
+    panel.SetHasClass('phase_review_selected', Game.shared.selectedPhase == Game.shared.PHASE_REVIEW);
+}
+
 // Resiteres the current notification root
 Game.shared.registerNotifications = function(panel) {
     notificationRoot = panel;

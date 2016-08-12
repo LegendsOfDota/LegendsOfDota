@@ -27,9 +27,15 @@ var calculateFilters = function(){};
 var calculateHeroFilters = function(){};
 
 // Called when the current phase changed
-/*function onPhaseChanged() {
+function onPhaseChanged() {
+    // Update CSS
+    Game.shared.updatePhaseCSS($.GetContextPanel());
+}
 
-}*/
+// Called when the selected phase changes
+function onSelectedPhaseChanged() {
+    Game.shared.updateSelectedCSS($.GetContextPanel());
+}
 
 // Hooks a tab change
 function hookTabChange(tabName, callback) {
@@ -1382,9 +1388,95 @@ function onLockBuildButtonPressed() {
     GENERAL EXPORTS
 */
 
-function setMaxBans(maxBansTxt) {
+function onMaxBansChanged(info) {
+    var maxHeroBans = Game.shared.optionValueList['lodOptionBanningMaxHeroBans'] || 0;
+    var maxAbilityBans = Game.shared.optionValueList['lodOptionBanningMaxBans'] || 0;
+    var hostBanning = Game.shared.optionValueList['lodOptionBanningHostBanning'] || 0;
+
+    // Is host banning enabled, and we are the host?
+    if(hostBanning && Game.shared.isHost()) {
+        $('#lodBanLimits').text = $.Localize('hostBanningPanelText');
+        return;
+    }
+
+    var heroBansLeft = maxHeroBans - Game.shared.currentHeroBans;
+    var abilityBansLeft = maxAbilityBans - Game.shared.currentAbilityBans;
+
+    var txt = '';
+    var txtMainLeft = $.Localize('lodYouCanBan');
+    var txtHero = '';
+    var txtAb = '';
+
+    if(heroBansLeft > 0) {
+        if(heroBansLeft > 1) {
+            txtHero = $.Localize('lodUptoHeroes');
+        } else {
+            txtHero = $.Localize('lodUptoOneHero');
+        }
+    }
+
+    if(abilityBansLeft > 0) {
+        if(abilityBansLeft > 1) {
+            txtAb = $.Localize('lodUptoAbilities');
+        } else {
+            txtAb = $.Localize('lodUptoAbility');
+        }
+    }
+
+    if(heroBansLeft > 0) {
+        txt = txtMainLeft + txtHero;
+
+        if(abilityBansLeft > 0) {
+            txt += $.Localize('lodBanAnd') + txtAb;
+        }
+    } else if(abilityBansLeft) {
+        txt = txtMainLeft + txtAb;
+    } else {
+        txt = $.Localize('lodNoMoreBans');
+    }
+
+    // Add full stop
+    txt += '.';
+
+    txt = txt.replace(/\{heroBansLeft\}/g, heroBansLeft);
+    txt = txt.replace(/\{abilityBansLeft\}/g, abilityBansLeft);
+
+
     // Set the text
-    $('#lodBanLimits').text = maxBansTxt;
+    $('#lodBanLimits').text = txt;
+}
+
+// When the hero data is changed
+function onHeroDataChanged() {
+    buildHeroList();
+}
+
+// When a skill is taken
+function onTakenSkillsChanged() {
+    calculateFilters();
+    updateHeroPreviewFilters();
+    updateRecommendedBuildFilters();
+}
+
+// When a hero is banned
+function onHeroBanned() {
+    calculateFilters();
+    updateHeroPreviewFilters();
+    updateRecommendedBuildFilters();
+}
+
+// An ability was banned
+function onAbilityBanned() {
+    calculateFilters();
+    updateHeroPreviewFilters();
+    updateRecommendedBuildFilters();
+}
+
+// An allowed category was changed
+function onAllowedCategoriesChanged() {
+    calculateFilters();
+    updateHeroPreviewFilters();
+    updateRecommendedBuildFilters();
 }
 
 // An ability was clicked
@@ -1445,6 +1537,12 @@ function onDragHeroEnd() {
 function onDraftArrayUpdated() {
     // Show the button to show non-draft abilities
     $('#toggleShowDraftAblilities').visible = true;
+
+    // Run the calculations
+    calculateFilters();
+    calculateHeroFilters();
+    updateHeroPreviewFilters();
+    updateRecommendedBuildFilters();
 }
 
 // When the max number of slots changes
@@ -1462,6 +1560,12 @@ function onMaxSlotsChanged() {
     }
 }
 
+function onUniqueSkillsModeChanged() {
+    calculateFilters();
+    updateHeroPreviewFilters();
+    updateRecommendedBuildFilters();
+}
+
 /*
     INIT EVERYTHING
 */
@@ -1473,7 +1577,7 @@ function onMaxSlotsChanged() {
 
     // Define exports
     //masterRoot.onPhaseChanged = onPhaseChanged;
-    masterRoot.setMaxBans = setMaxBans;
+    //masterRoot.setMaxBans = setMaxBans;
     masterRoot.updateHeroPreviewFilters = updateHeroPreviewFilters;
     masterRoot.updateRecommendedBuildFilters = updateRecommendedBuildFilters;
     masterRoot.calculateHeroFilters = calculateHeroFilters;
@@ -1496,6 +1600,15 @@ function onMaxSlotsChanged() {
     Game.shared.events.on('clickHero', onHeroClicked);
     Game.shared.events.on('draftArrayUpdated', onDraftArrayUpdated);
     Game.shared.events.on('maxSlotsChanged', onMaxSlotsChanged);
+    Game.shared.events.on('uniqueSkillsModeChanged', onUniqueSkillsModeChanged);
+    Game.shared.events.on('maxBansChanged', onMaxBansChanged);
+    Game.shared.events.on('heroDataChanged', onHeroDataChanged);
+    Game.shared.events.on('takenSkillsChanged', onTakenSkillsChanged);
+    Game.shared.events.on('heroBanned', onHeroBanned);
+    Game.shared.events.on('abilityBanned', onAbilityBanned);
+    Game.shared.events.on('allowedCategoriesChanged', onAllowedCategoriesChanged);
+    Game.shared.events.on('phaseChanged', onPhaseChanged);
+    Game.shared.events.on('selectedPhaseChanged', onSelectedPhaseChanged);
 
     Game.shared.events.on('dragAbilityStart', onDragAbilityStart);
     Game.shared.events.on('dragAbilityEnd', onDragAbilityEnd);
