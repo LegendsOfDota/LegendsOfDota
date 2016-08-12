@@ -228,7 +228,7 @@ function createVote(info, data) {
 }
 
 // When we get ingame data
-function OnGetIngameData(table_name, key, data) {
+function onGetIngameData(table_name, key, data) {
 	if(key == 'vote') {
 		OnGetVoteData(table_name, key, data);
 		return;
@@ -379,7 +379,7 @@ function closeActiveVotePanel() {
 	}
 
 	// Hook vote changes
-	Game.shared.hookAndFire('phase_ingame', OnGetIngameData);
+	Game.shared.hookAndFire('phase_ingame', onGetIngameData);
 
 	// Register for notifications
 	Game.shared.registerNotifications($('#lodNotificationArea'));

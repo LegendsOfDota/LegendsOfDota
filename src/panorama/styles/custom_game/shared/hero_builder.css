@@ -262,6 +262,14 @@
     visibility: visible;
 }
 
+#heroBuilderApplyBuild {
+    visibility: collapse;
+}
+
+.phase_ingame #heroBuilderApplyBuild {
+    visibility: visible;
+}
+
 #pickingPhaseBans {
     flow-children: down;
     visibility: collapse;

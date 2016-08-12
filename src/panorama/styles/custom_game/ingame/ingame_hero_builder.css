@@ -1,0 +1,23 @@
+.rootHeroBuilderPanel {
+    width: 100%;
+}
+
+.heroBuilderTopMenu {
+    horizontal-align: left;
+    vertical-align: top;
+    margin-left: 0px;
+    margin-top: 88px;
+}
+
+#heroBuilderGoesHero {
+    width: 100%;
+    height: fill-parent-flow(0);
+    margin-top: 44px;
+    padding-top: 48px;
+    visibility: collapse;
+    background-color: #000000;
+}
+
+#btnOpenHeroBuilder {
+    visibility: collapse;
+}

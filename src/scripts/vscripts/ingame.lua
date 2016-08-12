@@ -4,6 +4,7 @@ local network = require('network')
 local OptionManager = require('optionmanager')
 local Timers = require('easytimers')
 local lodVoting = require('ingame.voting')
+local SkillManager = require('skillmanager')
 
 -- Create the class for it
 local Ingame = class({})
@@ -37,6 +38,9 @@ function Ingame:init()
     PrecacheUnitByNameAsync('npc_precache_always', function()
         CreateUnitByName('npc_precache_always', Vector(-10000, -10000, 0), false, nil, nil, 0)
     end)
+
+    -- A store for ability cooldowns
+    self.abilityCooldowns = {}
 
     -- Set it to no team balance
     --self:setNoTeamBalanceNeeded()
@@ -428,6 +432,24 @@ function Ingame:FilterModifyExperience(filterTable)
     end
 
     return true
+end
+
+-- Respawns a hero, with their new build
+function Ingame:spawnUpdatedBuild(playerID)
+    local hero = PlayerResource:GetSelectedHeroEntity(playerID)
+    if IsValidEntity(hero) then
+        local newBuild = GameRules.pregame.selectedSkills[playerID]
+        local newHeroName = GameRules.pregame.selectedHeroes[playerID]
+
+        -- These should always be defined, just stop if they are not
+        if not newBuild or not newHeroName then return end
+
+        -- Update the hero
+        newBuild.hero = newHeroName
+        newBuild.setAttr = GameRules.pregame.selectedPlayerAttr[playerID]
+
+        SkillManager:ApplyBuild(hero, newBuild)
+    end
 end
 
 -- Return an instance of it

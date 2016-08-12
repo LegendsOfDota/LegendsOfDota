@@ -534,7 +534,11 @@ function updateRecommendedBuildFilters() {
 }
 
 // Builds the hero list
+var builtHeroList = false;
 function buildHeroList() {
+    if(builtHeroList) return;
+    builtHeroList = true;
+
     var strHeroes = [];
     var agiHeroes = [];
     var intHeroes = [];
@@ -627,10 +631,18 @@ function onSelectedBuildChanged(data) {
     var playerID = Players.GetLocalPlayer();
     if(playerID != data.playerID) return;
 
+    // Update
+    updateSelectedBuild();
+}
+
+// Updates our build
+function updateSelectedBuild() {
+    var playerID = Players.GetLocalPlayer();
     var maxSlots = Game.shared.optionValueList['lodOptionCommonMaxSlots'] || 6;
     var defaultSkill = 'life_stealer_empty_1';
 
     var theBuild = Game.shared.selectedSkills[playerID];
+    if(!theBuild) return;
 
     for(var i=1; i<=maxSlots; ++i) {
         var theAb = theBuild[i] || defaultSkill;
@@ -646,6 +658,12 @@ function onHeroAttributeChanged(data) {
     var playerID = Players.GetLocalPlayer();
     if(playerID != data.playerID) return;
 
+    // Update
+    updateHeroAttribute();
+}
+
+function updateHeroAttribute() {
+    var playerID = Players.GetLocalPlayer();
     var newAttr = Game.shared.selectedAttr[playerID];
 
     $('#pickingPhaseSelectHeroStr').SetHasClass('selectedAttribute', newAttr == 'str');
@@ -655,6 +673,11 @@ function onHeroAttributeChanged(data) {
 
 // Update our selected hero
 function onSelectedHeroChanged() {
+    // Update
+    updateSelectedHero();
+}
+
+function updateSelectedHero() {
     var playerID = Players.GetLocalPlayer();
     var heroName = Game.shared.selectedHeroes[playerID];
 
@@ -1385,11 +1408,20 @@ function onLockBuildButtonPressed() {
     GameEvents.SendCustomGameEventToServer('lodReady', {});
 }
 
+// Spawn hero was pressed
+function onSpawnHeroPressed() {
+    // Tell the server to spawn a hero
+    GameEvents.SendCustomGameEventToServer('lodSpawnNewBuild', {});
+
+    // Emit an event
+    Game.shared.events.trigger('heroSpawnedPressed');
+}
+
 /*
     GENERAL EXPORTS
 */
 
-function onMaxBansChanged(info) {
+function onMaxBansChanged() {
     var maxHeroBans = Game.shared.optionValueList['lodOptionBanningMaxHeroBans'] || 0;
     var maxAbilityBans = Game.shared.optionValueList['lodOptionBanningMaxBans'] || 0;
     var hostBanning = Game.shared.optionValueList['lodOptionBanningHostBanning'] || 0;
@@ -1548,7 +1580,7 @@ function onDraftArrayUpdated() {
 
 // When the max number of slots changes
 function onMaxSlotsChanged() {
-    var maxSlots = Game.shared.optionValueList['lodOptionCommonMaxSlots'];
+    var maxSlots = Game.shared.optionValueList['lodOptionCommonMaxSlots'] || 6;
 
     for(var i=1; i<=6; ++i) {
         var con = $('#lodYourAbility' + i);
@@ -1606,6 +1638,18 @@ function onUniqueSkillsModeChanged() {
 
     // Setup builder tabs
     setupBuilderTabs();
+
+    // Fire off some events
+    updateSelectedHero();
+    updateSelectedBuild();
+    updateHeroAttribute();
+    onMaxSlotsChanged();
+    onMaxBansChanged();
+
+    // Is there hero data avaiable?
+    if(Game.shared.heroDataAvailable) {
+        buildHeroList();
+    }
 
     // Toggle the show taken abilities button to be on
     $('#lodToggleButton').checked = true;

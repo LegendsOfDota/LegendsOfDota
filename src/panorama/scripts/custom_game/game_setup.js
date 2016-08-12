@@ -62,6 +62,7 @@ function OnHeroDataChanged(table_name, key, data) {
     $.Schedule(1, function() {
         if(dataHooks.OnHeroDataChanged == myHookNumber) {
             Game.shared.events.trigger('heroDataChanged');
+            Game.shared.heroDataAvailable = true;
         }
     });
 }

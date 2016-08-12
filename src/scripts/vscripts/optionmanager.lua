@@ -184,5 +184,8 @@ OptionManager:SetOption('autoDraftHeroNumber', 10)
 OptionManager:SetOption('goldModifier', 1)
 OptionManager:SetOption('expModifier', 1)
 
+-- Allow ingame hero builder?
+OptionManager:SetOption('allowIngameHeroBuilder', false)
+
 -- Return the export
 return OptionManager

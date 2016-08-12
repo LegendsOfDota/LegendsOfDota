@@ -725,6 +725,22 @@ var allOptions = {
                     }
                 ]
             },
+            {
+                name: 'lodOptionIngameBuilder',
+                des: 'lodOptionDesIngameBuilder',
+                about: 'lodOptionAboutIngameBuilder',
+                sort: 'toggle',
+                values: [
+                    {
+                        text: 'lodOptionNo',
+                        value: 0
+                    },
+                    {
+                        text: 'lodOptionYes',
+                        value: 1
+                    }
+                ]
+            },
         ]
     }
 }

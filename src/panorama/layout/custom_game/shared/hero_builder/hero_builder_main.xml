@@ -118,6 +118,9 @@
                     <Button id="heroBuilderLockButton" class="heroBuildMenuButtonSmall lockBuildButton makeThePlayerNoticeThisButton" onactivate="onLockBuildButtonPressed()">
                         <Label id="heroBuilderLockButtonText" text="lockBuild" />
                     </Button>
+                    <Button id="heroBuilderApplyBuild" class="heroBuildMenuButtonSmall lockBuildButton makeThePlayerNoticeThisButton" onactivate="onSpawnHeroPressed()">
+                        <Label text="spawnHero" />
+                    </Button>
                 </Panel>
             </Panel>
             <Panel id="pickingPhaseBans">

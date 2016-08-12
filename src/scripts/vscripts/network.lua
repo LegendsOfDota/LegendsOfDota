@@ -196,8 +196,13 @@ function Network:updateVoteInfo(voteInfo)
 end
 
 -- Disable voting
-function Network:disableVoting(voteInfo)
+function Network:disableVoting()
     CustomNetTables:SetTableValue('phase_ingame', 'votingDisable', {})
+end
+
+-- Enable ingame hero editor
+function Network:enableIngameHeroEditor()
+    CustomNetTables:SetTableValue('phase_ingame', 'enableHeroEditor', {})
 end
 
 -- Return an instance of it

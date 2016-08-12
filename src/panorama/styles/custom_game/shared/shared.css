@@ -127,3 +127,26 @@
 .no_hero_selected #playerNoHeroSelected {
     visibility: visible;
 }
+
+/*
+    Buttons
+*/
+
+.niceButton {
+    background-color: gradient(linear, 0% 0%, 0% 100%, from(#3A607377), to(#16222A77));
+    border: 1px solid #000000;
+    border-radius: 4px;
+    wash-color: #cccccc;
+    padding: 4px;
+    padding-left: 8px;
+    horizontal-align: left;
+    margin-left: 8px;
+    margin-right: 8px;
+
+    transition-property: opacity;
+    transition-duration: 0.25s;
+}
+
+.niceButton:hover {
+    wash-color: #FFFFFFFF;
+}

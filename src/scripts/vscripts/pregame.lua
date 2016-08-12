@@ -179,6 +179,11 @@ function Pregame:init()
         this:onPlayerAskForHero(eventSourceIndex, args)
     end)
 
+    -- Plays wants to apply a new build
+    CustomGameEventManager:RegisterListener('lodSpawnNewBuild', function(eventSourceIndex, args)
+        this:onPlayerAskForNewBuild(eventSourceIndex, args)
+    end)
+
     -- Player wants to cast a vote
     CustomGameEventManager:RegisterListener('lodCastVote', function(eventSourceIndex, args)
         this:onPlayerCastVote(eventSourceIndex, args)
@@ -1834,6 +1839,14 @@ function Pregame:initOptionSelector()
 
             return value == 0 or value == 1
         end,
+
+        -- Other -- Ingame Hero Builder
+        lodOptionIngameBuilder = function(value)
+            -- Ensure gamemode is set to custom
+            if self.optionStore['lodOptionGamemode'] ~= -1 then return false end
+
+            return value == 0 or value == 1
+        end,
     }
 
     -- Callbacks
@@ -1943,6 +1956,9 @@ function Pregame:initOptionSelector()
 
                 -- Disable WTF Mode
                 self:setOption('lodOptionCrazyWTF', 0, true)
+
+                -- Disable ingame hero builder
+                self:setOption('lodOptionIngameBuilder', 0, true)
 
                 -- Fast All Pick Mode
                 if optionValue == 2 then
@@ -2435,6 +2451,12 @@ function Pregame:processOptions()
 	        Convars:SetBool('dota_ability_debug', true)
 	    end
 
+        -- Enable ingame hero builder
+        if this.optionStore['lodOptionIngameBuilder'] == 1 then
+            OptionManager:SetOption('allowIngameHeroBuilder', true)
+            network:enableIngameHeroEditor()
+        end
+
 	    -- Banning of OP Skills
 	    if this.optionStore['lodOptionAdvancedOPAbilities'] == 1 then
 	        for abilityName,v in pairs(this.OPSkillsList) do
@@ -2537,7 +2559,8 @@ function Pregame:processOptions()
 			        ['Enable Universal Shop'] = this.optionStore['lodOptionCrazyUniversalShop'],
 			        ['Enable All Vision'] = this.optionStore['lodOptionCrazyAllVision'],
 			        ['Enable Multicast Madness'] = this.optionStore['lodOptionCrazyMulticast'],
-			        ['Enable WTF Mode'] = this.optionStore['lodOptionCrazyWTF'],
+                    ['Enable WTF Mode'] = this.optionStore['lodOptionCrazyWTF'],
+			        ['Enable Ingame Hero Builder'] = this.optionStore['lodOptionIngameBuilder'],
 			    })
 
 				-- Draft arrays
@@ -2786,6 +2809,21 @@ function Pregame:setSelectedHero(playerID, heroName, force)
     end
 end
 
+-- Returns true if a player is allowed to select stuff
+function Pregame:canSelectStuff()
+    if self:getPhase() == constants.PHASE_SELECTION then
+        return true
+    end
+
+    if self:getPhase() == constants.PHASE_INGAME then
+        if OptionManager:GetOption('allowIngameHeroBuilder') then
+            return true
+        end
+    end
+
+    return false
+end
+
 -- Player wants to select a hero
 function Pregame:onPlayerSelectHero(eventSourceIndex, args)
     -- Grab data
@@ -2793,9 +2831,9 @@ function Pregame:onPlayerSelectHero(eventSourceIndex, args)
     local player = PlayerResource:GetPlayer(playerID)
 
     -- Ensure we are in the picking phase
-    if self:getPhase() ~= constants.PHASE_SELECTION then
+    if not self:canSelectStuff() then
         -- Ensure we are in the picking phase
-        if self:getPhase() ~= constants.PHASE_SELECTION then
+        if not self:canSelectStuff() then
             network:sendNotification(player, {
                 sort = 'lodDanger',
                 text = 'lodFailedWrongPhaseSelection'
@@ -2874,7 +2912,7 @@ function Pregame:onPlayerSelectAttr(eventSourceIndex, args)
     end
 
     -- Ensure we are in the picking phase
-    if self:getPhase() ~= constants.PHASE_SELECTION then
+    if not self:canSelectStuff() then
         network:sendNotification(player, {
             sort = 'lodDanger',
             text = 'lodFailedWrongPhaseSelection'
@@ -2885,6 +2923,20 @@ function Pregame:onPlayerSelectAttr(eventSourceIndex, args)
 
     -- Attempt to set it
     self:setSelectedAttr(playerID, args.newAttr)
+end
+
+-- Player is asking for a new build to be applied
+function Pregame:onPlayerAskForNewBuild(eventSourceIndex, args)
+    -- Grab data
+    local playerID = args.PlayerID
+    local player = PlayerResource:GetPlayer(playerID)
+
+    -- Ensure we can select stuff and that we are ingame
+    if not self:canSelectStuff() then return end
+    if self:getPhase() ~= constants.PHASE_INGAME then return end
+
+    -- Apply the new build
+    GameRules.ingame:spawnUpdatedBuild(playerID)
 end
 
 -- Player is asking why they don't have a hero
@@ -2930,7 +2982,7 @@ function Pregame:onPlayerSelectBuild(eventSourceIndex, args)
     local player = PlayerResource:GetPlayer(playerID)
 
     -- Ensure we are in the picking phase
-    if self:getPhase() ~= constants.PHASE_SELECTION then
+    if not self:canSelectStuff() then
         network:sendNotification(player, {
             sort = 'lodDanger',
             text = 'lodFailedWrongPhaseSelection'
@@ -3376,7 +3428,7 @@ function Pregame:onPlayerSelectRandomAbility(eventSourceIndex, args)
     local player = PlayerResource:GetPlayer(playerID)
 
 	-- Ensure we are in the picking phase
-    if self:getPhase() ~= constants.PHASE_SELECTION then
+    if not self:canSelectStuff() then
         network:sendNotification(player, {
             sort = 'lodDanger',
             text = 'lodFailedWrongPhaseAllRandom'
@@ -3692,7 +3744,7 @@ function Pregame:onPlayerSelectAbility(eventSourceIndex, args)
     local player = PlayerResource:GetPlayer(playerID)
 
     -- Ensure we are in the picking phase
-    if self:getPhase() ~= constants.PHASE_SELECTION then
+    if not self:canSelectStuff() then
         network:sendNotification(player, {
             sort = 'lodDanger',
             text = 'lodFailedWrongPhaseSelection'
@@ -3721,7 +3773,7 @@ end
 -- Player wants to swap two slots
 function Pregame:onPlayerSwapSlot(eventSourceIndex, args)
     -- Ensure we are in the picking phase
-    if self:getPhase() ~= constants.PHASE_SELECTION and self:getPhase() ~= constants.PHASE_REVIEW then return end
+    if not self:canSelectStuff() and self:getPhase() ~= constants.PHASE_REVIEW then return end
 
     -- Grab data
     local playerID = args.PlayerID
