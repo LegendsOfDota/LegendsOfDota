@@ -3585,21 +3585,7 @@ function Pregame:setSelectedAbility(playerID, slot, abilityName, dontNetwork)
     -- Is the ability in one of the allowed categories?
     local cat = (self.flagsInverse[abilityName] or {}).category
     if cat then
-        local allowed = true
-
-        if cat == 'main' then
-            allowed = self.optionStore['lodOptionAdvancedHeroAbilities'] == 1
-        elseif cat == 'neutral' then
-            allowed = self.optionStore['lodOptionAdvancedNeutralAbilities'] == 1
-        elseif cat == 'wraith' then
-            allowed = self.optionStore['lodOptionAdvancedNeutralWraithNight'] == 1
-        elseif cat == 'custom' then
-            allowed = self.optionStore['lodOptionAdvancedCustomSkills'] == 1
-        elseif cat == 'OP' then
-            allowed = self.optionStore['lodOptionAdvancedOPAbilities'] == 0
-        end
-
-        if not allowed then
+        if not self:isSkillCategoryAllowed(cat) then
             network:sendNotification(player, {
                 sort = 'lodDanger',
                 text = 'lodFailedBannedCategory',
@@ -3782,6 +3768,23 @@ function Pregame:onPlayerSwapSlot(eventSourceIndex, args)
     network:setSelectedAbilities(playerID, build)
 end
 
+-- Checks if a given skill category is allowed
+function Pregame:isSkillCategoryAllowed(cat)
+    if cat == 'main' then
+        return self.optionStore['lodOptionAdvancedHeroAbilities'] == 1
+    elseif cat == 'neutral' then
+        return self.optionStore['lodOptionAdvancedNeutralAbilities'] == 1
+    elseif cat == 'wraith' then
+        return self.optionStore['lodOptionAdvancedNeutralWraithNight'] == 1
+    elseif cat == 'custom' then
+        return self.optionStore['lodOptionAdvancedCustomSkills'] == 1
+    elseif cat == 'OP' then
+        return self.optionStore['lodOptionAdvancedOPAbilities'] == 0
+    end
+
+    return false
+end
+
 -- Returns a random skill for a player, given a build and the slot the skill would be for
 -- optionalFilter is a function(abilityName), return true to allow that ability
 function Pregame:findRandomSkill(build, slotNumber, playerID, optionalFilter)
@@ -3831,6 +3834,16 @@ function Pregame:findRandomSkill(build, slotNumber, playerID, optionalFilter)
 				shouldAdd = false
 			end
 		end
+
+        local cat = (self.flagsInverse[abilityName] or {}).category
+        if shouldAdd and cat then
+            if not self:isSkillCategoryAllowed(cat) then
+                shouldAdd = false
+            end
+        else
+            -- Category not found, don't allow this skill
+            shouldAdd = false
+        end
 
 		-- Check draft array
         if self.useDraftArrays then
@@ -4296,8 +4309,11 @@ function Pregame:generateBotBuilds()
             if defaultSkills then
                 for k,abilityName in pairs(defaultSkills) do
                     if self.flagsInverse[abilityName] and not self.bannedAbilities[abilityName] then
-                        build[skillID] = abilityName
-                        skillID = skillID + 1
+                        local cat = (self.flagsInverse[abilityName] or {}).category
+                        if cat and self:isSkillCategoryAllowed(cat) then
+                            build[skillID] = abilityName
+                            skillID = skillID + 1
+                        end
                     end
                 end
             end
