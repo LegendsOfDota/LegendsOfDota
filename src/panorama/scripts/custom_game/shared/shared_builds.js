@@ -223,6 +223,19 @@ var recommendedBuilds = [
             6: 'windrunner_focusfire',
         },
     },
+    {
+        title: 'Super Rat',
+        heroName: 'npc_dota_hero_mirana',
+        attr: 'agi',
+        build: {
+            1: 'furion_teleportation',
+            2: 'troll_warlord_fervor',
+            3: 'drow_ranger_marksmanship',
+            4: 'phantom_assassin_blur',
+            5: 'weaver_geminate_attack',
+            6: 'chaos_knight_phantasm',
+        },
+    },
 ];
 
 // Export it
