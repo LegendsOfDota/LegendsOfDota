@@ -452,10 +452,6 @@ function buildOptionsCategories() {
             // The button
             var optionCategory = $.CreatePanel('Button', catContainer, 'option_button_' + optionLabelText);
             optionCategory.SetAttributeString('cat', optionLabelText);
-            //optionCategory.AddClass('PlayButton');
-            //optionCategory.AddClass('RadioBox');
-            //optionCategory.AddClass('HeroGridNavigationButtonBox');
-            //optionCategory.AddClass('NavigationButtonGlow');
             optionCategory.AddClass('OptionButton');
 
             var innerPanel = $.CreatePanel('Panel', optionCategory, 'option_button_' + optionLabelText + '_fancy');
@@ -837,13 +833,6 @@ function doActualTeamUpdate() {
     direTopContainer.SetHasClass('tooManyPlayers', direPlayers.length > 5);
     reviewDireContainer.SetHasClass('tooManyPlayers', direPlayers.length > 5);
 
-    // Update all of the team panels moving the player panels for the
-    // players assigned to each team to the corresponding team panel.
-    /*for ( var i = 0; i < g_TeamPanels.length; ++i )
-    {
-        UpdateTeamPanel( g_TeamPanels[ i ] )
-    }*/
-
     // Set the class on the panel to indicate if there are any unassigned players
     $('#mainSelectionRoot').SetHasClass('unassigned_players', unassignedPlayers.length != 0 );
     $('#mainSelectionRoot').SetHasClass('no_unassigned_players', unassignedPlayers.length == 0 );
@@ -935,15 +924,6 @@ function OnPhaseChanged(table_name, key, data) {
                 }
             }
 
-            // Message voting
-            /*if(currentPhase == Game.shared.PHASE_OPTION_VOTING) {
-                // Should we show the host message popup?
-                if(!seenPopupMessages.optionVoting) {
-                    seenPopupMessages.optionVoting = true;
-                    showPopupMessage('lodOptionVoting');
-                }
-            }*/
-
             // Message for banning phase
             if(currentPhase == Game.shared.PHASE_BANNING) {
                 // Should we show the host message popup?
@@ -969,15 +949,7 @@ function OnPhaseChanged(table_name, key, data) {
                     seenPopupMessages.skillReviewInfo = true;
                     showPopupMessage('lodReviewMessage');
                 }
-
-                // Load all hero images
-                for(var playerID in activeReviewPanels) {
-                    //activeReviewPanels[playerID].OnReviewPhaseStart();
-                }
             }
-
-            // Push the current phase info into the panel
-
         break;
 
         case 'endOfTimer':
@@ -1268,30 +1240,6 @@ function getFancyTime(timeNumber) {
 //--------------------------------------------------------------------------------------------------
 var updateTimerCounter = 0;
 function UpdateTimer() {
-    /*var gameTime = Game.GetGameTime();
-    var transitionTime = Game.GetStateTransitionTime();
-
-    CheckForHostPrivileges();
-
-    var mapInfo = Game.GetMapInfo();
-    $( "#MapInfo" ).SetDialogVariable( "map_name", mapInfo.map_display_name );
-
-    if ( transitionTime >= 0 )
-    {
-        $( "#StartGameCountdownTimer" ).SetDialogVariableInt( "countdown_timer_seconds", Math.max( 0, Math.floor( transitionTime - gameTime ) ) );
-        $( "#StartGameCountdownTimer" ).SetHasClass( "countdown_active", true );
-        $( "#StartGameCountdownTimer" ).SetHasClass( "countdown_inactive", false );
-    }
-    else
-    {
-        $( "#StartGameCountdownTimer" ).SetHasClass( "countdown_active", false );
-        $( "#StartGameCountdownTimer" ).SetHasClass( "countdown_inactive", true );
-    }
-
-    var autoLaunch = Game.GetAutoLaunchEnabled();
-    $( "#StartGameCountdownTimer" ).SetHasClass( "auto_start", autoLaunch );
-    $( "#StartGameCountdownTimer" ).SetHasClass( "forced_start", ( autoLaunch == false ) );*/
-
     // Allow the ui to update its state based on team selection being locked or unlocked
     $('#mainSelectionRoot').SetHasClass('teams_locked', Game.GetTeamSelectionLocked());
     $('#mainSelectionRoot').SetHasClass('teams_unlocked', Game.GetTeamSelectionLocked() == false);
@@ -1558,22 +1506,6 @@ function onLockBuildButtonPressed() {
 // Entry point called when the team select panel is created
 //--------------------------------------------------------------------------------------------------
 (function() {
-    //$( "#mainTeamContainer" ).SetAcceptsFocus( true ); // Prevents the chat window from taking focus by default
-
-    /*var teamsListRootNode = $( "#TeamsListRoot" );
-
-    // Construct the panels for each team
-    for ( var teamId of Game.GetAllTeamIDs() )
-    {
-        var teamNode = $.CreatePanel( "Panel", teamsListRootNode, "" );
-        teamNode.AddClass( "team_" + teamId ); // team_1, etc.
-        teamNode.SetAttributeInt( "team_id", teamId );
-        teamNode.BLoadLayout( "file://{resources}/layout/custom_game/team_select_team.xml", false, false );
-
-        // Add the team panel to the global list so we can get to it easily later to update it
-        g_TeamPanels.push( teamNode );
-    }*/
-
     // Grab the map's name
     var mapName = Game.GetMapInfo().map_display_name;
 
@@ -1597,8 +1529,6 @@ function onLockBuildButtonPressed() {
         useOptionVoting = true;
     }
 
-    //useOptionVoting = false;
-
     // Apply option voting related CSS
     if(useOptionVoting) {
         // Change to option voting interface
@@ -1618,10 +1548,10 @@ function onLockBuildButtonPressed() {
     buildOptionsCategories();
 
     // Register a listener for the event which is brodcast when the team assignment of a player is actually assigned
-    $.RegisterForUnhandledEvent( "DOTAGame_TeamPlayerListChanged", OnTeamPlayerListChanged );
+    $.RegisterForUnhandledEvent('DOTAGame_TeamPlayerListChanged', OnTeamPlayerListChanged);
 
     // Register a listener for the event which is broadcast whenever a player attempts to pick a team
-    $.RegisterForUnhandledEvent( "DOTAGame_PlayerSelectedCustomTeam", OnPlayerSelectedTeam );
+    $.RegisterForUnhandledEvent('DOTAGame_PlayerSelectedCustomTeam', OnPlayerSelectedTeam);
 
     // Hook stuff
     Game.shared.hookAndFire('phase_pregame', OnPhaseChanged);
@@ -1643,20 +1573,8 @@ function onLockBuildButtonPressed() {
     // Register for notifications
     Game.shared.registerNotifications($('#lodNotificationArea'));
 
-    // Setup the tabs
-    //setupBuilderTabs();
-
     // Make input boxes nicer to use
     $('#mainSelectionRoot').SetPanelEvent('onactivate', Game.shared.focusNothing);
-
-    // Toggle the show taken abilities button to be on
-    /*$('#lodToggleButton').checked = true;
-
-    // Toggle the hero grouping button
-    $('#buttonHeroGrouping').checked = true;
-
-    // Show banned abilities by default
-    $('#buttonShowBanned').checked = true;*/
 
     // Disable clicking on the warning timer
     $('#lodTimerWarning').hittest = false;

@@ -1572,24 +1572,6 @@ function onUniqueSkillsModeChanged() {
 
 // When the panel loads
 (function() {
-    // Grab the root panel
-    var masterRoot = $.GetContextPanel();
-
-    // Define exports
-    //masterRoot.onPhaseChanged = onPhaseChanged;
-    //masterRoot.setMaxBans = setMaxBans;
-    masterRoot.updateHeroPreviewFilters = updateHeroPreviewFilters;
-    masterRoot.updateRecommendedBuildFilters = updateRecommendedBuildFilters;
-    masterRoot.calculateHeroFilters = calculateHeroFilters;
-    masterRoot.calculateFilters = calculateFilters;
-    masterRoot.showTakenHeroes = showTakenHeroes;
-    masterRoot.setSelectedHelperHero = setSelectedHelperHero;
-    masterRoot.buildHeroList = buildHeroList;
-    //masterRoot.setReadyState = setReadyState;
-    //masterRoot.onHeroBuildUpdated = onHeroBuildUpdated;
-    //masterRoot.onHeroAttributeChanged = onHeroAttributeChanged;
-    //masterRoot.onSelectedHeroChanged = onSelectedHeroChanged;
-
     // Register for events
     Game.shared.events.on('heroChanged', onSelectedHeroChanged);
     Game.shared.events.on('buildChanged', onSelectedBuildChanged);
