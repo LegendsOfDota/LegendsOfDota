@@ -4443,6 +4443,28 @@ function Pregame:fixSpawningIssues()
                     local build = this.selectedSkills[playerID] or {}
                     SkillManager:ApplyBuild(spawnedUnit, build)
 
+                    -- Do they have a custom attribute set?
+                    if self.selectedPlayerAttr[playerID] ~= nil then
+                        -- Set it
+
+                        local toSet = 0
+
+                        if self.selectedPlayerAttr[playerID] == 'str' then
+                            toSet = 0
+                        elseif self.selectedPlayerAttr[playerID] == 'agi' then
+                            toSet = 1
+                        elseif self.selectedPlayerAttr[playerID] == 'int' then
+                            toSet = 2
+                        end
+
+                        -- Set a timer to fix stuff up
+                        Timers:CreateTimer(function()
+                            if IsValidEntity(spawnedUnit) then
+                                spawnedUnit:SetPrimaryAttribute(toSet)
+                            end
+                        end, DoUniqueString('primaryAttrFix'), 0.1)
+                    end
+
                     -- Illusion and Tempest Double fixes
                     if not spawnedUnit:IsClone() then
 	                    Timers:CreateTimer(function()
