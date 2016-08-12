@@ -275,10 +275,10 @@ function prepareFilterInfo() {
 // Adds a build to the main selection tab
 var recBuildCounter = 0;
 var recommenedBuildContainerList = [];
-function addRecommendedBuild(con, hero, build, attr, title) {
+function addRecommendedBuild(con, hero, build, attr, title, des) {
     var buildCon = $.CreatePanel('Panel', con, 'recBuild_' + (++recBuildCounter));
     buildCon.BLoadLayout('file://{resources}/layout/custom_game/recommended_build.xml', false, false);
-    buildCon.setBuildData(hero, build, attr, title);
+    buildCon.setBuildData(hero, build, attr, title, des);
     buildCon.updateFilters(getSkillFilterInfo, getHeroFilterInfo);
 
     // Store the container
@@ -863,7 +863,8 @@ function OnMainSelectionTabShown() {
                 build.heroName,
                 build.build,
                 build.attr,
-                build.title
+                build.title,
+                build.des
             );
         }
     }

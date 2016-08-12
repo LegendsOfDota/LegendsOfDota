@@ -14,6 +14,7 @@ var recommendedBuilds = [
             5: 'night_stalker_hunter_in_the_night',
             6: 'night_stalker_darkness',
         },
+        des: 'Get a scepter, and you will rule the night, your vision is amazing and you can see around 1/4 of the map, no one can escape you at night!'
     },
     {
         title: 'Generic Tank',
@@ -27,6 +28,7 @@ var recommendedBuilds = [
             5: 'shredder_reactive_armor',
             6: 'alchemist_chemical_rage',
         },
+        des: 'These abilities are generally tanky.<br>Centaur, Treant, or Ogre Magi (with str selected) all make good tank heroes.'
     },
     {
         title: 'Infest Support',
@@ -40,6 +42,7 @@ var recommendedBuilds = [
             5: 'omniknight_degen_aura',
             6: 'life_stealer_infest',
         },
+        des: 'Turn on ROT and HEALING then infest a hero. These spells will not cost mana / hp when you are infested.<br>Get a scepter and the hero you infest will get cleave from empower, and if you play as night stalker, you will get unobscured vision at night!',
     },
     {
         title: 'Global Caster',
@@ -53,6 +56,7 @@ var recommendedBuilds = [
             5: 'bloodseeker_thirst',
             6: 'zuus_thundergods_wrath',
         },
+        des: 'A build that demonstrates a bunch of global casts, good for supporting.'
     },
     {
         title: 'Magic Be Dashed!',
@@ -79,6 +83,7 @@ var recommendedBuilds = [
             5: 'silencer_glaives_of_wisdom',
             6: 'windrunner_focusfire',
         },
+        des: 'Steal everyone\'s attributes and make them hate you.'
     },
     {
         title: 'Rapture',
@@ -92,6 +97,7 @@ var recommendedBuilds = [
             5: 'magnataur_skewer',
             6: 'bloodseeker_rupture',
         },
+        des: 'Cast rapture on someone, and then use all your abilities to make them move, this will cause tons of damage!'
     },
     {
         title: 'Global Stunner',
@@ -105,6 +111,7 @@ var recommendedBuilds = [
             5: 'holdout_arcane_aura',
             6: 'magnataur_reverse_polarity',
         },
+        des: 'Teleport into any fight, stun the enemy hero and carry your team to victory!'
     },
     {
         title: 'Bring the team fight',
@@ -118,6 +125,7 @@ var recommendedBuilds = [
             5: 'skeleton_king_vampiric_aura',
             6: 'enigma_black_hole',
         },
+        des: 'A bunch of abiltiies that generally work well in team fights.'
     },
     {
         title: 'The Duelist',
@@ -131,6 +139,7 @@ var recommendedBuilds = [
             5: 'troll_warlord_fervor',
             6: 'legion_commander_duel',
         },
+        des: 'Duel someone, you will win.'
     },
     {
         title: 'The Anti-Tank',
@@ -144,6 +153,7 @@ var recommendedBuilds = [
             5: 'troll_warlord_fervor',
             6: 'beastmaster_primal_roar',
         },
+        des: 'The enemy is building a tank? These abilities kill tanks.'
     },
     {
         title: 'Glass Cannon',
@@ -157,6 +167,7 @@ var recommendedBuilds = [
             5: 'alpha_wolf_command_aura',
             6: 'drow_ranger_marksmanship',
         },
+        des: 'This hero is a glass cannon. Anyone touches you, you will die, however, you will cause very high damage if you can attack first.'
     },
     {
         title: 'No ulty, can\'t war',
@@ -170,6 +181,7 @@ var recommendedBuilds = [
             5: 'alchemist_goblins_greed',
             6: 'furion_teleportation',
         },
+        des: 'Step 1: Go to the jungle.<br>Step 2: Farm<br>Step 3: ???<br>Step 4: Profit!'
     },
     /*{
         title: 'The Brew Trow',
@@ -209,6 +221,7 @@ var recommendedBuilds = [
             5: 'holdout_arcane_aura',
             6: 'alchemist_chemical_rage',
         },
+        des: 'You are the team\'s medic, heal everyone!'
     },
     {
         title: 'Building Buster',
@@ -222,6 +235,7 @@ var recommendedBuilds = [
             5: 'lone_druid_spirit_bear_demolish',
             6: 'windrunner_focusfire',
         },
+        des: 'A build designed to take down buildings.'
     },
     {
         title: 'Super Rat',
@@ -235,6 +249,7 @@ var recommendedBuilds = [
             5: 'weaver_geminate_attack',
             6: 'chaos_knight_phantasm',
         },
+        des: 'An alternate build for taking down buildings.'
     },
 ];
 

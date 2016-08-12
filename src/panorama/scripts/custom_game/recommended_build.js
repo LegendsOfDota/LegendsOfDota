@@ -1,7 +1,7 @@
 // Store build data to send to the server
 var buildData = null;
 
-function setBuildData(hero, build, attr, title) {
+function setBuildData(hero, build, attr, title, des) {
     // Push skills
     for(var slotID=1; slotID<=6; ++slotID) {
         var slot = $('#recommendedSkill' + slotID);
@@ -30,6 +30,20 @@ function setBuildData(hero, build, attr, title) {
     if(title != null) {
         titleLabel.text = title;
         titleLabel.visible = true;
+
+        if(des != null) {
+            // Show hero info
+            titleLabel.SetPanelEvent('onmouseover', function() {
+                // Show the tip
+                $.DispatchEvent('DOTAShowTitleTextTooltipStyled', titleLabel, title, des, "testStyle");
+            });
+
+            // Hide hero info
+            titleLabel.SetPanelEvent('onmouseout', function() {
+                $.DispatchEvent('DOTAHideAbilityTooltip');
+                $.DispatchEvent('DOTAHideTitleTextTooltip');
+            });
+        }
     } else {
         titleLabel.visible = false;
     }
