@@ -403,48 +403,6 @@ function buildFlagList() {
     }
 }
 
-// STUB: TODO: REPLACE THIS
-function makeHeroSelectable() {};
-
-function onHeroFilterPressed(filterName) {
-    switch(filterName) {
-        case 'melee':
-            if(heroFilterInfo.classType) {
-                if(heroFilterInfo.classType == 'melee') {
-                    delete heroFilterInfo.classType;
-                } else {
-                    heroFilterInfo.classType = 'melee';
-                }
-            } else {
-                heroFilterInfo.classType = 'melee';
-            }
-        break;
-
-        case 'ranged':
-            if(heroFilterInfo.classType) {
-                if(heroFilterInfo.classType == 'ranged') {
-                    delete heroFilterInfo.classType;
-                } else {
-                    heroFilterInfo.classType = 'ranged';
-                }
-            } else {
-                heroFilterInfo.classType = 'ranged';
-            }
-        break;
-
-        case 'clear':
-            delete heroFilterInfo.classType;
-        break;
-    }
-
-    $('#heroPickingFiltersMelee').SetHasClass('lod_hero_filter_selected', heroFilterInfo.classType == 'melee');
-    $('#heroPickingFiltersRanged').SetHasClass('lod_hero_filter_selected', heroFilterInfo.classType == 'ranged');
-    $('#heroPickingFiltersClear').visible = heroFilterInfo.classType != null;
-
-    // Calculate filters:
-    pickingPhasePanel.calculateHeroFilters();
-}
-
 // Are we the host?
 function isHost() {
     var playerInfo = Game.GetLocalPlayerInfo();

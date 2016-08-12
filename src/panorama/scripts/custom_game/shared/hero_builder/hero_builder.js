@@ -794,8 +794,8 @@ function onYourAbilityIconPressed(slot) {
     if(currentSelectedSkill != '') {
         // They are trying to select a new skill
         // No skills are selected anymore
-        setSelectedDropAbility();
         Game.shared.chooseNewAbility(slot, currentSelectedSkill);
+        setSelectedDropAbility();
 
         // Done
         return;
@@ -1211,6 +1211,8 @@ function OnHeroTabShown(tabName) {
         calculateHeroFilters = function() {
             var searchParts = heroSearchText.split(/\s/g);
 
+            var heroData = Game.shared.heroData;
+
             for(var heroName in heroPanelMap) {
                 var shouldShow = getHeroFilterInfo(heroName).shouldShow;
 
@@ -1288,12 +1290,51 @@ function onBanButtonPressed() {
     // Check what action should be performed
     if(currentSelectedSkill != '') {
         // They are trying to select a new skill
-        setSelectedDropAbility();
         Game.shared.banAbility(currentSelectedSkill);
+        setSelectedDropAbility();
 
         // Done
         return;
     }
+}
+
+function onHeroFilterPressed(filterName) {
+    switch(filterName) {
+        case 'melee':
+            if(heroFilterInfo.classType) {
+                if(heroFilterInfo.classType == 'melee') {
+                    delete heroFilterInfo.classType;
+                } else {
+                    heroFilterInfo.classType = 'melee';
+                }
+            } else {
+                heroFilterInfo.classType = 'melee';
+            }
+        break;
+
+        case 'ranged':
+            if(heroFilterInfo.classType) {
+                if(heroFilterInfo.classType == 'ranged') {
+                    delete heroFilterInfo.classType;
+                } else {
+                    heroFilterInfo.classType = 'ranged';
+                }
+            } else {
+                heroFilterInfo.classType = 'ranged';
+            }
+        break;
+
+        case 'clear':
+            delete heroFilterInfo.classType;
+        break;
+    }
+
+    $('#heroPickingFiltersMelee').SetHasClass('lod_hero_filter_selected', heroFilterInfo.classType == 'melee');
+    $('#heroPickingFiltersRanged').SetHasClass('lod_hero_filter_selected', heroFilterInfo.classType == 'ranged');
+    $('#heroPickingFiltersClear').visible = heroFilterInfo.classType != null;
+
+    // Calculate filters:
+    calculateHeroFilters();
 }
 
 function toggleHeroGrouping() {
