@@ -776,13 +776,17 @@ end
 function skillManager:hasTooMany(build, maxCount, checkFunction)
     -- Check stuff
     local totalSoFar = 0
-    for k,v in pairs(build) do
-        if checkFunction(v) then
-            totalSoFar = totalSoFar + 1
+    for slotNumber=1,GameRules.pregame.optionStore['lodOptionCommonMaxSlots'] do
+        local abilityName = build[slotNumber]
 
-            if totalSoFar > maxCount then
-                -- Build failed
-                return true
+        if abilityName and abilityName ~= '' then
+            if checkFunction(abilityName) then
+                totalSoFar = totalSoFar + 1
+
+                if totalSoFar > maxCount then
+                    -- Build failed
+                    return true
+                end
             end
         end
     end

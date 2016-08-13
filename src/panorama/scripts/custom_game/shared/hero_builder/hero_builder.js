@@ -776,6 +776,7 @@ function highlightDropSlots() {
 
     // Count the number of ultimate abiltiies
     var theCount = 0;
+    var maxSlots = Game.shared.optionValueList['lodOptionCommonMaxSlots'];
     var theMax = Game.shared.optionValueList['lodOptionCommonMaxUlts'];
     var isUlt = Game.shared.isUltimateAbility(currentSelectedSkill);
     var playerID = Players.GetLocalPlayer();
@@ -787,15 +788,17 @@ function highlightDropSlots() {
     // Check our build
     var ourBuild = Game.shared.selectedSkills[playerID] || {};
 
-    for(var slotID in ourBuild) {
-        var abilityName = Game.shared.selectedSkills[playerID][slotID];
+    for(var slotID=1; slotID<=maxSlots; ++slotID) {
+        var abilityName = ourBuild[slotID];
 
-        if(Game.shared.isUltimateAbility(abilityName) == isUlt) {
-            ++theCount;
-        }
+        if(abilityName != null && abilityName != '') {
+            if(Game.shared.isUltimateAbility(abilityName) == isUlt) {
+                ++theCount;
+            }
 
-        if(currentSelectedSkill == abilityName) {
-            alreadyHas = true;
+            if(currentSelectedSkill == abilityName) {
+                alreadyHas = true;
+            }
         }
     }
 
