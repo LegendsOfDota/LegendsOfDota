@@ -63,6 +63,9 @@ function onReviewPhaseStart() {
             // We have now loaded our hero icon
             loadedHeroModel = true;
 
+            // Rebuild skills
+            updateBuildData();
+
             // Show the actual hero icon
             var mainPanel = $.GetContextPanel();
             mainPanel.SetHasClass('no_hero_selected', false);
