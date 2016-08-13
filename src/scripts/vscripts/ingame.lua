@@ -438,6 +438,10 @@ end
 function Ingame:spawnUpdatedBuild(playerID)
     local hero = PlayerResource:GetSelectedHeroEntity(playerID)
     if IsValidEntity(hero) then
+        local playerID = hero:GetPlayerID()
+        self.spawningNewBuild = self.spawningNewBuild or {}
+        if self.spawningNewBuild[playerID] then return end
+
         local newBuild = GameRules.pregame.selectedSkills[playerID]
         local newHeroName = GameRules.pregame.selectedHeroes[playerID]
 
@@ -448,7 +452,13 @@ function Ingame:spawnUpdatedBuild(playerID)
         newBuild.hero = newHeroName
         newBuild.setAttr = GameRules.pregame.selectedPlayerAttr[playerID]
 
-        SkillManager:ApplyBuild(hero, newBuild)
+        self.spawningNewBuild[playerID] = true
+        PrecacheUnitByNameAsync(newHeroName, function()
+            if IsValidEntity(hero) then
+                SkillManager:ApplyBuild(hero, newBuild)
+            end
+            self.spawningNewBuild[playerID] = false
+        end, playerID)
     end
 end
 
