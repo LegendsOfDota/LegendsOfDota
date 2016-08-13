@@ -21,8 +21,8 @@ if(!fs.existsSync(scriptDirOut)) fs.mkdirSync(scriptDirOut);
 // Store for our custom stuff
 var customAbilities = {};
 var customUnits = {};
-var customItems = {};
-var items = {};
+//var customItems = {};
+//var items = {};
 var abilities = {};
 
 /*
@@ -229,7 +229,7 @@ function generatePrecacheData(next) {
     Custom file mergers
 */
 
-function loadItems(next) {
+/*function loadItems(next) {
     // Simply read in the file, and store into our varible
     fs.readFile(scriptDir+'items.txt', function(err, rawItems) {
         console.log('Loading items...');
@@ -238,7 +238,7 @@ function loadItems(next) {
         // Continue, if there is something else to run
         if(next) next();
     });
-}
+}*/
 
 function loadAbilities(next) {
     // Simply read in the file, and store into our varible
