@@ -9,13 +9,13 @@
     <Panel class="teamPlayerContainer no_hero_selected">
         <Panel class="lodTopAvatarPanel">
             <DOTAAvatarImage id="playerAvatar" />
-            <Label class="lodPlayerReadyText" text="Ready" />
+            <Label class="lodPlayerReadyText" text="Ready" hittest="false" />
         </Panel>
         <Panel id="playerHeroImageContainer">
             <DOTAHeroImage id="playerHeroImage" class="playerHeroImageTop" src="file://{images}/heroes/npc_dota_hero_default.png" />
             <Image id="playerNoHeroSelected" class="playerHeroImageTop" src="file://{images}/heroes/npc_dota_hero_default.png" />
             <Image id="playerAttribute" src="file://{images}/primary_attribute_icons/primary_attribute_icon_strength.psd" class="doNotShow" />
-            <Label class="lodPlayerReadyText" text="Ready" />
+            <Label class="lodPlayerReadyText" text="Ready" hittest="false" />
         </Panel>
         <Panel id="playerSkillContainer">
             <DOTAAbilityImage id="playerSkill1" abilityname="life_stealer_empty_1" onactivate="onPlayerAbilityClicked(1)" />

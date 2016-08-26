@@ -11,7 +11,7 @@
             <DOTAAvatarImage id="reviewPhasePlayerAvatarBig" />
             <Panel id="reviewPhaseHeroImageContainer" />
             <Image id="playerAttribute" src="file://{images}/primary_attribute_icons/primary_attribute_icon_strength.psd" class="reviewPhasePlayerAttribute doNotShow" />
-            <Label class="lodPlayerReadyText" text="Ready" />
+            <Label class="lodPlayerReadyText" text="Ready" hittest="false" />
         </Panel>
 
         <Panel id="reviewPhasePlayerSkillContainer">
