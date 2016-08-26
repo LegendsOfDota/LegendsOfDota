@@ -120,4 +120,5 @@
 	"npc_dota_hero_techies" "1"
 	"npc_dota_hero_oracle" "1"
 	"npc_dota_hero_arc_warden" "1"
+	"npc_dota_hero_abyssal_underlord" "1"
 }

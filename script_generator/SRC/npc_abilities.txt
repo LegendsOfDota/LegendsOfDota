@@ -993,7 +993,7 @@
 			"02"
 			{
 				"var_type"					"FIELD_INTEGER"
-				"movement_damage_pct"		"26 42 60"
+				"movement_damage_pct"		"30 45 60"
 			}
 			"03"
 			{
@@ -1097,7 +1097,7 @@
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"13"
+		"AbilityCooldown"				"16 15 14 13"
 		"AbilityDuration"				"3.0 4.0 5.0 6.0"
 
 		// Damage.
@@ -1144,7 +1144,7 @@
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"13"
+		"AbilityCooldown"				"16 15 14 13"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -10407,7 +10407,7 @@
 
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"130.0 115.0 100.0"
+		"AbilityCooldown"				"140.0 125.0 110.0"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -20143,12 +20143,12 @@
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"illusion_incoming_damage"	"50.0 50.0 50.0 50.0"
+				"illusion_incoming_damage"	"100"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"tooltip_total_illusion_incoming_damage"	"150.0 150.0 150.0 150.0"
+				"tooltip_total_illusion_incoming_damage"	"200"
 			}			
 		}
 	}
@@ -20937,7 +20937,7 @@
 			"02"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"health_regen"		"4 7 10 13"
+				"health_regen"		"4 8 12 16"
 			}
 			"03"
 			{
@@ -23633,7 +23633,7 @@
 			"02"
 			{
 				"var_type"							"FIELD_FLOAT"
-				"stun_delay"						"0.85"
+				"stun_delay"						"0.55"
 			}			
 			"03"
 			{
@@ -25249,7 +25249,7 @@
 		
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"4.0 4.0 4.0 4.0"
+		"AbilityCooldown"				"4"
 		
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -25320,7 +25320,7 @@
 			"04"
 			{
 				"var_type"							"FIELD_FLOAT"
-				"stack_duration"					"14 16 18 20"
+				"stack_duration"					"10 13 16 19"
 			}
 		}
 	}
@@ -26646,7 +26646,7 @@
 			"04"
 			{
 				"var_type"						"FIELD_INTEGER"
-				"stomp_damage"					"85 110 135 160"
+				"stomp_damage"					"70 100 130 160"
 			}
 			"05"
 			{
@@ -26704,7 +26704,7 @@
 			"04"
 			{
 				"var_type"						"FIELD_INTEGER"
-				"stomp_damage"					"85 110 135 160"
+				"stomp_damage"					"70 100 130 160"
 			}
 			"05"
 			{
@@ -27911,6 +27911,7 @@
 		"ID"							"5613"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE"
 		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
 		
 		"AbilityCastRange"				"750"
 		"AbilityCastPoint"				"0.6"
@@ -27918,7 +27919,7 @@
 		
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"14.0"
+		"AbilityCooldown"				"12.0"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -27955,8 +27956,8 @@
 			}
 			"06"
 			{
-				"var_type"						"FIELD_INTEGER"
-				"burn_damage"					"5 10 15 20"
+				"var_type"						"FIELD_FLOAT"
+				"burn_damage"					"0.75 1.5 2.25 3"
 			}
 			"07"
 			{
@@ -27971,7 +27972,7 @@
 			"09"
 			{
 				"var_type"						"FIELD_FLOAT"
-				"first_wave_delay"				"0.9"
+				"first_wave_delay"				"0.0"
 			}
 		}
 	}
@@ -27986,6 +27987,7 @@
 		"ID"							"5614"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE"
 		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
 		
 		"AbilityCastRange"				"750"
 		"AbilityCastPoint"				"0.6"
@@ -27993,7 +27995,7 @@
 		
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"24.0 21.0 18.0 15.0"
+		"AbilityCooldown"				"21 18 15 12"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -28067,12 +28069,12 @@
 			"04"
 			{
 				"var_type"						"FIELD_INTEGER"
-				"bonus_damage_from_hero"		"30"
+				"bonus_damage_from_hero"		"30 35 40 45"
 			}
 			"05"
 			{
 				"var_type"						"FIELD_FLOAT"
-				"bonus_damage_duration"			"30.0 35.0 40.0 45.0"
+				"bonus_damage_duration"			"30 40 50 60"
 			}
 		}
 	}
@@ -28085,19 +28087,18 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"ID"							"5616"														
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
 		"AbilityType"					"DOTA_ABILITY_TYPE_ULTIMATE"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
 		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
-		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BUILDING"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_BUILDING | DOTA_UNIT_TARGET_CREEP"
 		"AbilityUnitTargetFlags"		"DOTA_UNIT_TARGET_FLAG_INVULNERABLE"
 
-		
 		"AbilityCastRange"				"0"
 		"AbilityCastPoint"				"0.6"
 		
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"130.0"
+		"AbilityCooldown"				"130 120 110"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
@@ -29023,7 +29024,7 @@
 		
 		// Time		
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCooldown"				"90 60 30"
+		"AbilityCooldown"				"100 65 30"
 
 		// Cost
 		//-------------------------------------------------------------------------------------------------------------
