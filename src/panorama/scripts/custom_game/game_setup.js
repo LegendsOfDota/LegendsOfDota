@@ -992,14 +992,18 @@ function OnPhaseChanged(table_name, key, data) {
             // Defaults
             data.banning = data.banning || {};
             data.slots = data.slots || {};
+            data.voteModeFifty = data.voteModeFifty || {};
+            data.voteSpeed = data.voteSpeed || {};
 
             // Set vote counts
             $('#voteCountNo').text = '(' + (data.banning[0] || 0) + ')';
             $('#voteCountYes').text = '(' + (data.banning[1] || 0) + ')';
 
-            $('#voteCountSlots4').text = (data.slots[4] || 0);
-            $('#voteCountSlots5').text = (data.slots[5] || 0);
-            $('#voteCountSlots6').text = (data.slots[6] || 0);
+            $('#voteCountFiftyNo').text = '(' + (data.voteModeFifty[0] || 0) + ')';
+            $('#voteCountFiftyYes').text = '(' + (data.voteModeFifty[1] || 0) + ')';
+
+            $('#voteCountSpeedNo').text = '(' + (data.voteSpeed[0] || 0) + ')';
+            $('#voteCountSpeedYes').text = '(' + (data.voteSpeed[1] || 0) + ')';
         break;
 
         case 'premium_info':
@@ -1054,7 +1058,6 @@ function OnOptionChanged(table_name, key, data) {
     // Check if it's the number of slots allowed
     if(key == 'lodOptionCommonMaxSkills' || key == 'lodOptionCommonMaxSlots' || key == 'lodOptionCommonMaxUlts') {
         Game.shared.events.trigger('maxSlotsChanged');
-        onMaxSlotsChanged();
     }
 
     // Check for banning phase
@@ -1159,23 +1162,6 @@ function onMaxBansChanged() {
 
     // Recalculate limits
     recalculateBanLimits();
-}
-
-// The max number of slots / ults / regular abs has changed!
-function onMaxSlotsChanged() {
-    var maxSlots = Game.shared.optionValueList['lodOptionCommonMaxSlots'];
-    var maxSkills = Game.shared.optionValueList['lodOptionCommonMaxSkills'];
-    var maxUlts = Game.shared.optionValueList['lodOptionCommonMaxUlts'];
-
-    // Ensure all variables are defined
-    if(maxSlots == null || maxSkills == null || maxUlts == null) return;
-
-    // Do the highlight on the option voting
-    for(var i=4; i<=6; ++i) {
-        $('#optionVotingSlotAnswer' + i).RemoveClass('optionSlotsCurrentlySelected');
-    }
-
-    $('#optionVotingSlotAnswer' + maxSlots).AddClass('optionSlotsCurrentlySelected');
 }
 
 function allowedCategoriesChanged() {
@@ -1389,21 +1375,10 @@ function onPlayerCastVote(category, choice) {
     // No voting unless it is the voting phase
     if(currentPhase != Game.shared.PHASE_OPTION_VOTING) return;
 
+    // Grab the answer
+    var answer = choice;
+
     switch(category) {
-        case 'slots':
-            // Remove glow
-            for(var i=4; i<=6; ++i) {
-                $('#optionVoteMaxSlots' + i).RemoveClass('makeThePlayerNoticeThisButton');
-                $('#optionVoteMaxSlots' + i).RemoveClass('optionCurrentlySelected');
-            }
-
-            // Add the selection
-            $('#optionVoteMaxSlots' + choice).AddClass('optionCurrentlySelected');
-
-            // Send the vote to the server
-            castVote(category, choice);
-        break;
-
         case 'banning':
             // Remove glow
             $('#optionVoteBanningNo').RemoveClass('makeThePlayerNoticeThisButton');
@@ -1413,17 +1388,54 @@ function onPlayerCastVote(category, choice) {
             $('#optionVoteBanningYes').RemoveClass('optionCurrentlySelected');
 
             // Add the selection
-            var answer = 0;
             if(choice) {
                 $('#optionVoteBanningYes').AddClass('optionCurrentlySelected');
                 answer = 1;
             } else {
                 $('#optionVoteBanningNo').AddClass('optionCurrentlySelected');
+                answer = 0;
             }
+        break;
 
-            castVote(category, answer);
+        case 'voteModeFifty':
+            // Remove glow
+            $('#optionVoteModeFiftyNo').RemoveClass('makeThePlayerNoticeThisButton');
+            $('#optionVoteModeFiftyNo').RemoveClass('optionCurrentlySelected');
+
+            $('#optionVoteModeFiftyYes').RemoveClass('makeThePlayerNoticeThisButton');
+            $('#optionVoteModeFiftyYes').RemoveClass('optionCurrentlySelected');
+
+            // Add the selection
+            if(choice) {
+                $('#optionVoteModeFiftyYes').AddClass('optionCurrentlySelected');
+                answer = 1;
+            } else {
+                $('#optionVoteModeFiftyNo').AddClass('optionCurrentlySelected');
+                answer = 0;
+            }
+        break;
+
+        case 'voteSpeed':
+            // Remove glow
+            $('#optionVoteSpeedNo').RemoveClass('makeThePlayerNoticeThisButton');
+            $('#optionVoteSpeedNo').RemoveClass('optionCurrentlySelected');
+
+            $('#optionVoteSpeedYes').RemoveClass('makeThePlayerNoticeThisButton');
+            $('#optionVoteSpeedYes').RemoveClass('optionCurrentlySelected');
+
+            // Add the selection
+            if(choice) {
+                $('#optionVoteSpeedYes').AddClass('optionCurrentlySelected');
+                answer = 1;
+            } else {
+                $('#optionVoteSpeedNo').AddClass('optionCurrentlySelected');
+                answer = 0;
+            }
         break;
     }
+
+    // Send the vote to the server
+    castVote(category, answer);
 }
 
 // Export options

@@ -1738,7 +1738,6 @@
 #optionVoting {
     width: 98%;
     max-width: 1024px;
-    height: 300px;
     margin-top: 4px;
     border-radius: 8px;
     background-color: gradient( linear, 100% 0%, 100% 100%, from( #272b30 ), color-stop( 0.6, #181a1e ), to( #181a1e ) );
@@ -1753,8 +1752,7 @@
 }
 
 .veryBasicVoting #optionVoting {
-    width: 240px;
-    height: 160px;
+    width: 480px;
 }
 
 .phase_option_voting_selected #optionVoting {
@@ -1767,13 +1765,15 @@
     margin-bottom: 16px;
 }
 
-.optionVoteMaxSlots {
+.optionVotePanel {
     flow-children: down;
     horizontal-align: middle;
 
     padding: 8px;
     border: 1px solid #444444;
     border-radius: 4px;
+
+    margin-bottom: 4px;
 }
 
 .optionVoteHeader {
@@ -1805,22 +1805,11 @@
 }
 
 .votingButtonSlots Label {
-    max-width: 32px;
     font-size: 12px;
     margin: 0px;
 }
 
-.optionVoteBanningPhase {
-    flow-children: down;
-    horizontal-align: middle;
-
-    margin-top: 16px;
-    padding: 8px;
-    border: 1px solid #444444;
-    border-radius: 4px;
-}
-
-.optionVoteBanningOptions {
+.optionVotePanelOptions {
     flow-children: right;
     horizontal-align: middle;
 }
@@ -1833,7 +1822,7 @@
     border-color: #00FF00;
 }
 
-.votingButtonBanning {
+.votingButtonClass {
     flow-children: right;
 }
 

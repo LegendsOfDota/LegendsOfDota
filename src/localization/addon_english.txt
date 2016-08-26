@@ -409,6 +409,14 @@
 
     "lodBanningPhase"                               "Enable The Banning Phase?"
 
+    "lodVotingMode"                                 "Voting Mode"
+    "lodOptionFiftyNo"                              "Everyone Must Vote Yes"
+    "lodOptionFiftyYes"                             "50% + 1 Must Vote Yes"
+
+    "lodVotingSpeed"                                "Game Speed"
+    "lodOptionSpeedNo"                              "Normal Game"
+    "lodOptionSpeedYes"                             "Lower Respawn, 1000 Starting Gold"
+
     "bots_lod"                                      "Bots"
 
     "lodOptionDesBotsRadiant"                       "Desired Radiant Players"

@@ -1127,7 +1127,15 @@ function Pregame:onPlayerCastVote(eventSourceIndex, args)
 
         banning = function(choice)
             return choice == 1 or choice == 0
-        end
+        end,
+
+        voteModeFifty = function(choice)
+            return choice == 1 or choice == 0
+        end,
+
+        voteSpeed = function(choice)
+            return choice == 1 or choice == 0
+        end,
     }
 
     -- Validate options
@@ -1189,6 +1197,32 @@ function Pregame:processVoteData()
         	-- No option voting
             self:setOption('lodOptionBanning', 1, true)
             self.optionVotingBanning = 0
+        end
+    end
+
+    if results.voteModeFifty then
+        if results.voteModeFifty == 1 then
+            self:setOption('lodOptionGameSpeedVoting', 2, true)
+        else
+            self:setOption('lodOptionGameSpeedVoting', 1, true)
+        end
+    end
+
+    if results.voteSpeed then
+        if results.voteSpeed == 1 then
+            -- Lower repsawn time
+            self:setOption('lodOptionGameSpeedRespawnTimePercentage', 50, true)
+            self:setOption('lodOptionGameSpeedRespawnTimeConstant', 1, true)
+
+            -- Free gold
+            self:setOption('lodOptionGameSpeedStartingGold', 1000, true)
+        else
+            -- Normal Respawn Time
+            self:setOption('lodOptionGameSpeedRespawnTimePercentage', 100, true)
+            self:setOption('lodOptionGameSpeedRespawnTimeConstant', 0, true)
+
+            -- No free gold
+            self:setOption('lodOptionGameSpeedStartingGold', 0, true)
         end
     end
 

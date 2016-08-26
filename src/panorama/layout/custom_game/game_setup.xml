@@ -107,67 +107,47 @@
             <Panel id="optionVoting">
                 <Label class="optionVoteMainHeader" text="lodOptionVotingHeader" />
 
-                <Panel id="maxSlotsVotingContainer" class="optionVoteMaxSlots">
-                    <Label class="optionVoteHeader" text="lodHowManySlots" />
-                    <Panel class="maxSlotsVote">
-                        <Panel class="maxSlotsVoteOption">
-                            <DOTAAbilityImage abilityname="life_stealer_empty_1" />
-                        </Panel>
-
-                        <Panel class="maxSlotsVoteOption">
-                            <DOTAAbilityImage abilityname="life_stealer_empty_1" />
-                        </Panel>
-
-                        <Panel class="maxSlotsVoteOption">
-                            <DOTAAbilityImage abilityname="life_stealer_empty_1" />
-                        </Panel>
-
-                        <Panel class="maxSlotsVoteOption">
-                            <Panel id="optionVotingSlotAnswer4">
-                                <DOTAAbilityImage abilityname="life_stealer_empty_1" />
-                                <Label id="voteCountSlots4" class="voteCountSlots premiumFeature" />
-                            </Panel>
-
-                            <Button id="optionVoteMaxSlots4" class="heroBuildMenuButtonSmall votingButtonSlots makeThePlayerNoticeThisButton" onactivate="onPlayerCastVote('slots', 4)">
-                                <Label text="voteMaxSlots4" />
-                            </Button>
-                        </Panel>
-
-                        <Panel class="maxSlotsVoteOption">
-                            <Panel id="optionVotingSlotAnswer5">
-                                <DOTAAbilityImage abilityname="life_stealer_empty_1" />
-                                <Label id="voteCountSlots5" class="voteCountSlots premiumFeature" />
-                            </Panel>
-
-                            <Button id="optionVoteMaxSlots5" class="heroBuildMenuButtonSmall votingButtonSlots makeThePlayerNoticeThisButton" onactivate="onPlayerCastVote('slots', 5)">
-                                <Label text="voteMaxSlots5" />
-                            </Button>
-                        </Panel>
-
-                        <Panel class="maxSlotsVoteOption">
-                            <Panel id="optionVotingSlotAnswer6">
-                                <DOTAAbilityImage abilityname="life_stealer_empty_1" />
-                                <Label id="voteCountSlots6" class="voteCountSlots premiumFeature" />
-                            </Panel>
-
-                            <Button id="optionVoteMaxSlots6" class="heroBuildMenuButtonSmall votingButtonSlots makeThePlayerNoticeThisButton" onactivate="onPlayerCastVote('slots', 6)">
-                                <Label text="voteMaxSlots6" />
-                            </Button>
-                        </Panel>
-                    </Panel>
-                </Panel>
-
-                <Panel class="optionVoteBanningPhase">
+                <Panel class="optionVotePanel">
                     <Label class="optionVoteHeader" text="lodBanningPhase" />
-                    <Panel class="optionVoteBanningOptions">
-                        <Button id="optionVoteBanningNo" class="heroBuildMenuButtonSmall votingButtonSlots makeThePlayerNoticeThisButton votingButtonBanning" onactivate="onPlayerCastVote('banning', false)">
+                    <Panel class="optionVotePanelOptions">
+                        <Button id="optionVoteBanningNo" class="heroBuildMenuButtonSmall votingButtonSlots makeThePlayerNoticeThisButton votingButtonClass" onactivate="onPlayerCastVote('banning', false)">
                             <Label text="lodOptionNo" />
                             <Label id="voteCountNo" class="premiumFeature" />
                         </Button>
 
-                        <Button id="optionVoteBanningYes" class="heroBuildMenuButtonSmall votingButtonSlots makeThePlayerNoticeThisButton votingButtonBanning" onactivate="onPlayerCastVote('banning', true)">
+                        <Button id="optionVoteBanningYes" class="heroBuildMenuButtonSmall votingButtonSlots makeThePlayerNoticeThisButton votingButtonClass" onactivate="onPlayerCastVote('banning', true)">
                             <Label text="lodOptionYes" />
                             <Label id="voteCountYes" class="premiumFeature" />
+                        </Button>
+                    </Panel>
+                </Panel>
+
+                <Panel class="optionVotePanel">
+                    <Label class="optionVoteHeader" text="lodVotingMode" />
+                    <Panel class="optionVotePanelOptions">
+                        <Button id="optionVoteModeFiftyNo" class="heroBuildMenuButtonSmall votingButtonSlots makeThePlayerNoticeThisButton votingButtonClass" onactivate="onPlayerCastVote('voteModeFifty', false)">
+                            <Label text="lodOptionFiftyNo" />
+                            <Label id="voteCountFiftyNo" class="premiumFeature" />
+                        </Button>
+
+                        <Button id="optionVoteModeFiftyYes" class="heroBuildMenuButtonSmall votingButtonSlots makeThePlayerNoticeThisButton votingButtonClass" onactivate="onPlayerCastVote('voteModeFifty', true)">
+                            <Label text="lodOptionFiftyYes" />
+                            <Label id="voteCountFiftyYes" class="premiumFeature" />
+                        </Button>
+                    </Panel>
+                </Panel>
+
+                <Panel class="optionVotePanel">
+                    <Label class="optionVoteHeader" text="lodVotingSpeed" />
+                    <Panel class="optionVotePanelOptions">
+                        <Button id="optionVoteSpeedNo" class="heroBuildMenuButtonSmall votingButtonSlots makeThePlayerNoticeThisButton votingButtonClass" onactivate="onPlayerCastVote('voteSpeed', false)">
+                            <Label text="lodOptionSpeedNo" />
+                            <Label id="voteCountSpeedNo" class="premiumFeature" />
+                        </Button>
+
+                        <Button id="optionVoteSpeedYes" class="heroBuildMenuButtonSmall votingButtonSlots makeThePlayerNoticeThisButton votingButtonClass" onactivate="onPlayerCastVote('voteSpeed', true)">
+                            <Label text="lodOptionSpeedYes" />
+                            <Label id="voteCountSpeedYes" class="premiumFeature" />
                         </Button>
                     </Panel>
                 </Panel>
