@@ -306,10 +306,10 @@ function onPhaseChanged(table_name, key, data) {
             var voteCounts = Game.shared.voteCounts;
 
             // Defaults
-            voteCounts.banning = voteCounts.banning || {};
-            voteCounts.slots = voteCounts.slots || {};
-            voteCounts.voteModeFifty = voteCounts.voteModeFifty || {};
-            voteCounts.voteSpeed = voteCounts.voteSpeed || {};
+            voteCounts.banning = data.banning || {};
+            voteCounts.slots = data.slots || {};
+            voteCounts.voteModeFifty = data.voteModeFifty || {};
+            voteCounts.voteSpeed = data.voteSpeed || {};
 
             Game.shared.events.trigger('voteCountsUpdated', {
                 voteCounts: voteCounts

@@ -2136,3 +2136,7 @@
 /*.addMarginTop {
     margin-top: 8px;
 }*/
+
+.winningVote Label {
+    color: #00FF00 !important;
+}

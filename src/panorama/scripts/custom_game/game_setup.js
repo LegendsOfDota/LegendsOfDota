@@ -275,6 +275,13 @@ function onVoteCountsUpdated() {
 
     $('#voteCountSpeedNo').text = '(' + (voteCounts.voteSpeed[0] || 0) + ')';
     $('#voteCountSpeedYes').text = '(' + (voteCounts.voteSpeed[1] || 0) + ')';
+
+    $('#optionVoteBanningNo').SetHasClass('winningVote', (voteCounts.banning[0] || 0) > (voteCounts.banning[1] || 0));
+    $('#optionVoteBanningYes').SetHasClass('winningVote', (voteCounts.banning[0] || 0) <= (voteCounts.banning[1] || 0));
+    $('#optionVoteModeFiftyNo').SetHasClass('winningVote', (voteCounts.voteModeFifty[0] || 0) > (voteCounts.voteModeFifty[1] || 0));
+    $('#optionVoteModeFiftyYes').SetHasClass('winningVote', (voteCounts.voteModeFifty[0] || 0) <= (voteCounts.voteModeFifty[1] || 0));
+    $('#optionVoteSpeedNo').SetHasClass('winningVote', (voteCounts.voteSpeed[0] || 0) > (voteCounts.voteSpeed[1] || 0));
+    $('#optionVoteSpeedYes').SetHasClass('winningVote', (voteCounts.voteSpeed[0] || 0) <= (voteCounts.voteSpeed[1] || 0));
 }
 
 // When premium status is updated
