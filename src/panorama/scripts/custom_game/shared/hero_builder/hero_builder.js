@@ -877,29 +877,38 @@ function onYourAbilityIconPressed(slot) {
 
 // When the main selection tab is shown
 var firstBuildTabCall = true;
-function OnMainSelectionTabShown() {
+function onMainSelectionTabShown() {
     if(firstBuildTabCall) {
         // Only do this once
         firstBuildTabCall = false;
 
-        // The  container to work with
-        var con = $('#pickingPhaseRecommendedBuildContainer');
+        // Rebuild the recommended builds
+        rebuildRecommendedBuilds();
+    }
+}
 
-        // Grab a local reference to recommended builds
-        var recommendedBuilds = Game.shared.recommendedBuilds;
+// Rebuild recommended builds
+function rebuildRecommendedBuilds() {
+    // The  container to work with
+    var con = $('#pickingPhaseRecommendedBuildContainer');
 
-        for(var i=0; i<recommendedBuilds.length; ++i) {
-            var build = recommendedBuilds[i];
+    // Clean it up (dodgy)
+    con.RemoveAndDeleteChildren();
 
-            addRecommendedBuild(
-                con,
-                build.heroName,
-                build.build,
-                build.attr,
-                build.title,
-                build.des
-            );
-        }
+    // Grab a local reference to recommended builds
+    var recommendedBuilds = Game.shared.recommendedBuilds;
+
+    for(var i=0; i<recommendedBuilds.length; ++i) {
+        var build = recommendedBuilds[i];
+
+        addRecommendedBuild(
+            con,
+            build.heroName,
+            build.build,
+            build.attr,
+            build.title,
+            build.des
+        );
     }
 }
 
@@ -1616,6 +1625,114 @@ function onUniqueSkillsModeChanged() {
 }
 
 /*
+    Ban Importer
+*/
+
+var exportMode = -1;
+
+// Export options
+function onExportOptionsPressed() {
+    //$.Msg(Game.shared.optionValueList)
+    //$.Msg(JSON.stringify(Game.shared.optionValueList));
+
+    var theData = {};
+
+    if(exportMode == 'bans') {
+        theData = JSON.stringify({
+            abilities: Game.shared.bannedAbilities,
+            heroes: Game.shared.bannedHeroes
+        });
+
+        theData = theData.replace(/,/g, ',\n');
+    }
+
+    if(exportMode == 'builds') {
+        theData = JSON.stringify(Game.shared.recommendedBuilds);
+
+        theData = theData.replace(/",/g, '",\n');
+        theData = theData.replace(/\},/g, '\n},\n');
+        theData = theData.replace(/\{/g, '{\n');
+        theData = theData.replace(/:\{/g, ':\n{');
+        theData = theData.replace(/\[/g, '[\n');
+    }
+
+    $('#optionImporterEntry').text = theData;
+
+    setImportError('exportSuccess', true);
+}
+
+function setImportError(msg, good) {
+    if(msg == null) msg = '';
+
+    $('#optionImporterErrorMessage').text = $.Localize(msg);
+    $('#optionImporterErrorMessage').visible = true;
+
+    $('#optionImporterErrorMessage').SetHasClass('isGoodMessage', good && true || false);
+}
+
+// Import Button
+function onImportOptionsPressed() {
+    var data = $('#optionImporterEntry').text;
+    if(data.length == 0) {
+        return setImportError('importFailedNoInput');
+    }
+
+    var decodeData;
+    try {
+        decodeData = JSON.parse(data);
+    } catch(e) {
+        return setImportError('importFailedInvalidJSON');
+    }
+
+    // Do stuff
+    if(exportMode == 'bans') {
+        var abilities = decodeData.abilities;
+        var heroes = decodeData.heroes;
+
+        for(var abilityName in abilities) {
+            Game.shared.banAbility(abilityName);
+        }
+
+        for(var heroName in heroes) {
+            Game.shared.banHero(heroName);
+        }
+    }
+
+    if(exportMode == 'builds') {
+        Game.shared.recommendedBuilds = decodeData;
+
+        // Reload
+        rebuildRecommendedBuilds();
+    }
+
+    // Success
+    setImportError('importSuccess', true);
+}
+
+// Close importer
+function onImportCloseOptionsPressed() {
+    $('#optionImporter').visible = false;
+}
+
+// Open Importer
+function onImportBansPressed() {
+    exportMode = 'bans';
+
+    $('#optionImporterEntry').text = '';
+    $('#optionImporterErrorMessage').visible = false;
+    $('#optionImporter').visible = true;
+}
+
+// Open the importer
+function onImportBuildsPressed() {
+    exportMode = 'builds';
+
+    $('#optionImporterEntry').text = '';
+    $('#optionImporterErrorMessage').visible = false;
+    $('#optionImporter').visible = true;
+}
+
+/*
     INIT EVERYTHING
 */
 
@@ -1651,7 +1768,7 @@ function onUniqueSkillsModeChanged() {
     // Hook tab changes
     hookTabChange('pickingPhaseHeroTab', OnHeroTabShown);
     hookTabChange('pickingPhaseSkillTab', OnSkillTabShown);
-    hookTabChange('pickingPhaseMainTab', OnMainSelectionTabShown);
+    hookTabChange('pickingPhaseMainTab', onMainSelectionTabShown);
 
     // Setup builder tabs
     setupBuilderTabs();

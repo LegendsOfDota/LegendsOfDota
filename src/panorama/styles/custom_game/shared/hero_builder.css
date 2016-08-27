@@ -625,3 +625,15 @@
     opacity: 0.05;
 }
 
+.lodBansImportExport {
+    flow-children: right;
+    margin-bottom: 4px;
+}
+
+.importBuildButton {
+    width: fill-parent-flow(0.5);
+}
+
+.importBuildButton Label {
+    horizontal-align: center;
+}

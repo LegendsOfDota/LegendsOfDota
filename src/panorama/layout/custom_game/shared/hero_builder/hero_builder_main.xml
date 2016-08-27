@@ -14,8 +14,9 @@
         <Panel id="pickingPhaseLeftSide">
             <Panel id="pickingPhaseTabs">
                 <Panel id="pickingPhaseMainTab" class="pickingPhaseTab">
-                    <Label text="Find a hero" link="pickingPhaseHeroTab" class="heroBuildMenuButton" />
-                    <Label text="Find a skill" link="pickingPhaseSkillTab" class="heroBuildMenuButton" />
+                    <Label text="findASkill" link="pickingPhaseHeroTab" class="heroBuildMenuButton" />
+                    <Label text="findASkill" link="pickingPhaseSkillTab" class="heroBuildMenuButton" />
+                    <Label text="importBuilds" class="heroBuildMenuButton" onactivate="onImportBuildsPressed()" />
 
                     <Panel id="pickingPhaseMainTabHeroPreview" class="buildingHelperHeroPreviewContainer" />
                 </Panel>
@@ -135,9 +136,14 @@
                     </Button>
                 </Panel>
 
-                <Button id="heroBuilderLockButtonBans" class="heroBuildMenuButtonSmall lockBuildButton makeThePlayerNoticeThisButton" onactivate="onFinishBanningPressed()">
-                    <Label text="finishBanning" />
-                </Button>
+                <Panel class="lodBansImportExport">
+                    <Button class="heroBuildMenuButtonSmall importBuildButton" onactivate="onImportBansPressed()">
+                        <Label text="importBans" />
+                    </Button>
+                    <Button id="heroBuilderLockButtonBans" class="heroBuildMenuButtonSmall importBuildButton makeThePlayerNoticeThisButton" onactivate="onFinishBanningPressed()">
+                        <Label text="finishBanning" />
+                    </Button>
+                </Panel>
             </Panel>
         </Panel>
 
@@ -181,6 +187,24 @@
 
                 <Panel id="pickingPhaseRecommendedBuildsTabContent" class="pickingPhaseTabContent">
                     <Label text="rec content"/>
+                </Panel>
+            </Panel>
+
+            <Panel id="optionImporter">
+                <Panel id="optionImporterInfo">
+                    <TextEntry id="optionImporterEntry" placeholder="pasteCodeHere" />
+                    <Label id="optionImporterErrorMessage" text="importError" />
+                </Panel>
+                <Panel id="optionImporterButtons">
+                    <Button class="heroBuildMenuButtonSmall lockBuildButton" onactivate="onImportOptionsPressed()">
+                        <Label text="importGeneric" />
+                    </Button>
+                    <Button class="heroBuildMenuButtonSmall lockBuildButton" onactivate="onExportOptionsPressed()">
+                        <Label text="exportGeneric" />
+                    </Button>
+                    <Button class="heroBuildMenuButtonSmall lockBuildButton" onactivate="onImportCloseOptionsPressed()">
+                        <Label text="closeImporter" />
+                    </Button>
                 </Panel>
             </Panel>
         </Panel>

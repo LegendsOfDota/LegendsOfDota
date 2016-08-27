@@ -150,3 +150,45 @@
 .niceButton:hover {
     wash-color: #FFFFFFFF;
 }
+
+/*
+    Option Importer
+*/
+
+#optionImporter {
+    border: 1px solid #000000;
+    background-color: gradient( linear, 100% 0%, 100% 100%, from( #272b30 ), color-stop( 0.6, #181a1e ), to( #181a1e ) );
+    width: 640px;
+    height: 480px;
+    padding: 4px;
+    vertical-align: middle;
+    horizontal-align: center;
+    flow-children: down;
+    visibility: collapse;
+}
+
+#optionImporterInfo {
+    flow-children: down;
+}
+
+#optionImporterEntry {
+    width: 640px;
+    height: 404px;
+    overflow: squish scroll;
+}
+
+#optionImporterErrorMessage {
+    margin-top: 8px;
+    margin-left: 8px;
+    color: #FF0000;
+    visibility: collapse;
+}
+
+#optionImporterErrorMessage.isGoodMessage {
+    color: #00FF00;
+}
+
+#optionImporterButtons {
+    flow-children: right;
+    vertical-align: bottom;
+}

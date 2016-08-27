@@ -33,12 +33,19 @@
     "exportOptions"                                 "Export Options"
     "closeImporter"                                 "Close Importer"
 
-    "pasteCodeHere"                                 "Paste code here to import options, or press export to generate the current option set."
+    "pasteCodeHere"                                 "Paste code here to import, or press export to generate code for later importing."
 
     "importFailedNoInput"                           "Please paste the option code into the text box first."
     "importFailedInvalidJSON"                       "The settings code you have entered is not valid."
     "exportSuccess"                                 "Options were successfully exported!"
     "importSuccess"                                 "Options were successfully imported!"
+
+    "importGeneric"                                 "Import"
+    "exportGeneric"                                 "Export"
+
+    "findASkill"                                    "Find a hero"
+    "findASkill"                                    "Find a skill"
+    "importBuilds"                                  "Import Builds"
 
     // Categories for option selection
     "presets_lod"                                   "Presets"
@@ -318,6 +325,7 @@
     "banHero"                                       "Ban Hero"
     "banAbility"                                    "Ban Ability"
     "lodBanningSection"                             "Banning"
+    "importBans"                                    "Import Bans"
 
     "txtRecommendedBuilds"                          "Recommended Builds:"
 
