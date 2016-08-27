@@ -614,9 +614,16 @@ function onReadyChanged(data) {
     var playerID = Players.GetLocalPlayer();
     var playerIsReady = data[playerID] == 1;
 
-    $('#heroBuilderLockButton').SetHasClass('makeThePlayerNoticeThisButton', !playerIsReady);
     $('#heroBuilderLockButtonBans').SetHasClass('makeThePlayerNoticeThisButton', !playerIsReady);
     $('#heroBuilderLockButtonBans').SetHasClass('hideThisButton', playerIsReady);
+}
+
+// The lock state has changed
+function onLockStateChanged(data) {
+    var playerID = Players.GetLocalPlayer();
+    var playerIsReady = data[playerID] == 1;
+
+    $('#heroBuilderLockButton').SetHasClass('makeThePlayerNoticeThisButton', !playerIsReady);
 
     // Set the text
     if(!playerIsReady) {
@@ -1408,6 +1415,12 @@ function toggleShowDraftSkills() {
 // When the lock build button is pressed
 function onLockBuildButtonPressed() {
     // Tell the server we clicked it
+    GameEvents.SendCustomGameEventToServer('lodLockBuild', {});
+}
+
+// When the finish banning button is pressed
+function onFinishBanningPressed() {
+    // Tell the server we clicked it
     GameEvents.SendCustomGameEventToServer('lodReady', {});
 }
 
@@ -1613,6 +1626,7 @@ function onUniqueSkillsModeChanged() {
     Game.shared.events.on('buildChanged', onSelectedBuildChanged);
     Game.shared.events.on('attrChanged', onHeroAttributeChanged);
     Game.shared.events.on('readyChanged', onReadyChanged);
+    Game.shared.events.on('lockStateChanged', onLockStateChanged);
     Game.shared.events.on('clickAbility', onAbilityClicked);
     Game.shared.events.on('clickNoAbility', onNoAbilityClicked);
     Game.shared.events.on('clickHero', onHeroClicked);

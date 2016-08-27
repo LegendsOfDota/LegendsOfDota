@@ -53,6 +53,7 @@ function Pregame:init()
 
     -- Who is ready?
     self.isReady = {}
+    self.lockedBuilds = {}
 
     -- Fetch player data
     self:preparePlayerDataFetch()
@@ -162,6 +163,11 @@ function Pregame:init()
     -- Player wants to ready up
     CustomGameEventManager:RegisterListener('lodReady', function(eventSourceIndex, args)
         this:onPlayerReady(eventSourceIndex, args)
+    end)
+
+    -- Player wants to lock their build in
+    CustomGameEventManager:RegisterListener('lodLockBuild', function(eventSourceIndex, args)
+        this:onPlayerLockBuild(eventSourceIndex, args)
     end)
 
     -- Player wants to select their all random build
@@ -3142,6 +3148,49 @@ function Pregame:onPlayerSelectAllRandomBuild(eventSourceIndex, args)
     end
 end
 
+-- Player wants to lock their build
+function Pregame:onPlayerLockBuild(eventSourceIndex, args)
+    -- They can't lock their build too early
+    if self:getPhase() < constants.PHASE_SELECTION then return end
+
+    -- Ensure stuff exists
+    local playerID = args.PlayerID
+    local player = PlayerResource:GetPlayer(playerID)
+
+    self.lockedBuilds[playerID] = self.lockedBuilds[playerID] or 0
+
+    -- Are we in the selection phase?
+    if self:getPhase() == constants.PHASE_SELECTION then
+        -- Allow toggling
+        self.lockedBuilds[playerID] = (self.lockedBuilds[playerID] == 1 and 0) or 1
+
+        -- Move the ready state based on the lock state
+        self.isReady[playerID] = self.lockedBuilds[playerID]
+
+        -- Check for ready
+        self:checkForReady()
+
+        -- Done
+        return
+    end
+
+    -- Only allow locking
+    if self.lockedBuilds[playerID] == 1 then
+        -- Build is already locked
+        network:sendNotification(player, {
+            sort = 'lodDanger',
+            text = 'lodUnlockFailedWrongPhase'
+        })
+        return
+    end
+
+    -- Lock the build
+    self.lockedBuilds[playerID] = 1
+
+    -- Network locked build state
+    network:sendReadyState(self.isReady, self.lockedBuilds)
+end
+
 -- Player wants to ready up
 function Pregame:onPlayerReady(eventSourceIndex, args)
     if self:getPhase() ~= constants.PHASE_BANNING and self:getPhase() ~= constants.PHASE_SELECTION and self:getPhase() ~= constants.PHASE_RANDOM_SELECTION and self:getPhase() ~= constants.PHASE_REVIEW then return end
@@ -3161,7 +3210,7 @@ end
 -- Checks if people are ready
 function Pregame:checkForReady()
     -- Network it
-    network:sendReadyState(self.isReady)
+    network:sendReadyState(self.isReady, self.lockedBuilds)
 
     local currentTime = self.endOfTimer - Time()
     local maxTime = OptionManager:GetOption('pickingTime')
@@ -4029,7 +4078,7 @@ function Pregame:setPhase(newPhaseNumber)
     end
 
     -- Network it
-    network:sendReadyState(self.isReady)
+    network:sendReadyState(self.isReady, self.lockedBuilds)
 end
 
 -- Sets when the next phase is going to end
@@ -4450,6 +4499,9 @@ function Pregame:generateBotBuilds()
             self:setSelectedHero(playerID, heroName, true)
             self.selectedSkills[playerID] = build
             network:setSelectedAbilities(playerID, build)
+
+            -- Bot has now locked their build
+            self.lockedBuilds[playerID] = 1
         end
     end
 end

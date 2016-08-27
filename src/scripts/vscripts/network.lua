@@ -159,9 +159,12 @@ function Network:setTotalBans(playerID, currentHeroBans, currentAbilityBans)
 end
 
 -- Pushes the ready state
-function Network:sendReadyState(readyState)
+function Network:sendReadyState(readyState, lockState)
     -- Push to everyone
-    CustomNetTables:SetTableValue('ready', 'ready', readyState)
+    CustomNetTables:SetTableValue('ready', 'ready', {
+        readyState = readyState,
+        lockState = lockState
+    })
 end
 
 -- Pushes that precaching is done

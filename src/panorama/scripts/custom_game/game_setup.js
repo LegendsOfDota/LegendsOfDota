@@ -215,33 +215,22 @@ function OnSkillBanned(table_name, key, data) {
 
 // Server just sent the ready state
 function OnGetReadyState(table_name, key, data) {
+    var readyState = data.readyState;
+    var lockState = data.lockState;
+
     // Store it
-    Game.shared.readyState = data;
+    Game.shared.readyState = readyState;
+    Game.shared.lockState = lockState;
 
     // Fire the event
-    Game.shared.events.trigger('readyChanged', data);
+    Game.shared.events.trigger('readyChanged', readyState);
+    Game.shared.events.trigger('lockStateChanged', lockState);
 
-    // Process it
-    for(var playerID in data) {
-        var panel = activePlayerPanels[playerID];
-        if(panel) {
-            //panel.setReadyState(data[playerID])
-        }
+    var playerIsReady = readyState[Players.GetLocalPlayer()] == 1;
 
-        var panel = activeReviewPanels[playerID];
-        if(panel) {
-            //panel.setReadyState(data[playerID])
-        }
-
-        // Is it our local player?
-        if(playerID == Players.GetLocalPlayer()) {
-            var playerIsReady = data[playerID] == 1;
-
-            // Push the data, push it real, good
-            $('#allRandomLockButton').visible = !playerIsReady;
-            $('#reviewReadyButton').visible = !playerIsReady;
-        }
-    }
+    // Push the data, push it real, good
+    $('#allRandomLockButton').visible = !playerIsReady;
+    $('#reviewReadyButton').visible = !playerIsReady;
 }
 
 // Server just sent us random build data

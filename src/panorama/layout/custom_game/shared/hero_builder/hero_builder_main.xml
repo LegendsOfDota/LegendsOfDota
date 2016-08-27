@@ -135,7 +135,7 @@
                     </Button>
                 </Panel>
 
-                <Button id="heroBuilderLockButtonBans" class="heroBuildMenuButtonSmall lockBuildButton makeThePlayerNoticeThisButton" onactivate="onLockBuildButtonPressed()">
+                <Button id="heroBuilderLockButtonBans" class="heroBuildMenuButtonSmall lockBuildButton makeThePlayerNoticeThisButton" onactivate="onFinishBanningPressed()">
                     <Label text="finishBanning" />
                 </Button>
             </Panel>

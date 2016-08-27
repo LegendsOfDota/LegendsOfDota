@@ -262,6 +262,10 @@
     visibility: visible;
 }
 
+.phase_review #heroBuilderLockButton {
+    visibility: visible;
+}
+
 #heroBuilderApplyBuild {
     visibility: collapse;
 }

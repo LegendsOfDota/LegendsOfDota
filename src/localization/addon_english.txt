@@ -396,6 +396,8 @@
     "lodFailedWrongPhaseSelection"                  "You can only select abilities during the selection phase."
     "lodFailedPlayerIsReady"                        "You need to unlock your build in order to change your build."
 
+    "lodUnlockFailedWrongPhase"                     "You can only unlock your build during the selection phase."
+
     // Success Messages
     "lodSuccessBanAbility"                          "'{abilityName}' was banned."
     "lodSuccessBanHero"                             "'{heroName}' was banned."
