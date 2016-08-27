@@ -1509,7 +1509,7 @@ function onTakenSkillsChanged() {
 
 // When a hero is banned
 function onHeroBanned() {
-    calculateFilters();
+    calculateHeroFilters();
     updateHeroPreviewFilters();
     updateRecommendedBuildFilters();
 }

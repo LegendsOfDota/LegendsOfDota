@@ -160,3 +160,18 @@ Game.shared.maxSlots = 6;
 
 // Current phase
 Game.shared.currentPhase = Game.shared.PHASE_LOADING;
+
+// Are we a premium player?
+Game.shared.isPremiumPlayer = false;
+
+// Used to tell when a phase ends
+Game.shared.endOfTimer = -1;
+
+// Used for freezing the timer
+Game.shared.freezeTimer = -1;
+
+// Waiting for preache
+Game.shared.waitingForPrecache = true;
+
+// Stores vote counts
+Game.shared.voteCounts = {};

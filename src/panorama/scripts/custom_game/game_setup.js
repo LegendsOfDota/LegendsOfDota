@@ -3,17 +3,12 @@
 // Shared stuff
 var allOptions = Game.shared.allOptions;
 
-// Used to make data transfer smoother
-var dataHooks = {};
-
 // Hide enemy picks?
 var hideEnemyPicks = false;
 
 // The current phase we are in
 var currentPhase = Game.shared.PHASE_LOADING;
 var selectedPhase = Game.shared.PHASE_OPTION_SELECTION;
-var endOfTimer = -1;
-var freezeTimer = -1;
 var lastTimerShow = -1;
 var allowCustomSettings = false;
 
@@ -35,19 +30,13 @@ var optionFieldMap = {};
 // We have not picked a hero
 var pickedAHero = false;
 
-// Waiting for preache
-var waitingForPrecache = true;
-
-// Are we a premium player?
-var isPremiumPlayer = false;
-
 // Focuses on nothing
 Game.shared.focusNothing = function() {
     $('#mainSelectionRoot').SetFocus();
 }
 
 // Hero data has changed
-function OnHeroDataChanged(table_name, key, data) {
+/*function OnHeroDataChanged(table_name, key, data) {
     Game.shared.heroData[key] = data;
 
     for(var i=1; i<=16; ++i) {
@@ -65,33 +54,7 @@ function OnHeroDataChanged(table_name, key, data) {
             Game.shared.heroDataAvailable = true;
         }
     });
-}
-
-// Flag data has changed
-function OnflagDataChanged(table_name, key, data) {
-    // Flag data
-    if(data.isFlagData) {
-        Game.shared.flagDataInverse[key] = data.flagData;
-
-        // Do the schedule
-        if(dataHooks.OnFlagDataChanged == null) dataHooks.OnFlagDataChanged = 0;
-        var myHookNumber = ++dataHooks.OnFlagDataChanged;
-        $.Schedule(1, function() {
-            if(dataHooks.OnFlagDataChanged == myHookNumber) {
-                buildFlagList();
-            }
-        });
-        return;
-    }
-
-    // Custom group data
-    if(data.isCustomGroup) {
-        for(var abilityName in data.data) {
-            Game.shared.abilityCustomGroups[abilityName] = data.groupName;
-        }
-        return;
-    }
-}
+}*/
 
 // Selected heroes has changed
 function onSelectedHeroChanged(data) {
@@ -105,8 +68,47 @@ function onSelectedHeroChanged(data) {
     }
 }
 
+// Random build data was changed
+var allRandomBuildContainers = {};
+function onRandomBuildDataChanged() {
+    // Ensure we have random builds
+    if(Game.shared.randomBuilds == null) return;
+
+    // ASSUMPTION: This event will only fire ONCE!
+
+    var builds = Game.shared.randomBuilds;
+
+    var con = $('#allRandomBuildsContainer');
+
+    // Empty it (dodgy, should do nothing)
+    con.RemoveAndDeleteChildren();
+
+    for(var buildID in builds) {
+        var theBuild = builds[buildID];
+
+        // Create the container
+        var buildCon = $.CreatePanel('Panel', con, 'allRandomBuild' + buildID);
+        buildCon.BLoadLayout('file://{resources}/layout/custom_game/all_random_build.xml', false, false);
+        buildCon.setBuild(buildID, theBuild.heroName, theBuild.build);
+        buildCon.hook(Game.shared.hookSkillInfo);
+
+        allRandomBuildContainers[buildID] = buildCon;
+    }
+
+    updateAllRandomHighlights();
+}
+
+// Ready state was changed
+function onReadyChanged() {
+    var playerIsReady = Game.shared.readyState[Players.GetLocalPlayer()] == 1;
+
+    // Push the data, push it real, good
+    $('#allRandomLockButton').visible = !playerIsReady;
+    $('#reviewReadyButton').visible = !playerIsReady;
+}
+
 // Selected primary attribute changes
-function OnSelectedAttrChanged(table_name, key, data) {
+/*function OnSelectedAttrChanged(table_name, key, data) {
     // Grab data
     var playerID = data.playerID;
     var newAttr = data.newAttr;
@@ -119,10 +121,10 @@ function OnSelectedAttrChanged(table_name, key, data) {
         playerID: playerID,
         newAttr: newAttr
     });
-}
+}*/
 
 // Selected abilities has changed
-function OnSelectedSkillsChanged(table_name, key, data) {
+/*function OnSelectedSkillsChanged(table_name, key, data) {
     var playerID = data.playerID;
 
     // Store the change
@@ -140,7 +142,7 @@ function OnSelectedSkillsChanged(table_name, key, data) {
 
     // Update which skills are taken
     updateTakenSkills();
-}
+}*/
 
 // Updates which skills have been taken
 function updateTakenSkills() {
@@ -173,7 +175,7 @@ function updateTakenSkills() {
 }
 
 // A ban was sent through
-function OnSkillBanned(table_name, key, data) {
+/*function OnSkillBanned(table_name, key, data) {
     var heroName = data.heroName;
     var abilityName = data.abilityName;
     var playerInfo = data.playerInfo;
@@ -211,10 +213,10 @@ function OnSkillBanned(table_name, key, data) {
             recalculateBanLimits();
         }
     }
-}
+}*/
 
 // Server just sent the ready state
-function OnGetReadyState(table_name, key, data) {
+/*function OnGetReadyState(table_name, key, data) {
     var readyState = data.readyState;
     var lockState = data.lockState;
 
@@ -231,10 +233,10 @@ function OnGetReadyState(table_name, key, data) {
     // Push the data, push it real, good
     $('#allRandomLockButton').visible = !playerIsReady;
     $('#reviewReadyButton').visible = !playerIsReady;
-}
+}*/
 
 // Server just sent us random build data
-var allRandomBuildContainers = {};
+/*var allRandomBuildContainers = {};
 var allRandomSelectedBuilds = {
     hero: 0,
     build: 0
@@ -269,10 +271,10 @@ function OnGetRandomBuilds(table_name, key, data) {
 
         updateAllRandomHighlights();
     }
-}
+}*/
 
 // The build we selected changed
-function OnSelectedRandomBuildChanged(table_name, key, data) {
+/*function OnSelectedRandomBuildChanged(table_name, key, data) {
     // See who's data we just got
     var playerID = data.playerID;
 
@@ -281,10 +283,10 @@ function OnSelectedRandomBuildChanged(table_name, key, data) {
         allRandomSelectedBuilds.build = data.build;
         updateAllRandomHighlights();
     }
-}
+}*/
 
 // Server just sent us a draft array
-function OnGetDraftArray(table_name, key, data) {
+/*function OnGetDraftArray(table_name, key, data) {
     var draftID = data.draftID;
 
     var playerID = Players.GetLocalPlayer();
@@ -303,10 +305,12 @@ function OnGetDraftArray(table_name, key, data) {
 
     // The draft array was updated
     Game.shared.events.trigger('draftArrayUpdated');
-}
+}*/
 
 // Update the highlights
 function updateAllRandomHighlights() {
+    var allRandomSelectedBuilds = Game.shared.allRandomSelectedBuilds;
+
     for(var buildID in allRandomBuildContainers) {
         var con = allRandomBuildContainers[buildID];
         con.setSelected(buildID == allRandomSelectedBuilds.hero, buildID == allRandomSelectedBuilds.build);
@@ -326,6 +330,147 @@ function buildFlagList() {
             Game.shared.flagData[flag][abilityName] = flags[flag];
         }
     }
+}
+
+// When options were changed
+function onOptionsChanged(data) {
+    var key = data.key;
+    var value = data.value;
+
+    // Check if there is a mapping function available
+    if(optionFieldMap[key]) {
+        // Yep, run it!
+        optionFieldMap[key](value);
+    }
+
+    // Check for the custom stuff
+    if(key == 'lodOptionGamemode') {
+        // Check if we are allowing custom settings
+        allowCustomSettings = value == -1;
+        $.GetContextPanel().SetHasClass('allow_custom_settings', allowCustomSettings);
+        $.GetContextPanel().SetHasClass('disallow_custom_settings', !allowCustomSettings);
+    }
+
+    if(key == 'lodOptionCommonGamemode') {
+        // Mirror draft options
+        var showMirrorDraftOptions = value == 3 || value == 5;
+
+        $('#option_panel_main_lodOptionMirrorHeroes').SetHasClass('showThis', showMirrorDraftOptions);
+        $('#option_panel_main_lodOptionCommonMirrorHeroes').visible = showMirrorDraftOptions;
+    }
+
+    // Check for banning phase
+    if(key == 'lodOptionBanningMaxBans' || key == 'lodOptionBanningMaxHeroBans' || key == 'lodOptionBanningHostBanning') {
+        onMaxBansChanged();
+    }
+
+    if(key == 'lodOptionAdvancedUniqueSkills') {
+        $('#mainSelectionRoot').SetHasClass('unique_skills_mode', Game.shared.optionValueList['lodOptionAdvancedUniqueSkills'] > 0);
+    }
+
+    if(key == 'lodOptionAdvancedUniqueHeroes') {
+        $('#mainSelectionRoot').SetHasClass('unique_heroes_mode', Game.shared.optionValueList['lodOptionAdvancedUniqueHeroes'] == 1);
+    }
+
+    if(key == 'lodOptionCommonGamemode') {
+        onGamemodeChanged();
+    }
+
+    if(key == 'lodOptionAdvancedHidePicks') {
+        // Hide enemy picks
+        hideEnemyPicks = value == 1;
+        calculateHideEnemyPicks();
+    }
+}
+
+// Current phase was changed
+function onPhaseChanged() {
+    // Store the change
+    currentPhase = Game.shared.currentPhase;
+
+    // Update phase classes
+    Game.shared.updatePhaseCSS($.GetContextPanel());
+
+    // Progrss to the new phase
+    SetSelectedPhase(currentPhase, true);
+
+    // Message for hosters
+    if(currentPhase == Game.shared.PHASE_OPTION_SELECTION) {
+        // Should we show the host message popup?
+        if(!seenPopupMessages.hostWarning) {
+            seenPopupMessages.hostWarning = true;
+            if(Game.shared.isHost()) {
+                showPopupMessage('lodHostingMessage');
+            } else {
+                showPopupMessage('lodHostingNoobMessage');
+            }
+        }
+    }
+
+    // Message for banning phase
+    if(currentPhase == Game.shared.PHASE_BANNING) {
+        // Should we show the host message popup?
+        if(!seenPopupMessages.skillBanningInfo) {
+            seenPopupMessages.skillBanningInfo = true;
+            showPopupMessage('lodBanningMessage');
+        }
+    }
+
+    // Message for players selecting skills
+    if(currentPhase == Game.shared.PHASE_SELECTION) {
+        // Should we show the host message popup?
+        if(!seenPopupMessages.skillDraftingInfo) {
+            seenPopupMessages.skillDraftingInfo = true;
+            showPopupMessage('lodPickingMessage');
+        }
+    }
+
+    // Message for players selecting skills
+    if(currentPhase == Game.shared.PHASE_REVIEW) {
+        // Should we show the host message popup?
+        if(!seenPopupMessages.skillReviewInfo) {
+            seenPopupMessages.skillReviewInfo = true;
+            showPopupMessage('lodReviewMessage');
+        }
+    }
+
+    // Update what is hidden
+    calculateHideEnemyPicks();
+}
+
+// Active tab was changed
+function onActiveTabChanged(data) {
+    var newActiveTab = data.newActiveTab;
+
+    for(var key in allOptionLinks) {
+        // Grab reference
+        var info = allOptionLinks[key];
+        var optionButton = info.button;
+
+        // Set active one
+        optionButton.SetHasClass('activeHostMenu', key == newActiveTab);
+    }
+}
+
+// Vote counts were updated
+function onVoteCountsUpdated() {
+    var voteCounts = Game.shared.voteCounts;
+
+    // Set vote counts
+    $('#voteCountNo').text = '(' + (voteCounts.banning[0] || 0) + ')';
+    $('#voteCountYes').text = '(' + (voteCounts.banning[1] || 0) + ')';
+
+    $('#voteCountFiftyNo').text = '(' + (voteCounts.voteModeFifty[0] || 0) + ')';
+    $('#voteCountFiftyYes').text = '(' + (voteCounts.voteModeFifty[1] || 0) + ')';
+
+    $('#voteCountSpeedNo').text = '(' + (voteCounts.voteSpeed[0] || 0) + ')';
+    $('#voteCountSpeedYes').text = '(' + (voteCounts.voteSpeed[1] || 0) + ')';
+}
+
+// When premium status is updated
+function onPremiumStatusUpdated() {
+    // Update the context
+    $.GetContextPanel().SetHasClass('premiumUser', Game.shared.isPremiumPlayer);
 }
 
 // Sets an option to a value
@@ -889,7 +1034,7 @@ function OnPlayerSelectedTeam( nPlayerId, nTeamId, bSuccess ) {
 
 // A phase was changed
 var seenPopupMessages = {};
-function OnPhaseChanged(table_name, key, data) {
+/*function OnPhaseChanged(table_name, key, data) {
     switch(key) {
         case 'phase':
             // Update the current phase
@@ -1000,18 +1145,18 @@ function OnPhaseChanged(table_name, key, data) {
 
             if(data[playerID] != null) {
                 // Store if we are a premium player
-                isPremiumPlayer = data[playerID] > 0;
-                $.GetContextPanel().SetHasClass('premiumUser', isPremiumPlayer);
+                Game.shared.isPremiumPlayer = data[playerID] > 0;
+                $.GetContextPanel().SetHasClass('premiumUser', Game.shared.isPremiumPlayer);
             }
         break;
     }
 
     // Ensure we are hiding the correct enemy picks
     calculateHideEnemyPicks();
-}
+}*/
 
 // An option just changed
-function OnOptionChanged(table_name, key, data) {
+/*function OnOptionChanged(table_name, key, data) {
     // Store new value
     Game.shared.optionValueList[key] = data.v;
 
@@ -1076,7 +1221,7 @@ function OnOptionChanged(table_name, key, data) {
         hideEnemyPicks = data.v == 1;
         calculateHideEnemyPicks();
     }
-}
+}*/
 
 // Recalculates how many abilities / heroes we can ban
 function recalculateBanLimits() {
@@ -1151,27 +1296,6 @@ function onMaxBansChanged() {
 
     // Recalculate limits
     recalculateBanLimits();
-}
-
-function allowedCategoriesChanged() {
-    // Reset the allowed categories
-    Game.shared.allowedCategories = {};
-
-    if(Game.shared.optionValueList['lodOptionAdvancedHeroAbilities'] == 1) {
-        Game.shared.allowedCategories['main'] = true;
-    }
-
-    if(Game.shared.optionValueList['lodOptionAdvancedNeutralAbilities'] == 1) {
-        Game.shared.allowedCategories['neutral'] = true;
-    }
-
-    if(Game.shared.optionValueList['lodOptionAdvancedCustomSkills'] == 1) {
-        Game.shared.allowedCategories['custom'] = true;
-    }
-
-    if(Game.shared.optionValueList['lodOptionAdvancedOPAbilities'] == 1) {
-        Game.shared.allowedCategories['OP'] = true;
-    }
 }
 
 // Changes which phase the player currently has selected
@@ -1259,11 +1383,11 @@ function UpdateTimer() {
     if(placeInto != null) {
         // Workout how long is left
         var currentTime = Game.Time();
-        var timeLeft = Math.ceil(endOfTimer - currentTime);
+        var timeLeft = Math.ceil(Game.shared.endOfTimer - currentTime);
 
         // Freeze timer
-        if(freezeTimer != -1) {
-            timeLeft = freezeTimer;
+        if(Game.shared.freezeTimer != -1) {
+            timeLeft = Game.shared.freezeTimer;
         }
 
         // Place the text
@@ -1273,7 +1397,7 @@ function UpdateTimer() {
         var theTimerText = ''
 
         // Make it more obvious how long is left
-        if(freezeTimer != -1) {
+        if(Game.shared.freezeTimer != -1) {
             lastTimerShow = -1;
         } else {
             // Set how long is left
@@ -1330,7 +1454,7 @@ function UpdateTimer() {
         $('#lodTimerWarningLabel').text = theTimerText;
 
         // Review override
-        if(currentPhase == Game.shared.PHASE_REVIEW && waitingForPrecache) {
+        if(currentPhase == Game.shared.PHASE_REVIEW && Game.shared.waitingForPrecache) {
             $('#lodTimerWarningLabel').text = $.Localize('lodPrecaching');
             $('#lodTimerWarningLabel').SetHasClass('showLodWarningTimer', true);
         }
@@ -1562,21 +1686,35 @@ function onLockBuildButtonPressed() {
     $.RegisterForUnhandledEvent('DOTAGame_PlayerSelectedCustomTeam', OnPlayerSelectedTeam);
 
     // Hook stuff
-    Game.shared.hookAndFire('phase_pregame', OnPhaseChanged);
-    Game.shared.hookAndFire('options', OnOptionChanged);
-    Game.shared.hookAndFire('heroes', OnHeroDataChanged);
-    Game.shared.hookAndFire('flags', OnflagDataChanged);
+    //Game.shared.hookAndFire('phase_pregame', OnPhaseChanged);
+    //Game.shared.hookAndFire('options', OnOptionChanged);
+    //Game.shared.hookAndFire('heroes', OnHeroDataChanged);
+    //Game.shared.hookAndFire('flags', OnflagDataChanged);
     //Game.shared.hookAndFire('selected_heroes', OnSelectedHeroesChanged);
-    Game.shared.hookAndFire('selected_attr', OnSelectedAttrChanged);
-    Game.shared.hookAndFire('selected_skills', OnSelectedSkillsChanged);
-    Game.shared.hookAndFire('banned', OnSkillBanned);
-    Game.shared.hookAndFire('ready', OnGetReadyState);
-    Game.shared.hookAndFire('random_builds', OnGetRandomBuilds);
+    //Game.shared.hookAndFire('selected_attr', OnSelectedAttrChanged);
+    //Game.shared.hookAndFire('selected_skills', OnSelectedSkillsChanged);
+    //Game.shared.hookAndFire('banned', OnSkillBanned);
+    //Game.shared.hookAndFire('ready', OnGetReadyState);
+    //Game.shared.hookAndFire('random_builds', OnGetRandomBuilds);
     //Game.shared.hookAndFire('selected_random_builds', OnSelectedRandomBuildChanged);
-    Game.shared.hookAndFire('draft_array', OnGetDraftArray);
+    //Game.shared.hookAndFire('draft_array', OnGetDraftArray);
 
     // Hook callbacks
     Game.shared.events.on('heroChanged', onSelectedHeroChanged);
+    Game.shared.events.on('randomBuildDataChanged', onRandomBuildDataChanged);
+    Game.shared.events.on('selectedRandomBuildChanged', updateAllRandomHighlights);
+    Game.shared.events.on('readyChanged', onReadyChanged);
+    Game.shared.events.on('heroBansUpdated', recalculateBanLimits);
+    Game.shared.events.on('buildChanged', updateTakenSkills);
+    Game.shared.events.on('flagDataChanged', buildFlagList);
+    Game.shared.events.on('optionsChanged', onOptionsChanged);
+    Game.shared.events.on('phaseChanged', onPhaseChanged);
+    Game.shared.events.on('activeTabChanged', onActiveTabChanged);
+    Game.shared.events.on('voteCountsUpdated', onVoteCountsUpdated);
+    Game.shared.events.on('premiumStatusUpdated', onPremiumStatusUpdated);
+
+    // Update random builds
+    onRandomBuildDataChanged();
 
     // Register for notifications
     Game.shared.registerNotifications($('#lodNotificationArea'));
@@ -1589,4 +1727,7 @@ function onLockBuildButtonPressed() {
 
     // Do an initial update of the player team assignment
     OnTeamPlayerListChanged();
+
+    // Stuff is ready, init other stuff
+    Game.shared.events.trigger('gameSetupLoaded');
 })();
