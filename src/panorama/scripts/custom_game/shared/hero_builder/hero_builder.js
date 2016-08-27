@@ -1638,9 +1638,20 @@ function onExportOptionsPressed() {
     var theData = {};
 
     if(exportMode == 'bans') {
+        var bannedAbList = [];
+        var bannedHeroList = [];
+
+        for(var abilityName in Game.shared.bannedAbilities) {
+            bannedAbList.push(abilityName);
+        }
+
+        for(var heroName in Game.shared.bannedHeroes) {
+            bannedHeroList.push(heroName);
+        }
+
         theData = JSON.stringify({
-            abilities: Game.shared.bannedAbilities,
-            heroes: Game.shared.bannedHeroes
+            abilities: bannedAbList,
+            heroes: bannedHeroList
         });
 
         theData = theData.replace(/,/g, ',\n');
@@ -1689,12 +1700,12 @@ function onImportOptionsPressed() {
         var abilities = decodeData.abilities;
         var heroes = decodeData.heroes;
 
-        for(var abilityName in abilities) {
-            Game.shared.banAbility(abilityName);
+        for(var i=0; i<abilities.length; ++i) {
+            Game.shared.banAbility(abilities[i]);
         }
 
-        for(var heroName in heroes) {
-            Game.shared.banHero(heroName);
+        for(var i=0; i<heroes.length; ++i) {
+            Game.shared.banHero(heroes[i]);
         }
     }
 

@@ -87,15 +87,17 @@ function updateFilters(getSkillFilterInfo, getHeroFilterInfo) {
         // Grab the slot
         var slot = $('#recommendedSkill' + slotID);
 
-        // Grab the filter info
-        var abilityName = build[slotID];
-        var filterInfo = getSkillFilterInfo(abilityName);
+        if(slot != null) {
+            // Grab the filter info
+            var abilityName = build[slotID];
+            var filterInfo = getSkillFilterInfo(abilityName);
 
-        // Apply the filter info
-        slot.SetHasClass('disallowedSkill', filterInfo.disallowed);
-        slot.SetHasClass('bannedSkill', filterInfo.banned);
-        slot.SetHasClass('takenSkill', filterInfo.taken);
-        slot.SetHasClass('notDraftable', filterInfo.cantDraft);
+            // Apply the filter info
+            slot.SetHasClass('disallowedSkill', filterInfo.disallowed);
+            slot.SetHasClass('bannedSkill', filterInfo.banned);
+            slot.SetHasClass('takenSkill', filterInfo.taken);
+            slot.SetHasClass('notDraftable', filterInfo.cantDraft);
+        }
     }
 
     // Update hero
