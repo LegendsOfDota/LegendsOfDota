@@ -116,12 +116,17 @@
                 </Panel>
 
                 <Panel id="pickingPhaseBuildButtons">
-                    <Button id="heroBuilderLockButton" class="heroBuildMenuButtonSmall lockBuildButton makeThePlayerNoticeThisButton" onactivate="onLockBuildButtonPressed()">
-                        <Label id="heroBuilderLockButtonText" text="lockBuild" />
-                    </Button>
-                    <Button id="heroBuilderApplyBuild" class="heroBuildMenuButtonSmall lockBuildButton makeThePlayerNoticeThisButton" onactivate="onSpawnHeroPressed()">
-                        <Label text="spawnHero" />
-                    </Button>
+                    <Panel class="lodBansImportExport">
+                        <Button class="heroBuildMenuButtonSmall importBuildButton" onactivate="onImportBuildPressed()">
+                            <Label text="importBuild" />
+                        </Button>
+                        <Button id="heroBuilderLockButton" class="heroBuildMenuButtonSmall lockBuildButton makeThePlayerNoticeThisButton" onactivate="onLockBuildButtonPressed()">
+                            <Label id="heroBuilderLockButtonText" text="lockBuild" />
+                        </Button>
+                        <Button id="heroBuilderApplyBuild" class="heroBuildMenuButtonSmall lockBuildButton makeThePlayerNoticeThisButton" onactivate="onSpawnHeroPressed()">
+                            <Label text="spawnHero" />
+                        </Button>
+                    </Panel>
                 </Panel>
             </Panel>
             <Panel id="pickingPhaseBans">

@@ -1670,6 +1670,25 @@ function onExportOptionsPressed() {
         theData = theData.replace(/\[/g, '[\n');
     }
 
+    if(exportMode == 'build') {
+        var playerID = Players.GetLocalPlayer();
+
+        var ourBuildData = {
+            title: 'Untitled',
+            des: 'An untitled build.',
+            heroName: Game.shared.selectedHeroes[playerID] || '',
+            attr: Game.shared.selectedAttr[playerID] || 'str',
+            build: Game.shared.selectedSkills[playerID] || {}
+        }
+
+        theData = JSON.stringify(ourBuildData);
+
+        theData = theData.replace(/,/g, ',\n');
+        theData = theData.replace(/\{/g, '{\n');
+        theData = theData.replace(/\}/g, '\n}');
+        theData = theData.replace(/:\{/g, ':\n{');
+    }
+
     $('#optionImporterEntry').text = theData;
 
     setImportError('exportSuccess', true);
@@ -1719,6 +1738,16 @@ function onImportOptionsPressed() {
         rebuildRecommendedBuilds();
     }
 
+    if(exportMode == 'build') {
+        var buildData = {
+            hero: decodeData.heroName,
+            attr: decodeData.attr,
+            build: decodeData.build
+        }
+
+        GameEvents.SendCustomGameEventToServer('lodSelectBuild', buildData);
+    }
+
     // Success
     setImportError('importSuccess', true);
 }
@@ -1740,6 +1769,15 @@ function onImportBansPressed() {
 // Open the importer
 function onImportBuildsPressed() {
     exportMode = 'builds';
+
+    $('#optionImporterEntry').text = '';
+    $('#optionImporterErrorMessage').visible = false;
+    $('#optionImporter').visible = true;
+}
+
+// Open the importer
+function onImportBuildPressed() {
+    exportMode = 'build';
 
     $('#optionImporterEntry').text = '';
     $('#optionImporterErrorMessage').visible = false;

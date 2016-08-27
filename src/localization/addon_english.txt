@@ -43,9 +43,10 @@
     "importGeneric"                                 "Import"
     "exportGeneric"                                 "Export"
 
-    "findAHero"                                    "Find a hero"
+    "findAHero"                                     "Find a hero"
     "findASkill"                                    "Find a skill"
-    "importBuilds"                                  "Import Builds"
+    "importBuilds"                                  "Import Recommended Builds"
+    "importBuild"                                   "Import Build"
 
     // Categories for option selection
     "presets_lod"                                   "Presets"
