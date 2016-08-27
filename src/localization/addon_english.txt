@@ -43,7 +43,7 @@
     "importGeneric"                                 "Import"
     "exportGeneric"                                 "Export"
 
-    "findASkill"                                    "Find a hero"
+    "findAHero"                                    "Find a hero"
     "findASkill"                                    "Find a skill"
     "importBuilds"                                  "Import Builds"
 

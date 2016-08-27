@@ -14,7 +14,7 @@
         <Panel id="pickingPhaseLeftSide">
             <Panel id="pickingPhaseTabs">
                 <Panel id="pickingPhaseMainTab" class="pickingPhaseTab">
-                    <Label text="findASkill" link="pickingPhaseHeroTab" class="heroBuildMenuButton" />
+                    <Label text="findAHero" link="pickingPhaseHeroTab" class="heroBuildMenuButton" />
                     <Label text="findASkill" link="pickingPhaseSkillTab" class="heroBuildMenuButton" />
                     <Label text="importBuilds" class="heroBuildMenuButton" onactivate="onImportBuildsPressed()" />
 
