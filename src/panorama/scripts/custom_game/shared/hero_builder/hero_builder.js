@@ -895,6 +895,9 @@ function rebuildRecommendedBuilds() {
     // Clean it up (dodgy)
     con.RemoveAndDeleteChildren();
 
+    // Reset the build list
+    recommenedBuildContainerList = [];
+
     // Grab a local reference to recommended builds
     var recommendedBuilds = Game.shared.recommendedBuilds;
 
