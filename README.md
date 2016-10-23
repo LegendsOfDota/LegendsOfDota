@@ -89,3 +89,6 @@ Legends of Dota
 
 ###Future Proofing###
  - gLn52bsFGIsxWYgcXZutGIJBCdhhGdgY2bvJHcgUGa0BycpBSZnF2czVWbgMXaoRHIk5WYgwSZzF2YgUGa0BCdv5GIzlGIzlGa0BCLzVHIkVGdyFWbzRXdvBychhGIlhGIztmbphGdgUGSg4yQCFEZy9GTrJXYEBicvZGIzRnb192YjFGI0xWYgkHbsFWd0NWYgUmchByZulGd1JWayRnbvNGIlJXYg8Ga3BSZsB3blBHI3VmbgUGa0BiZvBSKlxGcpRHb11GI09mbgYWaoASZu9GI0NXYlxGI0FGIsc3buBCdpByZulGbsF2Q
+
+###Copyright###
+ - Copyright 2016 Ash47 This item is not authorized for posting on Steam, except under the Steam account named [ash47](http://steamcommunity.com/id/Ash47)
