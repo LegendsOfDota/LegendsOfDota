@@ -251,6 +251,20 @@ var recommendedBuilds = [
         },
         des: 'An alternate build for taking down buildings.'
     },
+    {
+        title: 'The Ultimate Rat',
+        heroName: 'npc_dota_hero_furion',
+        attr: 'int',
+        build: {
+            1: 'furion_teleportation',
+            2: 'furion_force_of_nature',
+            3: 'chen_test_of_faith_teleport',
+            4: 'lone_druid_true_form',
+            5: 'lone_druid_true_form_battle_cry',
+            6: 'furion_wrath_of_nature',
+        },
+        des: 'An alternate build for taking down buildings.'
+    },
 ];
 
 // Export it
