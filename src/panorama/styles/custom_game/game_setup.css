@@ -2070,6 +2070,10 @@
     visibility: visible;
 }
 
+.no_ingame_voting .IngameVotingRequired.optionsSlotPanelSlave {
+    visibility: visible;
+}
+
 .player_has_host_privileges.phase_option_selection .optionsSlotPanelHost {
     visibility: visible;
 }
@@ -2079,6 +2083,10 @@
 }
 
 .player_has_host_privileges.phase_option_selection.disallow_bots .optionButtonBotRequired .optionsSlotPanelHost {
+    visibility: collapse;
+}
+
+.no_ingame_voting .IngameVotingRequired.optionsSlotPanelHost {
     visibility: collapse;
 }
 
@@ -2139,4 +2147,8 @@
 
 .winningVote Label {
     color: #00FF00 !important;
+}
+
+.hideThisShit {
+    visibility: collapse;
 }

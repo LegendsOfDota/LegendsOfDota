@@ -258,7 +258,7 @@ function Pregame:init()
     end
 
     -- Custom -- set preset
-    if mapName == 'custom' or mapName == 'custom_bot' or mapName == '10_vs_10' then
+    if mapName == 'custom' or mapName == 'custom_bot' or mapName == '10_vs_10' or mapName == 'classic' or mapName == 'allow_voting' then
         self:setOption('lodOptionGamemode', -1)
     end
 
@@ -1208,9 +1208,9 @@ function Pregame:processVoteData()
 
     if results.voteModeFifty then
         if results.voteModeFifty == 1 then
-            self:setOption('lodOptionGameSpeedVoting', 2, true)
+            self:setOption('lodOptionGameSpeedVoting', 0, true)
         else
-            self:setOption('lodOptionGameSpeedVoting', 1, true)
+            self:setOption('lodOptionGameSpeedVoting', 0, true)
         end
     end
 
@@ -1732,7 +1732,7 @@ function Pregame:initOptionSelector()
             -- It needs to be a whole number between a certain range
             if type(value) ~= 'number' then return false end
             if math.floor(value) ~= value then return false end
-            if value < 1 or value > 10 then return false end
+            if value < 0 or value > 10 then return false end
 
             -- Valid
             return true
@@ -1746,7 +1746,7 @@ function Pregame:initOptionSelector()
             -- It needs to be a whole number between a certain range
             if type(value) ~= 'number' then return false end
             if math.floor(value) ~= value then return false end
-            if value < 1 or value > 10 then return false end
+            if value < 0 or value > 10 then return false end
 
             -- Valid
             return true
@@ -1945,11 +1945,11 @@ function Pregame:initOptionSelector()
                 self:setOption('lodOptionGameSpeedFreeCourier', 1, true)
 
                 -- Voting starts at everyone required
-                self:setOption('lodOptionGameSpeedVoting', 1, true)
+                self:setOption('lodOptionGameSpeedVoting', 0, true)
 
                 -- Set bot options
-                self:setOption('lodOptionBotsRadiant', 5, true)
-                self:setOption('lodOptionBotsDire', 5, true)
+                self:setOption('lodOptionBotsRadiant', 0, true)
+                self:setOption('lodOptionBotsDire', 0, true)
                 self:setOption('lodOptionBotsUnfairBalance', 1, true)
 
                 -- Turn easy mode off

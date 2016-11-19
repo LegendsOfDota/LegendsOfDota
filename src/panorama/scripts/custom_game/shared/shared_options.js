@@ -165,6 +165,7 @@ var allOptions = {
                 default: 20
             },
             {
+                ingameVoting: true,
                 name: 'lodOptionGameSpeedVoting',
                 des: 'lodOptionDesGameSpeedVoting',
                 about: 'lodOptionAboutGameSpeedVoting',
@@ -607,20 +608,20 @@ var allOptions = {
                 des: 'lodOptionDesBotsRadiant',
                 about: 'lodOptionAboutBotRadiant',
                 sort: 'range',
-                min: 1,
+                min: 0,
                 max: 10,
                 step: 1,
-                default: 5
+                default: 0
             },
             {
                 name: 'lodOptionBotsDire',
                 des: 'lodOptionDesBotsDire',
                 about: 'lodOptionAboutBotDire',
                 sort: 'range',
-                min: 1,
+                min: 0,
                 max: 10,
                 step: 1,
-                default: 5
+                default: 0
             },
             /*{
                 name: 'lodOptionBotsUnfairBalance',

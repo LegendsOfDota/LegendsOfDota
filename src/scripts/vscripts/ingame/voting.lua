@@ -45,7 +45,7 @@ function lodVoting:onPlyVoteCreate(eventSourceIndex, args)
     -- Grab data
     local playerID = args.PlayerID
     local ply = PlayerResource:GetPlayer(playerID)
-    
+
     -- Set the vote counting mode
     local voteMode = OptionManager:GetOption('votingMode')
     if voteMode == 0 then

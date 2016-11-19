@@ -122,7 +122,7 @@
                     </Panel>
                 </Panel>
 
-                <Panel class="optionVotePanel">
+                <Panel class="optionVotePanel hideThisShit">
                     <Label class="optionVoteHeader" text="lodVotingMode" />
                     <Panel class="optionVotePanelOptions">
                         <Button id="optionVoteModeFiftyNo" class="heroBuildMenuButtonSmall votingButtonSlots makeThePlayerNoticeThisButton votingButtonClass" onactivate="onPlayerCastVote('voteModeFifty', false)">

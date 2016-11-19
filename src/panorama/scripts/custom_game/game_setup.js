@@ -608,6 +608,16 @@ function buildOptionsCategories() {
                             });
                         break;
                     }
+
+                    if(info.ingameVoting) {
+                        if(hostPanel) {
+                            hostPanel.AddClass('IngameVotingRequired');
+                        }
+
+                        if(slavePanel) {
+                            slavePanel.AddClass('IngameVotingRequired');
+                        }
+                    }
                 })();
             }
 
@@ -1276,8 +1286,13 @@ function onLockBuildButtonPressed() {
     }
 
     // Bots
-    if(mapName != 'custom_bot' && mapName != '10_vs_10') {
-        $.GetContextPanel().SetHasClass('disallow_bots', true);
+    //if(mapName != 'custom_bot' && mapName != '10_vs_10') {
+    //    $.GetContextPanel().SetHasClass('disallow_bots', true);
+    //}
+
+    // Disable voting BS
+    if(mapName != 'allow_voting') {
+        $.GetContextPanel().SetHasClass('no_ingame_voting', true);
     }
 
     // Are we on a map that allocates slots for us?
