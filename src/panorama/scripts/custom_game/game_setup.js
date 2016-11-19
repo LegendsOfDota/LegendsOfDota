@@ -621,6 +621,15 @@ function buildOptionsCategories() {
                 })();
             }
 
+            // At a glance section
+            /*var glance = optionData.glace;
+            if(glance != null) {
+                // We have a glance section enabled
+                var glancePanel = $.CreatePanel('Panel', optionPanel, 'option_panel_glance_' + optionLabelText);
+                glancePanel.BLoadLayout('file://{resources}/layout/custom_game/pregame/pregame_options_glance.xml', false, false);
+                glancePanel.loadGlanceData(glance);
+            }*/
+
             // Fix stuff
             $.CreatePanel('Label', optionPanel, 'option_panel_fixer_' + optionLabelText);
 
