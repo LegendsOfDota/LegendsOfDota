@@ -271,7 +271,7 @@ function Pregame:init()
     self:setOption('lodOptionBanning', 3)
 
     -- Bot match
-    if mapName == 'custom_bot' or mapName == '10_vs_10' then
+    if mapName == 'custom_bot' or mapName == '10_vs_10' or mapName == 'allow_voting' or mapName == 'classic' then
         self.enabledBots = true
     end
 
