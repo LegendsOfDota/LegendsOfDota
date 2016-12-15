@@ -623,6 +623,12 @@ function skillManager:ApplyBuild(hero, build, autoLevelSkills)
                 fixModifiers(hero, abilityName)
             end
         end
+
+        -- Remove attribute bonus
+        local attrBonus = hero:FindAbilityByName('attribute_bonus')
+        if attrBonus then
+            attrBonus:SetHidden(true)
+        end
     end
 
     -- Tower patcher

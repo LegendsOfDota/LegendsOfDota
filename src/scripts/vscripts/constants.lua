@@ -9,7 +9,9 @@ Constants.PHASE_SELECTION = 5           -- Selecting heroes
 Constants.PHASE_DRAFTING = 6            -- Place holder for drafting mode
 Constants.PHASE_RANDOM_SELECTION = 7    -- Random build selection phase (for All Random)
 Constants.PHASE_REVIEW = 8              -- Review Phase
-Constants.PHASE_INGAME = 9              -- Game has started
+Constants.PHASE_SPAWN_HEROES = 9        -- Item picking has started, we are spawning our heroes
+Constants.PHASE_ITEM_PICKING = 10       -- Item picking phase
+Constants.PHASE_INGAME = 11             -- Game has started
 
 -- Voting stuff
 Constants.VOTE_COUNT_MODE_EVERYONE = 1       -- Everyone must vote yes (who votes)

@@ -538,7 +538,7 @@ function Pregame:onThink()
         -- Is it over?
         if Time() >= self:getEndOfPhase() and self.freezeTimer == nil then
             -- Change to picking phase
-            self:setPhase(constants.PHASE_INGAME)
+            self:setPhase(constants.PHASE_SPAWN_HEROES)
 
             -- Kill the selection screen
             GameRules:FinishCustomGameSetup()
@@ -550,21 +550,45 @@ function Pregame:onThink()
     -- Once we get to this point, we will not fire again
 
     -- Game is starting, spawn heroes
-    if ourPhase == constants.PHASE_INGAME then
+    if ourPhase == constants.PHASE_SPAWN_HEROES then
         -- Do things after a small delay
         local this = self
 
         -- Hook bot stuff
         self:hookBotStuff()
 
-        -- Start tutorial mode so we can show tips to players
-        Tutorial:StartTutorialMode()
-
         -- Spawn all humans
         Timers:CreateTimer(function()
             -- Spawn all players
         	this:spawnAllHeroes()
         end, DoUniqueString('spawnbots'), 0.1)
+
+        -- Move to item picking
+        self:setPhase(constants.PHASE_ITEM_PICKING)
+
+        return 0.1
+    end
+
+    -- Is it the stupid item picking phase?
+    if ourPhase == constants.PHASE_ITEM_PICKING then
+        -- Wait for the game to start
+        if GameRules:State_Get() < DOTA_GAMERULES_STATE_PRE_GAME then
+            return 0.1
+        end
+
+        -- Do things after a small delay
+        local this = self
+
+        Timers:CreateTimer(function()
+            -- Fix builds
+            this:fixBuilds()
+
+            -- Move to ingame
+            this:setPhase(constants.PHASE_INGAME)
+
+            -- Start tutorial mode so we can show tips to players
+            Tutorial:StartTutorialMode()
+        end, DoUniqueString('preventcamping'), 1)
 
         -- Add extra towers
         Timers:CreateTimer(function()
@@ -688,7 +712,10 @@ function Pregame:actualSpawnPlayer()
                 local status2,err2 = pcall(function()
                     -- Create the hero and validate it
                     local hero = CreateHeroForPlayer(heroName, player)
-                    if hero ~= nil and IsValidEntity(hero) then
+
+                    UTIL_Remove(hero)
+
+                    --[[if hero ~= nil and IsValidEntity(hero) then
                         SkillManager:ApplyBuild(hero, build or {})
 
                         -- Do they have a custom attribute set?
@@ -712,7 +739,7 @@ function Pregame:actualSpawnPlayer()
                                 end
                             end, DoUniqueString('primaryAttrFix'), 0.1)
                         end
-                    end
+                    end]]
                 end)
 
                 -- Did the spawning of this hero fail?
@@ -743,6 +770,46 @@ function Pregame:actualSpawnPlayer()
     -- Did the spawning of this hero fail?
     if not status then
         SendToServerConsole('say "Post this to the LoD comments section: '..err:gsub('"',"''")..'"')
+    end
+end
+
+function Pregame:fixBuilds()
+    local maxPlayerID = 24
+    for playerID=0,maxPlayerID-1 do
+        local hero = PlayerResource:GetSelectedHeroEntity(playerID)
+
+        if hero ~= nil and IsValidEntity(hero) then
+            -- Grab their build
+            local build = self.selectedSkills[playerID]
+
+            if build then
+                local status2,err2 = pcall(function()
+                    SkillManager:ApplyBuild(hero, build or {})
+
+                    -- Do they have a custom attribute set?
+                    if self.selectedPlayerAttr[playerID] ~= nil then
+                        -- Set it
+
+                        local toSet = 0
+
+                        if self.selectedPlayerAttr[playerID] == 'str' then
+                            toSet = 0
+                        elseif self.selectedPlayerAttr[playerID] == 'agi' then
+                            toSet = 1
+                        elseif self.selectedPlayerAttr[playerID] == 'int' then
+                            toSet = 2
+                        end
+
+                        -- Set a timer to fix stuff up
+                        Timers:CreateTimer(function()
+                            if IsValidEntity(hero) then
+                                hero:SetPrimaryAttribute(toSet)
+                            end
+                        end, DoUniqueString('primaryAttrFix'), 0.1)
+                    end
+                end)
+            end
+        end
     end
 end
 
