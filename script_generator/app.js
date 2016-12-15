@@ -162,11 +162,17 @@ function generatePrecacheData(next) {
                 }
 
                 if(data.BotImplemented != 1) {
-                    newKV[name+'_lod'].Ability1 = 'attribute_bonus';
+                    //newKV[name+'_lod'].Ability1 = 'attribute_bonus';
 
-                    for(var i=2;i<=16;++i) {
-                        if(heroes[name]['Ability' + i]) {
-                            newKV[name+'_lod']['Ability' + i] = '';
+                    for(var i=1;i<=32;++i) {
+                        var txt = heroes[name]['Ability' + i];
+                        if(txt) {
+                            if(txt[0].indexOf('special_bonus_') != -1) {
+                                //newKV[name+'_lod']['Ability' + i] = txt;
+                            } else {
+                                newKV[name+'_lod']['Ability' + i] = '';
+                            }
+
                         }
                     }
                 }

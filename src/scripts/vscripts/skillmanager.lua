@@ -580,11 +580,15 @@ function skillManager:ApplyBuild(hero, build, autoLevelSkills)
 
                 -- Enable it
                 oldAb:SetHidden(false)
+
+                --hero:SetAbilityByIndex(oldAb, i-1)
             else
                 local newAb = hero:AddAbility(abilityName)
 
                 if newAb then
                     newAb:SetHidden(false)
+
+                    --hero:SetAbilityByIndex(newAb, i)
 
                     -- Check for auto skilling
                     if autoSkill[abilityName] then
@@ -644,15 +648,25 @@ function skillManager:ApplyBuild(hero, build, autoLevelSkills)
         end
     end]]
 
+    for zzz = 0,24 do
+        local ab = hero:GetAbilityByIndex(zzz)
+
+        if ab then
+            ab:SetHidden(true)
+        end
+    end
+
     -- Do a nice little sort
     for i=1,16 do
         local abilityName = build[i]
         if abilityName then
             local inSlot = abs[i]
 
+            local theAb = hero:FindAbilityByName(abilityName)
+
             if inSlot and inSlot ~= abilityName then
                 -- Swap in dota
-                hero:SwapAbilities(abilityName, inSlot, true, true)
+                --hero:SwapAbilities(abilityName, inSlot, true, true)
 
                 -- Perform swap internally
                 for j=i+1,16 do
@@ -665,16 +679,20 @@ function skillManager:ApplyBuild(hero, build, autoLevelSkills)
             end
 
             if i > 6 and not isTower then
-                local ab = hero:FindAbilityByName(abilityName)
-                if ab then
-                    ab:SetHidden(true)
+                if theAb then
+                    theAb:SetHidden(true)
                 end
+            else
+                theAb:SetHidden(false)
             end
 
             -- Store the index
             if isRealHero then
                 activeSkills[playerID][i] = abilityName
             end
+
+            -- Fix issues
+            --hero:SetAbilityByIndex(theAb, i - 1)
         else
             local inSlot = abs[i]
 
@@ -686,6 +704,23 @@ function skillManager:ApplyBuild(hero, build, autoLevelSkills)
             end
         end
     end
+
+    --[[local abStore = {}
+    for i=1,16 do
+        local abSlot = hero:GetAbilityByIndex(i)
+
+        if abSlot then
+            abStore[i] = abSlot
+        end
+    end
+
+    for i=16,1,-1 do
+        local abSlot = abStore[i]
+
+        if abSlot then
+            hero:SetAbilityByIndex(abSlot, i)
+        end
+    end]]
 
     -- Add missing abilities
     for abilityName,v in pairs(extraSkills) do
