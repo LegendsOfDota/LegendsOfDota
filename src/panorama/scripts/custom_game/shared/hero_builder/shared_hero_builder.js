@@ -226,6 +226,8 @@ Game.shared.makeSkillSelectable = function(abcon) {
         $.DispatchEvent('DOTAHideAbilityTooltip');
         $.DispatchEvent('DOTAHideTitleTextTooltip');
 
+        Game.shared.hookSkillInfo(displayPanel);
+
         // Banning
         Game.shared.events.trigger('dragAbilityStart', {
             abName: abName,

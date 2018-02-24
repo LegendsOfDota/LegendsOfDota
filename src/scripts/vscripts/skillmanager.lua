@@ -660,6 +660,15 @@ function skillManager:ApplyBuild(hero, build, autoLevelSkills)
     for i=1,16 do
         local abilityName = build[i]
         if abilityName then
+            local abilityInSlot_i = hero:GetAbilityByIndex(i-1)
+
+            if abilityInSlot_i then
+                local abilityInSlot_i_name = abilityInSlot_i:GetName()
+                if abilityInSlot_i_name then
+                    hero:SwapAbilities(abilityInSlot_i_name, abilityName, false, false)
+                end
+            end
+
             local inSlot = abs[i]
 
             local theAb = hero:FindAbilityByName(abilityName)
@@ -681,6 +690,10 @@ function skillManager:ApplyBuild(hero, build, autoLevelSkills)
             if i > 6 and not isTower then
                 if theAb then
                     theAb:SetHidden(true)
+
+                    if theAb:GetAbilityName():find('special_bonus_') then
+                        theAb:SetHidden(false)
+                    end
                 end
             else
                 theAb:SetHidden(false)
@@ -700,10 +713,16 @@ function skillManager:ApplyBuild(hero, build, autoLevelSkills)
                 local ab = hero:FindAbilityByName(inSlot)
                 if ab and not isTower then
                     ab:SetHidden(true)
+
+                    if ab:GetName():find('special_bonus_') then
+                        ab:SetHidden(false)
+                    end
                 end
             end
         end
     end
+
+
 
     --[[local abStore = {}
     for i=1,16 do

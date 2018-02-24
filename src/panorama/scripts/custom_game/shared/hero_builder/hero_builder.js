@@ -129,6 +129,8 @@ function setupBuilderTabs() {
                 // Hide skill info
                 $.DispatchEvent('DOTAHideAbilityTooltip');
                 $.DispatchEvent('DOTAHideTitleTextTooltip');
+
+                Game.shared.hookSkillInfo(displayPanel);
             });
 
             $.RegisterEventHandler('DragEnd', con, function(panelId, draggedPanel) {
@@ -320,6 +322,8 @@ function setSelectedHelperHero(heroName, dontUnselect) {
             abCon.visible = true;
             abCon.abilityname = abName;
             abCon.SetAttributeString('abilityname', abName);
+
+            Game.shared.hookSkillInfo(abCon);
         } else {
             abCon.visible = false;
         }
@@ -657,6 +661,8 @@ function updateSelectedBuild() {
         var ab = $('#lodYourAbility' + i);
         ab.abilityname = theAb;
         ab.SetAttributeString('abilityname', theAb);
+
+        Game.shared.hookSkillInfo(ab)
     }
 }
 
@@ -748,6 +754,8 @@ function setSelectedDropAbility(abName, abcon) {
         // Update the banning skill icon
         $('#lodBanThisSkill').abilityname = abName;
         $('#banningButtonContainer').SetHasClass('disableButton', false);
+
+        Game.shared.hookSkillInfo($('#lodBanThisSkill'));
     }
 
     // Highlight which slots we can drop it into
@@ -1165,10 +1173,12 @@ function OnSkillTabShown(tabName) {
             (function(abName) {
                 // Create the image
                 var abcon = $.CreatePanel('DOTAAbilityImage', con, 'skillTabSkill' + (++unqiueCounter));
-                Game.shared.hookSkillInfo(abcon);
+                
                 abcon.abilityname = abName;
                 abcon.SetAttributeString('abilityname', abName);
                 abcon.SetHasClass('lodMiniAbility', true);
+
+                Game.shared.hookSkillInfo(abcon);
 
                 //abcon.SetHasClass('disallowedSkill', true);
 

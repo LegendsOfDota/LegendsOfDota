@@ -2,7 +2,7 @@
 {
 	maps			"all_pick_6 classic 10_vs_10 allow_voting"
 	"IsPlayable"	"1"
-    "version"       "3.1.2"
+    "version"       "3.1.3"
 
     "10_vs_10"
     {

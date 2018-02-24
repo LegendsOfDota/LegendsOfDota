@@ -33,7 +33,8 @@ local schemaVersion = 5
 -- Constants used for pretty formatting, as well as strings
 local printPrefix = 'Stat Collection: '
 
-local errorFailedToContactServer = 'Failed to contact the master server! Bad status code, or no body!'
+local errorFailedToContactServer = 'Failed to contact the master server! Bad status code!'
+local errorEmptyServerResponse = 'Master server returned empty response!'
 local errorMissingModIdentifier = 'Please ensure you have a settings.kv in your statcollection folder! Missing modID!'
 local errorDefaultModIdentifier = 'Please change your settings.kv with a valid modID, acquired after registration of your mod on the site!'
 local errorMissingSchemaIdentifier = 'Please ensure you have a settings.kv in your statcollection folder! Missing schemaID!'
@@ -107,8 +108,8 @@ function statCollection:init()
     -- Set the default winner to -1 (no winner)
     self.winner = -1
 
-    --Store roundID globally
-    self.roundID = 0
+    -- Set round to -1 (not finished)
+    self.roundID = -1
 
     -- Hook requred functions to operate correctly
     self:hookFunctions()
@@ -389,9 +390,9 @@ function statCollection:sendStage3(winners, lastRound)
     if not self.HAS_ROUNDS then
         if self.sentStage3 then return end
         self.sentStage3 = true
-    else
-        self.roundID = self.roundID + 1
     end
+
+    self.roundID = self.roundID + 1
 
     -- Print the intro message
     statCollection:print(messagePhase3Starting)
@@ -442,10 +443,10 @@ function statCollection:sendStage3(winners, lastRound)
     self:Stage3(payload)
 end
 
-function statCollection:submitRound(args)
+function statCollection:submitRound(lastRound)
     --We receive the winners from the custom schema, lets tell phase 3 about it!
-    local returnArgs = customSchema:submitRound(args)
-    self:sendStage3(returnArgs.winners, returnArgs.lastRound)
+    self:sendStage3(BuildRoundWinnerArray(), lastRound)
+    customSchema:submitRound()
 end
 
 -- Sends custom
@@ -534,7 +535,7 @@ function statCollection:sendStage(stageName, payload, callback, override_host)
     local host = override_host or postLocation
 
     -- Create the request
-    local req = CreateHTTPRequest('POST', host .. stageName)
+    local req = CreateHTTPRequestScriptVM('POST', host .. stageName)
     local encoded = json.encode(payload)
     if self.TESTING then
         statCollection:print(encoded)
@@ -545,8 +546,16 @@ function statCollection:sendStage(stageName, payload, callback, override_host)
 
     -- Send the request
     req:Send(function(res)
-        if res.StatusCode ~= 200 or not res.Body then
+        if res.StatusCode ~= 200 then
             statCollection:print(errorFailedToContactServer)
+            statCollection:print("Status Code", res.StatusCode or "nil")
+            statCollection:print("Body", res.Body or "nil")
+            return
+        end
+         
+        if not res.Body then
+            statCollection:print(errorEmptyServerResponse)
+            statCollection:print("Status Code", res.StatusCode or "nil")
             return
         end
 

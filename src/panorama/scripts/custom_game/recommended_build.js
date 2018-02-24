@@ -6,10 +6,6 @@ function setBuildData(hero, build, attr, title, des) {
     for(var slotID=1; slotID<=6; ++slotID) {
         var slot = $('#recommendedSkill' + slotID);
 
-        // Make it selectable and show info
-        Game.shared.makeSkillSelectable(slot);
-        Game.shared.hookSkillInfo(slot);
-
         if(build[slotID]) {
             slot.visible = true;
             slot.abilityname = build[slotID];
@@ -17,6 +13,10 @@ function setBuildData(hero, build, attr, title, des) {
         } else {
             slot.visible = false;
         }
+
+        // Make it selectable and show info
+        Game.shared.makeSkillSelectable(slot);
+        Game.shared.hookSkillInfo(slot);
     }
 
     // Set hero image

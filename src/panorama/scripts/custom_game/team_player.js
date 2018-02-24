@@ -143,6 +143,8 @@ function updateBuildData() {
 			con.abilityname = 'life_stealer_empty_1';
 			con.SetAttributeString('abilityname', 'life_stealer_empty_1');
 		}
+
+        Game.shared.hookSkillInfo(con);
 	}
 }
 

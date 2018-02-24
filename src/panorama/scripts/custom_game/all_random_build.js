@@ -12,6 +12,8 @@ function setBuild(buildID, heroName, build) {
             skillCon.abilityname = build[i];
             skillCon.SetAttributeString('abilityname', build[i]);
             skillCon.visible = true;
+
+            Game.shared.hookSkillInfo(skillCon);
         } else {
             skillCon.visible = false;
         }

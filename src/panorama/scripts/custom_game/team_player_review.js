@@ -148,6 +148,8 @@ function makeSwapable(slotID, abcon) {
         dragCallbacks.offsetY = 0;
         displayPanel.SetAttributeString('abilityname', abName);
 
+        Game.shared.hookSkillInfo(displayPanel);
+
         // Hide skill info
         $.DispatchEvent('DOTAHideAbilityTooltip');
 
@@ -205,6 +207,8 @@ function updateBuildData() {
             con.abilityname = 'life_stealer_empty_1';
             con.SetAttributeString('abilityname', 'life_stealer_empty_1');
         }
+
+        Game.shared.hookSkillInfo(con);
     }
 }
 

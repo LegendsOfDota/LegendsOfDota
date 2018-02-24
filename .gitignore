@@ -227,3 +227,5 @@ import
 
 # Ignore stat collection stuff
 src/scripts/vscripts/statcollection/settings.kv
+
+edit lod*
