@@ -70,6 +70,10 @@ function Pregame:init()
     GameRules:SetHeroSelectionTime(0)   -- Hero selection is done elsewhere, hero selection should be instant
     GameRules:GetGameModeEntity():SetBotThinkingEnabled(true)
 
+    -- Instantly jump into the game
+    GameRules:SetStrategyTime( 0.0 )
+    GameRules:SetShowcaseTime( 0.0 )
+
     -- Rune fix
     local totalRunes = 0
     local needBounty = false
@@ -4822,22 +4826,25 @@ function Pregame:fixSpawningIssues()
                     end
                 end
 
-                -- Only give bonuses once
-                if not givenBonuses[playerID] then
-                    -- We have given bonuses
-                    givenBonuses[playerID] = true
+                local startingLevel = OptionManager:GetOption('startingLevel')
 
-                    local startingLevel = OptionManager:GetOption('startingLevel')
-                    -- Do we need to level up?
-                    if startingLevel > 1 then
+                -- Do we need to level up?
+                if startingLevel > 1 then
+                    if spawnedUnit:GetLevel() < startingLevel then
+                        -- Fix EXP
+                        spawnedUnit:AddExperience(constants.XP_PER_LEVEL_TABLE[startingLevel], false, false)
+
                         -- Level it up
                         --for i=1,startingLevel-1 do
                         --    spawnedUnit:HeroLevelUp(false)
                         --end
-
-                        -- Fix EXP
-                        spawnedUnit:AddExperience(constants.XP_PER_LEVEL_TABLE[startingLevel], false, false)
                     end
+                end
+
+                -- Only give bonuses once
+                if not givenBonuses[playerID] then
+                    -- We have given bonuses
+                    givenBonuses[playerID] = true
 
                     -- Any bonus gold?
                     if OptionManager:GetOption('bonusGold') > 0 then

@@ -648,7 +648,7 @@ function skillManager:ApplyBuild(hero, build, autoLevelSkills)
         end
     end]]
 
-    for zzz = 0,24 do
+    for zzz = 0,23 do
         local ab = hero:GetAbilityByIndex(zzz)
 
         if ab then
@@ -690,10 +690,6 @@ function skillManager:ApplyBuild(hero, build, autoLevelSkills)
             if i > 6 and not isTower then
                 if theAb then
                     theAb:SetHidden(true)
-
-                    if theAb:GetAbilityName():find('special_bonus_') then
-                        theAb:SetHidden(false)
-                    end
                 end
             else
                 theAb:SetHidden(false)
@@ -713,16 +709,23 @@ function skillManager:ApplyBuild(hero, build, autoLevelSkills)
                 local ab = hero:FindAbilityByName(inSlot)
                 if ab and not isTower then
                     ab:SetHidden(true)
-
-                    if ab:GetName():find('special_bonus_') then
-                        ab:SetHidden(false)
-                    end
                 end
             end
         end
     end
 
+    -- Fix trees
+    for i=1,24 do
+        local abilityInSlot_i = hero:GetAbilityByIndex(i-1)
 
+        if abilityInSlot_i then
+            local abilityInSlot_i_name = abilityInSlot_i:GetName()
+
+            if abilityInSlot_i_name:find('special_bonus_') then
+                abilityInSlot_i:SetHidden(false)
+            end
+        end
+    end
 
     --[[local abStore = {}
     for i=1,16 do
