@@ -246,13 +246,26 @@ end
 -- Respawn modifier
 function Ingame:handleRespawnModifier()
     ListenToGameEvent('entity_killed', function(keys)
+        -- Fix to ensure our respawn time doesn't get up too high
+        local maxRespawnTime = 120
+
+        -- Grab the killed entitiy (it isn't nessessarily a hero!)
+        local hero = EntIndexToHScript(keys.entindex_killed)
+
+        Timers:CreateTimer(function()
+            if IsValidEntity(hero) and hero:IsHero() and not hero:IsAlive() then
+                local timeLeft = hero:GetRespawnTime()
+
+                if timeLeft > maxRespawnTime then
+                    hero:SetTimeUntilRespawn(maxRespawnTime)
+                end
+            end
+        end, DoUniqueString('respawn'), 0.1)
+
         -- Ensure our respawn modifier is in effect
         local respawnModifierPercentage = OptionManager:GetOption('respawnModifierPercentage')
         local respawnModifierConstant = OptionManager:GetOption('respawnModifierConstant')
         if respawnModifierPercentage == 100 and respawnModifierConstant == 0 then return end
-
-        -- Grab the killed entitiy (it isn't nessessarily a hero!)
-        local hero = EntIndexToHScript(keys.entindex_killed)
 
         -- Ensure it is a hero
         if IsValidEntity(hero) then
