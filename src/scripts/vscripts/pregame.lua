@@ -55,6 +55,9 @@ function Pregame:init()
     self.isReady = {}
     self.lockedBuilds = {}
 
+    -- Applied initial builds?
+    self.appliedInitialBuild = {}
+
     -- Fetch player data
     self:preparePlayerDataFetch()
 
@@ -585,14 +588,14 @@ function Pregame:onThink()
 
         Timers:CreateTimer(function()
             -- Fix builds
-            this:fixBuilds()
+            --this:fixBuilds()
 
             -- Move to ingame
             this:setPhase(constants.PHASE_INGAME)
 
             -- Start tutorial mode so we can show tips to players
             Tutorial:StartTutorialMode()
-        end, DoUniqueString('preventcamping'), 1)
+        end, DoUniqueString('preventcamping'), 2)
 
         -- Add extra towers
         Timers:CreateTimer(function()
@@ -777,9 +780,9 @@ function Pregame:actualSpawnPlayer()
     end
 end
 
-function Pregame:fixBuilds()
-    local maxPlayerID = 24
-    for playerID=0,maxPlayerID-1 do
+function Pregame:fixBuilds(playerID)
+    --[[local maxPlayerID = 24
+    for playerID=0,maxPlayerID-1 do]]
         local hero = PlayerResource:GetSelectedHeroEntity(playerID)
 
         if hero ~= nil and IsValidEntity(hero) then
@@ -814,7 +817,7 @@ function Pregame:fixBuilds()
                 end)
             end
         end
-    end
+    --end
 end
 
 -- Returns a random hero [will be unique]
@@ -4684,6 +4687,22 @@ function Pregame:fixSpawningIssues()
             if spawnedUnit:IsHero() then
                 -- Grab their playerID
                 local playerID = spawnedUnit:GetPlayerID()
+
+                -- Only apply the initial build once
+                if not self.appliedInitialBuild[playerID] then
+                    local _self = self
+                    Timers:CreateTimer(function()
+                        -- Ensure we only do this once, and only after our real hero spawns
+                        local hero = PlayerResource:GetSelectedHeroEntity(playerID)
+                        if hero == nil then return end
+                        if _self.appliedInitialBuild[playerID] then return end
+                        _self.appliedInitialBuild[playerID] = true
+
+                        -- Apply the build
+                        local build = this.selectedSkills[playerID] or {}
+                        SkillManager:ApplyBuild( hero, build )
+                    end, DoUniqueString( "heroTest" ), 0.1 )
+                end
 
                 local mainHero = PlayerResource:GetSelectedHeroEntity(playerID)
 
