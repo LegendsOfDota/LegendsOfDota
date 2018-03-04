@@ -247,7 +247,7 @@ end
 function Ingame:handleRespawnModifier()
     ListenToGameEvent('entity_killed', function(keys)
         -- Fix to ensure our respawn time doesn't get up too high
-        local maxRespawnTime = 120
+        local maxRespawnTime = OptionManager:GetOption('respawnMaxTime')
 
         -- Grab the killed entitiy (it isn't nessessarily a hero!)
         local hero = EntIndexToHScript(keys.entindex_killed)
@@ -288,17 +288,24 @@ function Ingame:handleRespawnModifier()
 
                             local timeLeft = hero:GetRespawnTime()
 
+                            -- Hard code a respawn value, why doto makes me do this, no idea
+                            if hero:GetLevel() > 25 and timeLeft < 10 then
+                                timeLeft = 120
+
+                                if timeLeft > maxRespawnTime then
+                                    timeLeft = maxRespawnTime
+                                end
+                            end
+
                             timeLeft = timeLeft * respawnModifierPercentage / 100 + respawnModifierConstant
 
                             if timeLeft <= 0 then
                                 timeLeft = 1
                             end
 
-                            --[[if respawnModifier < 0 then
-                                timeLeft = -respawnModifier
-                            else
-                                timeLeft = timeLeft / respawnModifier
-                            end]]
+                            if timeLeft > maxRespawnTime then
+                                timeLeft = maxRespawnTime
+                            end
 
                             -- Set the time left until we respawn
                             hero:SetTimeUntilRespawn(timeLeft)

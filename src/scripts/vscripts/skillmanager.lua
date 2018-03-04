@@ -547,6 +547,32 @@ function skillManager:ApplyBuild(hero, build, autoLevelSkills)
         activeSkills[playerID] = {}
     end
 
+    local talentOrder = {}
+
+    -- Fix trees
+    for i=1,24 do
+        local abilityInSlot_i = hero:GetAbilityByIndex(i-1)
+
+        if abilityInSlot_i then
+            local abilityInSlot_i_name = abilityInSlot_i:GetName()
+
+            if abilityInSlot_i_name:find('special_bonus_') then
+                table.insert(talentOrder, abilityInSlot_i_name)
+
+                print(abilityInSlot_i_name)
+            end
+        end
+    end
+
+    -- Remove all generic_hidden abilities
+    for i=0,16 do
+        local genericHidden = hero:FindAbilityByName('generic_hidden')
+
+        if genericHidden then
+            hero:RemoveAbility('generic_hidden')
+        end
+    end
+
     -- Give all the abilities in this build
     local abNum = 0
     for i=1,16 do
@@ -687,13 +713,16 @@ function skillManager:ApplyBuild(hero, build, autoLevelSkills)
                 abs[i] = build[i]
             end
 
-            if i > 6 and not isTower then
+            -- All abilities are hidden
+            theAb:SetHidden(true)
+
+            --[[if i > 6 and not isTower then
                 if theAb then
                     theAb:SetHidden(true)
                 end
             else
                 theAb:SetHidden(false)
-            end
+            end]]
 
             -- Store the index
             if isRealHero then
@@ -714,6 +743,22 @@ function skillManager:ApplyBuild(hero, build, autoLevelSkills)
         end
     end
 
+    for i=1,16 do
+        local abilityName = build[i]
+
+        if abilityName then
+            local theAb = hero:FindAbilityByName(abilityName)
+
+            if theAb then
+                theAb:SetHidden(false)
+            else
+                print('Something went very wrong, missing ability ' .. abilityName)
+            end
+        end
+    end
+
+    local talentOrderTree = 1
+
     -- Fix trees
     for i=1,24 do
         local abilityInSlot_i = hero:GetAbilityByIndex(i-1)
@@ -723,6 +768,15 @@ function skillManager:ApplyBuild(hero, build, autoLevelSkills)
 
             if abilityInSlot_i_name:find('special_bonus_') then
                 abilityInSlot_i:SetHidden(false)
+
+                -- Check if it is the correct talent
+                local expectedTalentTree = talentOrder[talentOrderTree]
+                if expectedTalentTree and expectedTalentTree ~= abilityInSlot_i_name then
+                    -- Nope, swap it
+                    hero:SwapAbilities(abilityInSlot_i_name, expectedTalentTree, true, true)
+                end
+
+                talentOrderTree = talentOrderTree + 1
             end
         end
     end

@@ -381,6 +381,16 @@ var allOptions = {
                 default: 0
             },
             {
+                name: 'lodOptionGameSpeedRespawnTimeMax',
+                des: 'lodOptionDesGameSpeedRespawnTimeMax',
+                about: 'lodOptionAboutGameSpeedRespawnTimeMax',
+                sort: 'range',
+                min: 1,
+                max: 240,
+                step: 1,
+                default: 120
+            },
+            {
                 name: 'lodOptionGameSpeedBuybackCooldown',
                 des: 'lodOptionDesGameSpeedBuybackCooldown',
                 about: 'lodOptionAboutGameSpeedBuybackCooldown',

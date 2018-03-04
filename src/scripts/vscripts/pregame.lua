@@ -1293,6 +1293,7 @@ function Pregame:processVoteData()
             -- Lower repsawn time
             self:setOption('lodOptionGameSpeedRespawnTimePercentage', 50, true)
             self:setOption('lodOptionGameSpeedRespawnTimeConstant', 1, true)
+            self:setOption('lodOptionGameSpeedRespawnTimeMax', 60, true)
 
             -- Free gold
             self:setOption('lodOptionGameSpeedStartingGold', 1000, true)
@@ -1300,6 +1301,7 @@ function Pregame:processVoteData()
             -- Normal Respawn Time
             self:setOption('lodOptionGameSpeedRespawnTimePercentage', 100, true)
             self:setOption('lodOptionGameSpeedRespawnTimeConstant', 0, true)
+            self:setOption('lodOptionGameSpeedRespawnTimeMax', 120, true)
 
             -- No free gold
             self:setOption('lodOptionGameSpeedStartingGold', 0, true)
@@ -1746,6 +1748,20 @@ function Pregame:initOptionSelector()
             return true
         end,
 
+        -- Game Speed -- Max Respawn Time
+        lodOptionGameSpeedRespawnTimeMax = function(value)
+            -- Ensure gamemode is set to custom
+            if self.optionStore['lodOptionGamemode'] ~= -1 then return false end
+
+            -- It needs to be a whole number between a certain range
+            if type(value) ~= 'number' then return false end
+            if math.floor(value) ~= value then return false end
+            if value < 0 or value > 240 then return false end
+
+            -- Valid
+            return true
+        end,
+
         -- Game Speed -- Buyback Cooldown
         lodOptionGameSpeedBuybackCooldown = function(value)
             -- Ensure gamemode is set to custom
@@ -2005,6 +2021,7 @@ function Pregame:initOptionSelector()
                 -- Default respawn time
                 self:setOption('lodOptionGameSpeedRespawnTimePercentage', 100, true)
                 self:setOption('lodOptionGameSpeedRespawnTimeConstant', 0, true)
+                self:setOption('lodOptionGameSpeedRespawnTimeMax', 120, true)
 
                 -- Default buyback cooldown
                 self:setOption('lodOptionGameSpeedBuybackCooldown', 7 * 60, true)
@@ -2082,6 +2099,7 @@ function Pregame:initOptionSelector()
                     -- Set respawn to 10%
                     self:setOption('lodOptionGameSpeedRespawnTimePercentage', 10, true)
                     self:setOption('lodOptionGameSpeedRespawnTimeConstant', 0, true)
+                    self:setOption('lodOptionGameSpeedRespawnTimeMax', 60, true)
 
                     -- Buyback cooldown really low
                     self:setOption('lodOptionGameSpeedBuybackCooldown', 60, true)
@@ -2524,7 +2542,8 @@ function Pregame:processOptions()
 	    OptionManager:SetOption('maxHeroLevel', this.optionStore['lodOptionGameSpeedMaxLevel'])
 	    OptionManager:SetOption('multicastMadness', this.optionStore['lodOptionCrazyMulticast'] == 1)
         OptionManager:SetOption('respawnModifierPercentage', this.optionStore['lodOptionGameSpeedRespawnTimePercentage'])
-	    OptionManager:SetOption('respawnModifierConstant', this.optionStore['lodOptionGameSpeedRespawnTimeConstant'])
+        OptionManager:SetOption('respawnModifierConstant', this.optionStore['lodOptionGameSpeedRespawnTimeConstant'])
+	    OptionManager:SetOption('respawnMaxTime', this.optionStore['lodOptionGameSpeedRespawnTimeMax'])
 	    OptionManager:SetOption('freeScepter', this.optionStore['lodOptionGameSpeedUpgradedUlts'] == 1)
         OptionManager:SetOption('freeCourier', this.optionStore['lodOptionGameSpeedFreeCourier'] == 1)
 
@@ -2655,7 +2674,8 @@ function Pregame:processOptions()
 			        ['Gold Modifier'] = math.floor(this.optionStore['lodOptionGameSpeedGoldModifier']),
 			        ['XP Modifier'] = math.floor(this.optionStore['lodOptionGameSpeedEXPModifier']),
 		            ['Respawn Modifier Percentage'] = math.floor(this.optionStore['lodOptionGameSpeedRespawnTimePercentage']),
-			        ['Respawn Modifier Constant'] = this.optionStore['lodOptionGameSpeedRespawnTimeConstant'],
+                    ['Respawn Modifier Constant'] = this.optionStore['lodOptionGameSpeedRespawnTimeConstant'],
+			        ['Respawn Max Time'] = this.optionStore['lodOptionGameSpeedRespawnTimeMax'],
 			        ['Buyback Cooldown'] = this.optionStore['lodOptionGameSpeedBuybackCooldown'],
 			        ['Towers Per Lane'] = this.optionStore['lodOptionGameSpeedTowersPerLane'],
 			        ['Start With Upgraded Ults'] = this.optionStore['lodOptionGameSpeedUpgradedUlts'],
