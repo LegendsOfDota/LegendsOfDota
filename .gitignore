@@ -229,3 +229,5 @@ import
 src/scripts/vscripts/statcollection/settings.kv
 
 edit lod*
+
+dota_offline/*
