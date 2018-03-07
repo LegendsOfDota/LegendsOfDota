@@ -30,7 +30,7 @@ mkdir "dota_offline\game\dota_addons\lod_offline\panorama\localization"
 copy "src\addoninfo.txt" "dota_offline\game\dota_addons\lod_offline\addoninfo.txt"
 
 :: Add scripts
-xcopy /y /s "src\scripts" "dota\game\dota_addons\lod_offline\scripts\"
+xcopy /y /s "src\scripts" "dota_offline\game\dota_addons\lod_offline\scripts\"
 
 ::  link the panorama source code
 xcopy /y /s "src\panorama" "dota_offline\content\dota_addons\lod_offline\panorama\"
