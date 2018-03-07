@@ -4,57 +4,61 @@
 :: -- Stage source2 binaries --
 
 :: Cleanup the old copy of it
-rmdir /S /Q "dota_offline"
+rmdir /y /S /Q "dota_offline"
 
 :: Create directory structure
 mkdir "dota_offline"
+mkdir "dota_offline"
 mkdir "dota_offline\game"
 mkdir "dota_offline\content"
-mkdir "dota_offline\content\panorama"
-mkdir "dota_offline\game\resource"
-mkdir "dota_offline\game\scripts\npc"
-mkdir "dota_offline\game\maps"
+mkdir "dota_offline\game\dota_addons"
+mkdir "dota_offline\content\dota_addons"
+mkdir "dota_offline\game\dota_addons\lod_offline"
+mkdir "dota_offline\content\dota_addons\lod_offline"
+mkdir "dota_offline\content\dota_addons\lod_offline\panorama"
+mkdir "dota_offline\game\dota_addons\lod_offline\resource"
+mkdir "dota_offline\game\dota_addons\lod_offline\scripts\npc"
+mkdir "dota_offline\game\dota_addons\lod_offline\maps"
 
 :: Maps
-xcopy /y /s "maps" "dota_offline\game\maps\"
+xcopy /y /s "maps" "dota_offline\game\dota_addons\lod_offline\maps\"
 
-mkdir "dota_offline\game\panorama"
-mkdir "dota_offline\game\panorama\localization"
-::mklink /D /J "dota\game\panorama\localization" "src\localization"
+mkdir "dota_offline\game\dota_addons\lod_offline\panorama"
+mkdir "dota_offline\game\dota_addons\lod_offline\panorama\localization"
 
 :: Add info
-copy "src\addoninfo.txt" "dota_offline\game\addoninfo.txt"
+copy "src\addoninfo.txt" "dota_offline\game\dota_addons\lod_offline\addoninfo.txt"
 
 :: Add scripts
-xcopy /y /s "src\scripts" "dota\game\scripts\"
+xcopy /y /s "src\scripts" "dota\game\dota_addons\lod_offline\scripts\"
 
 ::  link the panorama source code
-xcopy /y /s "src\panorama" "dota_offline\content\panorama\"
+xcopy /y /s "src\panorama" "dota_offline\content\dota_addons\lod_offline\panorama\"
 
 :: Hard link NPC scripts
-copy "script_generator\BIN\npc_units_custom.txt" "dota_offline\game\scripts\npc\npc_units_custom.txt"
-copy "script_generator\BIN\npc_items_custom.txt "dota_offline\game\scripts\npc\npc_items_custom.txt"
+copy "script_generator\BIN\npc_units_custom.txt" "dota_offline\game\dota_addons\lod_offline\scripts\npc\npc_units_custom.txt"
+copy "script_generator\BIN\npc_items_custom.txt "dota_offline\game\dota_addons\lod_offline\scripts\npc\npc_items_custom.txt"
 
-xcopy /y /s "src\particles" "dota_offline\game\particles\"
+xcopy /y /s "src\particles" "dota_offline\game\dota_addons\lod_offline\particles\"
 
 :: Link resource folders
-xcopy /y /s "src\resource\flash3" "dota_offline\game\resource\flash3\"
-xcopy /y /s "src\resource\overviews" "dota_offline\game\resource\overviews\"
+xcopy /y /s "src\resource\flash3" "dota_offline\game\dota_addons\lod_offline\resource\flash3\"
+xcopy /y /s "src\resource\overviews" "dota_offline\game\dota_addons\lod_offline\resource\overviews\"
 
 
 :: link generated scripts
-copy "script_generator\BIN\addon_english_token.txt" "dota_offline\game\resource\addon_english.txt"
-copy "script_generator\BIN\addon_english.txt" "dota_offline\game\panorama\localization\addon_english.txt"
+copy "script_generator\BIN\addon_english_token.txt" "dota_offline\game\dota_addons\lod_offline\resource\addon_english.txt"
+copy "script_generator\BIN\addon_english.txt" "dota_offline\game\dota_addons\lod_offline\panorama\localization\addon_english.txt"
 
-copy "script_generator\BIN\addon_schinese_token.txt" "dota_offline\game\resource\addon_schinese.txt"
-copy "script_generator\BIN\addon_schinese.txt" "dota_offline\game\panorama\localization\addon_schinese.txt"
+copy "script_generator\BIN\addon_schinese_token.txt" "dota_offline\game\dota_addons\lod_offline\resource\addon_schinese.txt"
+copy "script_generator\BIN\addon_schinese.txt" "dota_offline\game\dota_addons\lod_offline\panorama\localization\addon_schinese.txt"
 
 
-copy "script_generator\BIN\npc_heroes_custom.txt" "dota_offline\game\scripts\npc\npc_heroes_custom.txt"
+copy "script_generator\BIN\npc_heroes_custom.txt" "dota_offline\game\dota_addons\lod_offline\scripts\npc\npc_heroes_custom.txt"
 
 
 :: link materials folder
-xcopy /y /s "src\materials" "dota_offline\game\materials\"
+xcopy /y /s "src\materials" "dota_offline\game\dota_addons\lod_offline\materials\"
 
 :: Add license agreement
-copy "LICENSE" "dota_offline\game\LICENSE"
+copy "LICENSE" "dota_offline\game\dota_addons\lod_offline\LICENSE"
