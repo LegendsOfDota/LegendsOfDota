@@ -11,6 +11,9 @@ Legends of Dota
 ### Steam Workshop
  - Click [here](https://steamcommunity.com/sharedfiles/filedetails/?id=296590332) to view Legends of Dota on the steam workshop.
 
+### Playing Offline With The Workshop Version
+ - Run the following command in the console: `dota_launch_custom_game 296590332 classic`
+
 ### Requirements to Compile and Run
  - Dota 2 Workshop Tools
  - Nodejs
