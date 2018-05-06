@@ -260,32 +260,37 @@ function Ingame:handleRespawnModifier()
                     hero:SetTimeUntilRespawn(maxRespawnTime)
                 end
             end
-        end, DoUniqueString('respawn'), 0.1)
-
-        -- Ensure our respawn modifier is in effect
-        local respawnModifierPercentage = OptionManager:GetOption('respawnModifierPercentage')
-        local respawnModifierConstant = OptionManager:GetOption('respawnModifierConstant')
-        if respawnModifierPercentage == 100 and respawnModifierConstant == 0 then return end
+        end, DoUniqueString('respawn'), 0.15)
 
         -- Ensure it is a hero
         if IsValidEntity(hero) then
             if hero:IsHero() then
-                -- Ensure we are not using aegis!
-                if hero:WillReincarnate() then return end
-                if hero:IsReincarnating() then return end
-                if hero:HasItemInInventory('item_aegis') then return end
-
                 -- Only apply respawn modifiers to the main hero
                 local playerID = hero:GetPlayerID()
                 local mainHero = PlayerResource:GetSelectedHeroEntity(playerID)
                 if hero == mainHero then
                     Timers:CreateTimer(function()
                         if IsValidEntity(hero) and not hero:IsAlive() then
-                            -- Ensure we are not using aegis!
-                            if hero:WillReincarnate() then return end
-                            if hero:IsReincarnating() then return end
-                            if hero:HasItemInInventory('item_aegis') then return end
+                            -- Are we reincarnating?
+                            if hero:WillReincarnate() or hero:IsReincarnating() then
+                                -- 3 seconds to respawn if we are reincarnating
+                                Timers:CreateTimer(function()
+                                    if IsValidEntity(hero) and not hero:IsAlive() then
+                                        if hero:GetRespawnTime() > 3 then
+                                            hero:SetTimeUntilRespawn(3)
+                                        end
+                                    end
+                                end, DoUniqueString('respawn'), 1)
+                                
+                                return
+                            end
 
+                            -- Ensure our respawn modifier is in effect
+                            local respawnModifierPercentage = OptionManager:GetOption('respawnModifierPercentage')
+                            local respawnModifierConstant = OptionManager:GetOption('respawnModifierConstant')
+                            if respawnModifierPercentage == 100 and respawnModifierConstant == 0 then return end
+
+                            -- How much time left to respawn?
                             local timeLeft = hero:GetRespawnTime()
 
                             -- Hard code a respawn value, why doto makes me do this, no idea
