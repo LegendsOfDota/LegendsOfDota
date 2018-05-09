@@ -31,7 +31,7 @@
         "AbilityBehavior"               "DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
         "BaseClass"                     "item_datadriven"
         "IsSellable"                    "0"
-
+        "ItemPurchaseable"              "0"
         "Modifiers"
         {
             "modifier_health_mod_5"

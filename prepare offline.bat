@@ -37,7 +37,6 @@ xcopy /y /s "src\panorama" "dota_offline\content\dota_addons\lod_offline\panoram
 
 :: Hard link NPC scripts
 copy "script_generator\BIN\npc_units_custom.txt" "dota_offline\game\dota_addons\lod_offline\scripts\npc\npc_units_custom.txt"
-copy "script_generator\BIN\npc_items_custom.txt "dota_offline\game\dota_addons\lod_offline\scripts\npc\npc_items_custom.txt"
 
 xcopy /y /s "src\particles" "dota_offline\game\dota_addons\lod_offline\particles\"
 

@@ -37,7 +37,6 @@ mklink /D /J "dota\content\panorama" "src\panorama"
 mklink /H "dota\game\scripts\npc\activelist.txt" "src\scripts\npc\activelist.txt"
 mklink /H "dota\game\scripts\npc\herolist.txt" "src\scripts\npc\herolist.txt"
 mklink /H "dota\game\scripts\npc\npc_units_custom.txt" "script_generator\BIN\npc_units_custom.txt"
-mklink /H "dota\game\scripts\npc\npc_items_custom.txt" "src\scripts\npc\npc_items_custom.txt"
 
 :: Link script folders
 mklink /D /J "dota\game\scripts\vscripts" "src\scripts\vscripts\"
